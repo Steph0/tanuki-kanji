@@ -5,6 +5,10 @@
 *.crx
 *.xpi
 *.zip
+node_modules
+dist
+dist-ssr
+*.local
 
 # ==========================================
 # AI / LLM Agents & IDE Assistant Workspaces
