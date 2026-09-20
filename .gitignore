@@ -1,0 +1,98 @@
+# ==========================================
+# Build Artifacts
+# ==========================================
+.output/
+*.crx
+*.xpi
+*.zip
+
+# ==========================================
+# AI / LLM Agents & IDE Assistant Workspaces
+# ==========================================
+.agent/
+.agents/
+.agent_workspace/
+.cursor/
+.cursorrules
+.windsurf/
+.windsurfrules
+.claude/
+.claude-code/
+.copilot/
+.aider*
+agent-logs/
+*.prompt
+
+# ==========================================
+# Credentials, Secrets & API Tokens
+# ==========================================
+.env
+.env.*
+!.env.example
+*.env
+*.pem
+*.key
+*.crt
+*.pfx
+*.p12
+*.id_rsa
+id_rsa*
+id_ed25519*
+.netrc
+.git-credentials
+credentials.json
+client_secret*.json
+service_account*.json
+.aws/
+.gcp/
+.azure/
+.gh/
+*token*
+*secret*
+
+# ==========================================
+# Git Internal & Merge Artifacts
+# ==========================================
+.git-credentials
+*.orig
+*.rej
+*.preshift
+
+# ==========================================
+# Node.js & Dependencies
+# ==========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# ==========================================
+# Playwright & Testing Outputs
+# ==========================================
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+playwright/.auth/
+coverage/
+.nyc_output/
+
+# ==========================================
+# OS & IDE Configuration
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+.vscode/*
+.idea/
+.idea/
+
+
+opencode.json

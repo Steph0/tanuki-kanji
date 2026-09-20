@@ -1,0 +1,27 @@
+{
+  "name": "tanuki-kanji",
+  "version": "1.0.0",
+  "description": "Just like a shapeshifting tanuki, modern Kanji have transformed over thousands of years, hiding their original drawings in plain sight. Ready to learn their stories?",
+  "keywords": [
+    "kanji",
+    "tanuki",
+    "japanese",
+    "learn",
+    "ai"
+  ],
+  "homepage": "https://github.com/Steph0/tanuki-kanji#readme",
+  "bugs": {
+    "url": "https://github.com/Steph0/tanuki-kanji/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Steph0/tanuki-kanji.git"
+  },
+  "license": "MIT",
+  "author": "Steph0",
+  "type": "esm",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

@@ -1,0 +1,87 @@
+# ==========================================
+# Credentials, Secrets & Tokens (Security First)
+# ==========================================
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.crt
+*.pfx
+*.p12
+*.id_rsa
+id_rsa*
+id_ed25519*
+.netrc
+.git-credentials
+credentials.json
+client_secret*.json
+service_account*.json
+.aws/
+.gcp/
+.azure/
+.gh/
+*token*
+*secret*
+
+# ==========================================
+# Package Lockfiles (Token Savers)
+# Large lockfiles consume unnecessary AI token context
+# ==========================================
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# ==========================================
+# Build Outputs & Generated Types
+# ==========================================
+.output/
+dist/
+build/
+*.crx
+*.xpi
+*.zip
+
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+
+# ==========================================
+# Playwright & Test Artifacts
+# ==========================================
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+playwright/.auth/
+coverage/
+.nyc_output/
+
+# ==========================================
+# AI Agent Workspaces, Configs & Logs
+# ==========================================
+.agent/
+.agents/
+.agent_workspace/
+.cursor/
+.cursorrules
+.windsurf/
+.windsurfrules
+.claude/
+.claude-code/
+.copilot/
+.aider*
+agent-logs/
+*.prompt
+
+# ==========================================
+# System, IDE & Git Metadata
+# ==========================================
+.git/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
