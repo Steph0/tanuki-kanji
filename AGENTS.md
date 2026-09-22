@@ -27,11 +27,19 @@ This document outlines the architectural rules, security constraints, and coding
 - Always test, never assume work
 - If no test tools, ask user if skip
 
+### DESIGN
+
+Always follow [DESIGN.md](./DESIGN.md) specifications.
+
 ---
 
 ## Tech Stack
 
-<TODO>
+- **Framework**: Preact 10.x
+- **Build Tool**: Vite 8.x
+- **Language**: TypeScript 6.x
+- **Linting & Formatting**: `@biomejs/biome` 2.5.x
+- **Types**: `@types/node` 24.x
 
 ---
 
