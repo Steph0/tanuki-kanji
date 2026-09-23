@@ -1,0 +1,5 @@
+/* Landing page vertical rhythm: components own their top margins (mobile-first) */
+.stack {
+  display: flex;
+  flex-direction: column;
+}

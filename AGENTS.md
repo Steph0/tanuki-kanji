@@ -29,15 +29,17 @@ This document outlines the architectural rules, security constraints, and coding
 
 ### DESIGN
 
-Always follow [DESIGN.md](./DESIGN.md) specifications.
+- Always follow [DESIGN.md](./DESIGN.md) specifications
+- The application is mobile-first. It must display gracefully on tablet and desktop as well
+- Accessibility (A11Y) is a priority
 
 ---
 
 ## Tech Stack
 
+- **Languages**: TypeScript 6.x, JSX, HTML5 / CSS3
 - **Framework**: Preact 10.x
 - **Build Tool**: Vite 8.x
-- **Language**: TypeScript 6.x
 - **Linting & Formatting**: `@biomejs/biome` 2.5.x
 - **Types**: `@types/node` 24.x
 

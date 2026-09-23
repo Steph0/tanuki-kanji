@@ -1,0 +1,117 @@
+@import "@fontsource/epilogue/600.css";
+@import "@fontsource/epilogue/700.css";
+@import "@fontsource/plus-jakarta-sans/400.css";
+@import "@fontsource/plus-jakarta-sans/600.css";
+@import "@fontsource/plus-jakarta-sans/700.css";
+@import "@fontsource/noto-sans-jp/400.css";
+
+:root {
+  /* DESIGN.md — washi canvas + tonal paper layering */
+  --color-canvas: #faf8f5;
+  --color-surface: #ffffff;
+  --color-sunk: #f3efea;
+  --color-border: #e6e0d6;
+  --color-ink: #22252a;
+  --color-ink-soft: #414943;
+  --color-muted: #717973;
+  --color-primary: #2d5a43;
+  --color-primary-hover: #3a7356;
+  --color-secondary: #8c5b3e;
+  --color-secondary-tint: rgba(140, 91, 62, 0.1);
+  --color-tertiary: #c83e2b;
+
+  /* DESIGN.md — typography stacks */
+  --font-head: "Epilogue", "Plus Jakarta Sans", "Noto Sans JP", sans-serif;
+  --font-body: "Plus Jakarta Sans", "Noto Sans JP", sans-serif;
+  --font-kanji: "Noto Sans JP", "Plus Jakarta Sans", sans-serif;
+
+  /* DESIGN.md — spacing + shape */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* DESIGN.md — layout tokens (mobile-first) */
+  --page-margin: 1rem;
+  --page-max: 1120px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-head);
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Webapp-wide page shell: mobile 4-col / 1rem margin (mobile-first) */
+.page-shell {
+  margin-inline: var(--page-margin);
+  padding-block: 0 var(--space-xl);
+}
+
+/* Tablet 8-col / 2rem margin */
+@media (min-width: 768px) {
+  :root {
+    --page-margin: 2rem;
+  }
+
+  body {
+    font-size: 18px;
+    line-height: 28px;
+  }
+}
+
+/* Desktop 12-col, max 1120px centered / 3rem margin */
+@media (min-width: 1024px) {
+  :root {
+    --page-margin: 3rem;
+  }
+
+  .page-shell {
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--page-margin);
+  }
+}

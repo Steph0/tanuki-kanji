@@ -1,0 +1,125 @@
+.section {
+  margin-top: var(--space-lg);
+}
+
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 4px 20px -2px rgba(34, 37, 42, 0.04),
+    0 1px 3px 0 rgba(34, 37, 42, 0.02);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.fieldHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.05em;
+  color: var(--color-ink);
+}
+
+.labelIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.counter {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 14px;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-soft);
+  white-space: nowrap;
+}
+
+.fieldRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background-color: var(--color-sunk);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.375rem;
+  padding-left: 0.625rem;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  font-family: var(--font-kanji);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--color-ink);
+  padding: 0.25rem 0.625rem;
+}
+
+.input::placeholder {
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  cursor: default;
+}
+
+.submitIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  filter: brightness(0) invert(1);
+}
+
+/* Tablet: roomier card */
+@media (min-width: 768px) {
+  .card {
+    padding: var(--space-lg);
+  }
+}
+
+/* Desktop: no further change, inherits centered shell */
+@media (min-width: 1024px) {
+  .section {
+    margin-top: var(--space-xl);
+  }
+}

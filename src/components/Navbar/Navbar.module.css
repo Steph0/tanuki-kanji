@@ -1,0 +1,78 @@
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: var(--color-canvas);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Mobile-first: full-bleed bar, 1rem margin */
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 4rem;
+  margin-inline: var(--page-margin);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.logo {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: 0;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Future home link: explicitly non-interactive in 002 */
+.homeMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-full);
+  color: var(--color-ink-soft);
+  flex-shrink: 0;
+}
+
+.homeIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Tablet: wider margins via token */
+@media (min-width: 768px) {
+  .inner {
+    min-height: 4.5rem;
+  }
+}
+
+/* Desktop: centered 12-col canvas */
+@media (min-width: 1024px) {
+  .inner {
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--page-margin);
+  }
+}

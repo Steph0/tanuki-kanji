@@ -2,61 +2,61 @@
 name: Tanuki Sensei
 colors:
   surface: '#f8f9ff'
-  surface-dim: '#d8dae0'
+  surface-dim: '#d8dae1'
   surface-bright: '#f8f9ff'
   surface-container-lowest: '#ffffff'
   surface-container-low: '#f2f3fa'
-  surface-container: '#eceef4'
+  surface-container: '#ecedf5'
   surface-container-high: '#e6e8ef'
   surface-container-highest: '#e1e2e9'
   on-surface: '#191c21'
   on-surface-variant: '#414943'
-  inverse-surface: '#2e3136'
+  inverse-surface: '#2e3036'
   inverse-on-surface: '#eff0f7'
   outline: '#717973'
-  outline-variant: '#c0c9c1'
-  surface-tint: '#3a674f'
-  primary: '#14422d'
+  outline-variant: '#c1c9c1'
+  surface-tint: '#3b6750'
+  primary: '#002b1a'
   on-primary: '#ffffff'
-  primary-container: '#2d5a43'
-  on-primary-container: '#9fcfb2'
+  primary-container: '#14422d'
+  on-primary-container: '#80ae93'
   inverse-primary: '#a1d1b4'
   secondary: '#835337'
   on-secondary: '#ffffff'
   secondary-container: '#febe9b'
   on-secondary-container: '#794b2f'
-  tertiary: '#7a0600'
+  tertiary: '#510300'
   on-tertiary: '#ffffff'
-  tertiary-container: '#9e1f10'
-  on-tertiary-container: '#ffb1a4'
+  tertiary-container: '#7a0600'
+  on-tertiary-container: '#ff7e69'
   error: '#ba1a1a'
   on-error: '#ffffff'
   error-container: '#ffdad6'
   on-error-container: '#93000a'
-  primary-fixed: '#bceecf'
+  primary-fixed: '#bdeed0'
   primary-fixed-dim: '#a1d1b4'
   on-primary-fixed: '#002112'
   on-primary-fixed-variant: '#224f39'
   secondary-fixed: '#ffdbc9'
-  secondary-fixed-dim: '#f7b996'
-  on-secondary-fixed: '#321200'
+  secondary-fixed-dim: '#f8b996'
+  on-secondary-fixed: '#331200'
   on-secondary-fixed-variant: '#673c22'
   tertiary-fixed: '#ffdad4'
   tertiary-fixed-dim: '#ffb4a7'
   on-tertiary-fixed: '#400200'
-  on-tertiary-fixed-variant: '#8e1306'
+  on-tertiary-fixed-variant: '#8c1709'
   background: '#f8f9ff'
   on-background: '#191c21'
   surface-variant: '#e1e2e9'
 typography:
   display-kanji-lg:
-    fontFamily: Noto Sans
+    fontFamily: Noto Sans JP
     fontSize: 72px
     fontWeight: '400'
     lineHeight: 80px
     letterSpacing: 0px
   display-kanji-sm:
-    fontFamily: Noto Sans
+    fontFamily: Noto Sans JP
     fontSize: 48px
     fontWeight: '400'
     lineHeight: 56px
@@ -86,31 +86,31 @@ typography:
     lineHeight: 28px
     letterSpacing: 0em
   body-lg:
-    fontFamily: Plus Jakarta Sans
+    fontFamily: Plus Jakarta Sans, Noto Sans JP, sans-serif
     fontSize: 18px
     fontWeight: '400'
     lineHeight: 28px
     letterSpacing: 0em
   body-md:
-    fontFamily: Plus Jakarta Sans
+    fontFamily: Plus Jakarta Sans, Noto Sans JP, sans-serif
     fontSize: 15px
     fontWeight: '400'
     lineHeight: 24px
     letterSpacing: 0.01em
   body-sm:
-    fontFamily: Plus Jakarta Sans
+    fontFamily: Plus Jakarta Sans, Noto Sans JP, sans-serif
     fontSize: 13px
     fontWeight: '400'
     lineHeight: 20px
     letterSpacing: 0.01em
   label-md:
-    fontFamily: Space Grotesk
+    fontFamily: Plus Jakarta Sans, Noto Sans JP, sans-serif
     fontSize: 12px
     fontWeight: '600'
     lineHeight: 16px
     letterSpacing: 0.05em
   label-sm:
-    fontFamily: Space Grotesk
+    fontFamily: Plus Jakarta Sans, Noto Sans JP, sans-serif
     fontSize: 10px
     fontWeight: '700'
     lineHeight: 14px
@@ -164,9 +164,9 @@ The color palette draws directly from classical Japanese mineral pigments (*iwa-
 
 The typographic hierarchy balances character clarity and etymological warmth:
 
-- **Epilogue (Headings):** Selected for its sturdy humanist proportions and distinct, warm editorial personality. Provides an organic rhythm without feeling overly historical.
-- **Plus Jakarta Sans (Body Text & Etymological Lore):** Delivers clean readability on mobile screens with soft, friendly geometric apertures that reduce reading fatigue during long study sessions.
-- **Space Grotesk (Labels & Technical Annotations):** Employs precise, geometric metrics for JLPT levels, stroke counters, radical classifications, and pronunciation pitch guides.
+- **Epilogue (Headings):** Selected for its sturdy geometric structure and distinct editorial warmth. Provides an organic rhythm without feeling overly historical.
+- **Plus Jakarta Sans (Body Text & Etymological Lore):** Delivers clean readability on mobile screens with authentic character rendering that reduces reading fatigue during long study sessions.
+- **Plus Jakarta Sans (Labels & Technical Annotations):** Employs precise, clean metrics for JLPT levels, stroke counters, radical classifications, and pronunciation pitch guides.
 - **Kanji Rendering Scale:** Kanji glyphs require dedicated, uncompressed visual height. Never compress Kanji line-height; prioritize generous vertical breathing space to preserve stroke terminal subtleties and radical balance.
 
 ## Layout & Spacing
@@ -210,7 +210,7 @@ The shape system employs consistent **16px–20px (`rounded-lg` / `rounded-xl`) 
 
 ### Character & Etymology Cards
 - **Base Style:** `#FFFFFF` background, `rounded-xl`, subtle bamboo outline (`#E6E0D6`).
-- **Header:** Space Grotesk JLPT badge docked top-right; primary Kanji character set in `display-kanji-lg` anchored center-left with gentle Sumi Ink tone.
+- **Header:** Epilogue JLPT badge docked top-right; primary Kanji character set in `display-kanji-lg` anchored center-left with gentle Sumi Ink tone.
 - **Timeline Strip:** Embedded horizontal sequence tracking character evolution (Oracle Bone script → Bronze script → Seal script → Modern Kanji) connected by a dashed hojicha thread.
 
 ### Micro-Badges & Hanko Seals
