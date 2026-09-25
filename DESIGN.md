@@ -133,6 +133,13 @@ spacing:
   space-md: 1rem
   space-lg: 1.5rem
   space-xl: 2.5rem
+components:
+  icon-sm:
+    size: 1rem
+  icon-md:
+    size: 1.25rem
+  icon-xl:
+    size: 2.25rem
 ---
 
 ## Brand & Style
@@ -200,6 +207,18 @@ The shape system employs consistent **16px–20px (`rounded-lg` / `rounded-xl`) 
 - **Buttons, Text Inputs & Interactive Tiles:** `rounded-lg` (12px–16px) ensuring comfortable, approachable touch targets.
 - **Radical Pills, Stamp Badges, and Status Chips:** Pill-shaped (`rounded-full`) to contrast against rectangular artifact cards.
 - **Seal Stamps (Hanko Badges):** Slightly softened square silhouettes (`rounded-md`, 6px) with an irregular, subtly textured border simulating real seal ink pressed onto fibers.
+
+## Iconography
+
+All icons are Material Symbols (outlined) rendered as square glyphs in three sizes. Each size is a `components` token (`icon-sm` / `icon-md` / `icon-xl`) carrying a single `size` property — deliberately kept out of the `spacing` scale, which is reserved for layout rhythm (margins, gutters, padding). Iconography is a component concern, not a layout one.
+
+The three values step with the `0.5rem` (8px) base unit: `1rem` is two units, `1.25rem` two and a half, `2.25rem` four and a half. In pixels at the default root size that is 16 / 20 / 36 — the same numbers that feed intrinsic `width` / `height` attrs via `src/constants/globals.ts` (`ICON_SM_PX` / `ICON_MD_PX` / `ICON_XL_PX`), while CSS consumes `var(--icon-*)`. The full chain for any icon is therefore `components.icon-*.size` → `--icon-*` → `ICON_*_PX`, so attr and rendered size always agree and pre-CSS layout stays stable.
+
+- **Small (`icon-sm`, `1rem` / 16px):** Inline label glyphs and list item badges — SearchBar label, Explanation items, Banner badge.
+- **Medium (`icon-md`, `1.25rem` / 20px):** Action and header badges — SearchBar submit, Explanation header, Navbar home mark.
+- **Extra large (`icon-xl`, `2.25rem` / 36px):** Brand logo only.
+
+Never introduce a new icon size without a design decision; when in doubt, reuse the nearest existing size rather than adding a fourth.
 
 ## Components
 

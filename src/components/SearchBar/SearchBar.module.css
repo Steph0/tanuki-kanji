@@ -35,8 +35,8 @@
 }
 
 .labelIcon {
-  width: 1rem;
-  height: 1rem;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
 }
 
 .counter {
@@ -103,8 +103,8 @@
 }
 
 .submitIcon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--icon-md);
+  height: var(--icon-md);
   filter: brightness(0) invert(1);
 }
 

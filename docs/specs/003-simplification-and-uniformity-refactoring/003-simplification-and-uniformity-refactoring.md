@@ -55,10 +55,19 @@ Promote clear separation between semantic and styling.
   - [X] Intrinsic consts for both images: `LABEL_INTRINSIC_PX = 16` + `SUBMIT_INTRINSIC_PX = 20`.
   - [X] Focus per DESIGN.md:222: `.fieldRow:focus-within` to white bg, Matcha border + `0 0 0 3px rgba(45, 90, 67, 0.12)` glow; suppress native outline on `.input` only (fieldRow ring becomes the indicator)
 
+- [X] Task 6 — Refactor Explanation content (grilled 2026-09-26)
+  - [X] Resize icons to align with SearchBar (INTENTIONAL parity break): head icon rendered `1rem`→`1.25rem`, attrs `16`→`20`; item icons rendered `1.125rem`→`1rem`, attrs `18`→`16` (×2).
+  - [X] Rename root `.section` to `.explanation`.
+  - [X] Promote icon sizes: `globals.css` gains `--icon-sm: 1rem` (16), `--icon-md: 1.25rem` (20), `--icon-xl: 2.25rem` (36); new shared `src/constants/globals.ts` (`ICON_SM_PX = 16`, `ICON_MD_PX = 20`, `ICON_XL_PX = 36`); migrate ALL components off file-local consts (Navbar `LOGO`/`HOME`, Banner `BADGE`, SearchBar `LABEL`/`SUBMIT`, Explanation new); Explanation icon rules consume the vars.
+  - [X] Semantic refactoring: `.items` `div` to `ul`, `.item` `div` to `li`, keep `aria-labelledby` + `h2`/`h3`. Keep same visual parity, only semantic refactoring.
+  - [X] `globals.css` `img` gains `height: auto`.
 
+- [X] Task 7 — Declare icon tokens in `DESIGN.md`
+  - [X] Frontmatter `components` gains `icon-sm` / `icon-md` / `icon-xl`, each with a `size` (`1rem` / `1.25rem` / `2.25rem`), mirroring `--icon-*` / `ICON_*_PX`.
+  - [X] Prose `## Iconography` after `## Shapes`: 8px-unit stepping, full token chain, size to usage mapping, stick to tokens rule.
 
 # Acceptance
 
 - `npm run build` and `npm run lint` and `npm run format` pass.
-- Visual parity on mobile / tablet / desktop / rotated-phone (container breakpoints + short-viewport centering unchanged).
-- No `@container` left in `globals.css`; no hardcoded colors/spacing/fonts outside `var(--...)`; `DESIGN.md` untouched.
+- Visual parity on mobile / tablet / desktop / rotated-phone unless asked otherwise
+- No `@container` left in `globals.css`; no hardcoded colors/spacing/fonts outside `var(--...)`; `DESIGN.md` only touched by Task 7 (icon tokens).

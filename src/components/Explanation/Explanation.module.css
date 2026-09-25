@@ -1,4 +1,4 @@
-.section {
+.explanation {
   margin-top: var(--space-lg);
 }
 
@@ -65,6 +65,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .item {
@@ -90,13 +93,13 @@
 }
 
 .icon {
-  width: 1.125rem;
-  height: 1.125rem;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
 }
 
 .headBadge .icon {
-  width: 1rem;
-  height: 1rem;
+  width: var(--icon-md);
+  height: var(--icon-md);
 }
 
 .itemCopy {
@@ -141,7 +144,7 @@
 /* Desktop: inherits centered shell — guarded for rotation */
 @container app (min-width: 64rem) {
   @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
-    .section {
+    .explanation {
       margin-top: var(--space-xl);
     }
   }

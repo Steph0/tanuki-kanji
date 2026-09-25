@@ -41,6 +41,11 @@
   --page-max: 1120px;
   /* Sticky navbar height (mirrors Navbar .navigationContent min-height) */
   --navbar-h: 4rem;
+
+  /* Shared icon sizes (mirror src/constants/globals.ts PX consts) */
+  --icon-sm: 1rem;
+  --icon-md: 1.25rem;
+  --icon-xl: 2.25rem;
 }
 
 *,
@@ -80,6 +85,7 @@ p {
 img {
   display: block;
   max-width: 100%;
+  height: auto;
 }
 
 :focus-visible {
