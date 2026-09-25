@@ -1,4 +1,4 @@
-# Tanuki Sensei
+# Tanuki Kanji
 
 ## Key Features
 

@@ -1,5 +1,5 @@
 ---
-name: Tanuki Sensei
+name: Tanuki Kanji
 colors:
   surface: '#f8f9ff'
   surface-dim: '#d8dae1'

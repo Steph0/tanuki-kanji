@@ -8,8 +8,8 @@ export function Navbar() {
     <header className={styles.bar}>
       <nav className={styles.navigationContent} aria-label="Primary">
         <div className={styles.brand}>
-          <img className={styles.logo} src={logo} alt="Tanuki Sensei logo" width={ICON_XL_PX} height={ICON_XL_PX} />
-          <span className={styles.title}>Tanuki Sensei</span>
+          <img className={styles.logo} src={logo} alt="Tanuki Kanji logo" width={ICON_XL_PX} height={ICON_XL_PX} />
+          <span className={styles.title}>Tanuki Kanji</span>
         </div>
         <span className={styles.homeMark} aria-hidden="true">
           <img className={styles.homeIcon} src={syncIcon} alt="" width={ICON_MD_PX} height={ICON_MD_PX} />

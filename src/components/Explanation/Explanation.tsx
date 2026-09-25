@@ -35,7 +35,7 @@ export function Explanation() {
             </span>
             <div className={styles.itemCopy}>
               <h3 className={styles.itemTitle}>Deep Cultural Folklore</h3>
-              <p className={styles.itemText}>Tanuki Sensei weaves historical tales, seasonal poems, and native idiom trivia into your daily review.</p>
+              <p className={styles.itemText}>Tanuki Kanji weaves historical tales, seasonal poems, and native idiom trivia into your daily review.</p>
             </div>
           </li>
         </ul>
