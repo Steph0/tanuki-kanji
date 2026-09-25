@@ -35,9 +35,11 @@ Promote clear separation between semantic and styling.
   - [X] Remove from `src/globals.css`: `.app-container`, `.page-shell`, all `@container app` blocks.
   - [X] Gate — basic checks pass (`npm run build` + `npm run lint` green)
 
-- [ ] Task 3 — Refactor navbar CSS content
-  - [ ] Remove `--navbar-h: 4.5rem` duplicate on Navbar `.bar` (Navbar only consumes via `var(--navbar-h)`; App owns it).
-  - [ ] Update stale comments referencing `index.css` / `.page-shell` in `Navbar.module.css`, `Banner.module.css`.
+- [X] Task 3 — Refactor navbar CSS content
+  - [X] `--navbar-h` single-owned by App: removed `4.5rem` from Navbar `.bar` AND from `.pageContent`, hoisted to `.appContainer` in the same `@container app (min-width: 48rem)` block. Not a pure delete — Navbar is a sibling of `main`, so neither old site inherited into the other subtree; `.appContainer` is their common ancestor (full-bleed, so the trigger point is unchanged).
+  - [X] Stale comments fixed: Navbar sync comment (`index.css` / `.page-shell`) deleted with the duplicate; Banner + App comments now point at `.appContainer`.
+  - [X] Rename `.inner` → `.navigationContent` (`Navbar.module.css` ×2, `Navbar.tsx`, `globals.css` token comment). Pure rename, computed CSS identical.
+  - [X] Replace magic img numbers with file-local `LOGO_INTRINSIC_PX` / `HOME_ICON_INTRINSIC_PX` consts for intrinsic pre-CSS sizes
 
 # Acceptance
 

@@ -39,7 +39,7 @@
   /* DESIGN.md — layout tokens (mobile-first) */
   --page-margin: 1rem;
   --page-max: 1120px;
-  /* Sticky navbar height (mirrors Navbar .inner min-height) */
+  /* Sticky navbar height (mirrors Navbar .navigationContent min-height) */
   --navbar-h: 4rem;
 }
 

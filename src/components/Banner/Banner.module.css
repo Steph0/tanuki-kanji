@@ -82,9 +82,7 @@
   color: var(--color-ink);
 }
 
-/* Short viewports (any rotated/small-height screen): cap the image so the
-   SearchBar stays near the viewport center. Image-only diet — caption and
-   lede keep their sizes, cover crops. --navbar-h inherits from .page-shell. */
+/* Short viewports (any rotated/small-height screen): cap the image*/
 @media (max-height: 37.5rem) {
   .image {
     max-height: calc(50svh - var(--navbar-h));
@@ -99,7 +97,6 @@
   }
 }
 
-/* Desktop: centered w-fit banner — blocked on short viewports (rotated phones) */
 @container app (min-width: 64rem) {
   @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
     .frame {

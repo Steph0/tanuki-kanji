@@ -6,8 +6,7 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-/* Mobile-first: full-bleed bar, 1rem margin */
-.inner {
+.navigationContent {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -61,22 +60,9 @@
   height: 1.25rem;
 }
 
-/* Tablet: wider margins via container width */
-@container app (min-width: 48rem) {
-  /* Keep in sync with --navbar-h on .page-shell in index.css */
-  .bar {
-    --navbar-h: 4.5rem;
-  }
-
-  .inner {
-    margin-inline: 2rem;
-  }
-}
-
-/* Desktop: centered 12-col canvas — blocked on short viewports (rotated phones) */
 @container app (min-width: 64rem) {
   @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
-    .inner {
+    .navigationContent {
       max-width: var(--page-max);
       margin-inline: auto;
       padding-inline: 3rem;

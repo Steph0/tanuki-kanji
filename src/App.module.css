@@ -1,5 +1,3 @@
-/* Named app container: layout responds to component width, not viewport.
-   This keeps rotated phones (wide but short) from jumping breakpoints. */
 .appContainer {
   container-name: app;
   container-type: inline-size;
@@ -15,21 +13,15 @@
   line-height: 24px;
 }
 
-/* Tablet 8-col / 2rem margin — container width, not viewport */
 @container app (min-width: 48rem) {
   .pageContent {
     --page-margin: 2rem;
-    /* Keep in sync with --navbar-h on Navbar .bar */
-    --navbar-h: 4.5rem;
     margin-inline: var(--page-margin);
     font-size: 18px;
     line-height: 28px;
   }
 }
 
-/* Desktop 12-col, max 1120px centered / 3rem margin.
-   Height + aspect guard: rotated phones are wide but short
-   (e.g. 844x390, aspect ~2.16), so they keep tablet rules. */
 @container app (min-width: 64rem) {
   @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
     .pageContent {
@@ -41,18 +33,13 @@
   }
 }
 
-/* Call-to-action groups Banner + SearchBar. Not a container: @container app queries
-   inside still resolve to .appContainer. */
 .callToAction {
   display: flex;
   flex-direction: column;
   min-inline-size: 0;
 }
 
-/* Short viewports (any rotated/small-height screen): call-to-action fills the first
-   viewport below the sticky navbar and centers Banner + SearchBar.
-   Explanation scrolls below the fold. Banner's own top margin is subtracted
-   so the centering lands. --navbar-h inherits from .pageContent. */
+/* Short viewports (any rotated/small-height screen): call-to-action priority */
 @media (max-height: 37.5rem) {
   .callToAction {
     min-height: calc(100svh - var(--navbar-h) - var(--space-md));
