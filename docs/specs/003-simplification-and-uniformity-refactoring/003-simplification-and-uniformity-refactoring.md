@@ -48,6 +48,15 @@ Promote clear separation between semantic and styling.
   - [X] Reviewing class names, `.visual` set: `.section` to `.banner`, `.frame` to `.visual`so as image + overlay = one visual unit, rename `.copy` to `.introText`.
   - [X] Intrinsic consts for both images: `BADGE_ICON_INTRINSIC_PX = 15`  + `ILLUSTRATION_INTRINSIC_W = 1376` / `ILLUSTRATION_INTRINSIC_H = 768`.
 
+- [X] Task 5 — Refactor SearchBar content
+  - [X] Remove h2 `srOnly` heading + `aria-labelledby` + unused `.srOnly` block.
+  - [X] Drop `aria-label` on input.
+  - [X] Rename root `.section` to `.search`.
+  - [X] Intrinsic consts for both images: `LABEL_INTRINSIC_PX = 16` + `SUBMIT_INTRINSIC_PX = 20`.
+  - [X] Focus per DESIGN.md:222: `.fieldRow:focus-within` to white bg, Matcha border + `0 0 0 3px rgba(45, 90, 67, 0.12)` glow; suppress native outline on `.input` only (fieldRow ring becomes the indicator)
+
+
+
 # Acceptance
 
 - `npm run build` and `npm run lint` and `npm run format` pass.

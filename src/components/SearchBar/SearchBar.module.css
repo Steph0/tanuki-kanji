@@ -1,4 +1,4 @@
-.section {
+.search {
   margin-top: var(--space-lg);
 }
 
@@ -13,18 +13,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-}
-
-.srOnly {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 .fieldHead {
@@ -91,6 +79,16 @@
   font-weight: 400;
 }
 
+.input:focus-visible {
+  outline: none;
+}
+
+.fieldRow:focus-within {
+  background-color: var(--color-surface);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(45, 90, 67, 0.12);
+}
+
 .submitButton {
   display: inline-flex;
   align-items: center;
@@ -120,7 +118,7 @@
 /* Desktop: no further change, inherits centered shell — guarded for rotation */
 @container app (min-width: 64rem) {
   @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
-    .section {
+    .search {
       margin-top: var(--space-xl);
     }
   }
