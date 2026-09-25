@@ -35,11 +35,18 @@ Promote clear separation between semantic and styling.
   - [X] Remove from `src/globals.css`: `.app-container`, `.page-shell`, all `@container app` blocks.
   - [X] Gate — basic checks pass (`npm run build` + `npm run lint` green)
 
-- [X] Task 3 — Refactor navbar CSS content
-  - [X] `--navbar-h` single-owned by App: removed `4.5rem` from Navbar `.bar` AND from `.pageContent`, hoisted to `.appContainer` in the same `@container app (min-width: 48rem)` block. Not a pure delete — Navbar is a sibling of `main`, so neither old site inherited into the other subtree; `.appContainer` is their common ancestor (full-bleed, so the trigger point is unchanged).
+- [X] Task 3 — Refactor navbar content
+  - [X] `--navbar-h` single-owned by App: removed `4.5rem` from Navbar `.bar` AND from `.pageContent`, hoisted to `.appContainer` in the same `@container app (min-width: 48rem)` block.
   - [X] Stale comments fixed: Navbar sync comment (`index.css` / `.page-shell`) deleted with the duplicate; Banner + App comments now point at `.appContainer`.
-  - [X] Rename `.inner` → `.navigationContent` (`Navbar.module.css` ×2, `Navbar.tsx`, `globals.css` token comment). Pure rename, computed CSS identical.
+  - [X] Rename `.inner` to `.navigationContent`
   - [X] Replace magic img numbers with file-local `LOGO_INTRINSIC_PX` / `HOME_ICON_INTRINSIC_PX` consts for intrinsic pre-CSS sizes
+
+- [X] Task 4 — Refactor banner content
+  - [X] `index.html`: add one-line `<meta name="description">` with text from current `srOnly` tag in `Banner.tsx`.
+  - [X] Simplify heading: pitch `<p>` becomes the visible `<h1 id="banner-heading" className={styles.pitch}>` with unchanged text; delete sr-only `h1` + unused `.srOnly` block. `section` keeps `aria-labelledby="banner-heading"`.
+  - [X] Rename `.lede` to `.pitch`
+  - [X] Reviewing class names, `.visual` set: `.section` to `.banner`, `.frame` to `.visual`so as image + overlay = one visual unit, rename `.copy` to `.introText`.
+  - [X] Intrinsic consts for both images: `BADGE_ICON_INTRINSIC_PX = 15`  + `ILLUSTRATION_INTRINSIC_W = 1376` / `ILLUSTRATION_INTRINSIC_H = 768`.
 
 # Acceptance
 
