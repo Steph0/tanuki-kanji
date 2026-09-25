@@ -6,13 +6,15 @@ import "./app.css";
 
 export function App() {
   return (
-    <>
+    <div className="app-container">
       <Navbar />
       <main className="page-shell stack">
-        <Banner />
-        <SearchBar />
+        <section className="call-to-action" aria-label="kanji meaning search bar">
+          <Banner />
+          <SearchBar />
+        </section>
         <Explanation />
       </main>
-    </>
+    </div>
   );
 }

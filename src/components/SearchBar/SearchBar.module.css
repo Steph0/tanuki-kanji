@@ -111,15 +111,17 @@
 }
 
 /* Tablet: roomier card */
-@media (min-width: 768px) {
+@container app (min-width: 48rem) {
   .card {
     padding: var(--space-lg);
   }
 }
 
-/* Desktop: no further change, inherits centered shell */
-@media (min-width: 1024px) {
-  .section {
-    margin-top: var(--space-xl);
+/* Desktop: no further change, inherits centered shell — guarded for rotation */
+@container app (min-width: 64rem) {
+  @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
+    .section {
+      margin-top: var(--space-xl);
+    }
   }
 }

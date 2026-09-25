@@ -82,24 +82,39 @@
   color: var(--color-ink);
 }
 
-/* Tablet: banner caps width, lede scales up */
-@media (min-width: 768px) {
-  .frame {
-    max-width: 28rem;
-    margin-inline: auto;
-    width: 100%;
+/* Short viewports (any rotated/small-height screen): cap the image so the
+   SearchBar stays near the viewport center. Image-only diet — caption and
+   lede keep their sizes, cover crops. --navbar-h inherits from .page-shell. */
+@media (max-height: 37.5rem) {
+  .image {
+    max-height: calc(50svh - var(--navbar-h));
   }
+}
 
+/* Tablet: keep mobile stacking, lede scales up per DESIGN.md body-lg */
+@container app (min-width: 48rem) {
   .lede {
     font-size: 18px;
     line-height: 28px;
   }
 }
 
-/* Desktop: compact banner beside reading flow */
-@media (min-width: 1024px) {
-  .frame {
-    max-width: 24rem;
-    margin-inline: 0;
+/* Desktop: centered w-fit banner — blocked on short viewports (rotated phones) */
+@container app (min-width: 64rem) {
+  @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
+    .frame {
+      width: fit-content;
+      max-width: 100%;
+      margin-inline: auto;
+    }
+
+    .image {
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: 220px;
+      aspect-ratio: auto;
+      object-fit: contain;
+    }
   }
 }

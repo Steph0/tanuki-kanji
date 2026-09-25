@@ -34,6 +34,14 @@ Use Stitch MCP to create the "Tanuki Sensei - Home & Kanji Search (Mobile)" page
 - [X] Create a search bar component
   - [X] Do not add any interactivity or validation on the input or send button
 - [X] Create the explanation component with all the explanations that are under the search bar component in the Stitch design
+- [X] Align tablet/desktop to Stitch Desktop via MCP diff, mobile-first
+  - [X] Diff "Tanuki Sensei - Home & Kanji Search (Mobile)" vs "Tanuki Sensei - Home & Kanji Search (Desktop)" screens via Stitch MCP, table per component (nav/banner/search/explanation: stack vs side-by-side, widths, copy)
+  - [X] Stitch is source for arrangement, DESIGN.md tokens only for grid/margins (mobile 4-col/1rem, tablet 8-col/2rem, desktop 12-col/max 1120px centered/3rem); if Stitch violates tokens, DESIGN.md wins
+  - [X] Tablet has no Stitch source: keep mobile stacking + DESIGN.md indications for tablet, explicit exceptions only
+  - [X] CSS: base styles with no query = mobile, then `@container app (min-width: 48rem)` tablet, then `@container app (min-width: 64rem)` desktop against the single named `app` container in `App.tsx`; no `max-width`, no desktop-first overrides
+  - [X] Desktop guarded against rotation: desktop rules additionally require `@media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1)` so rotated phones (wide but short) keep tablet rules
+  - [X] Navbar height token `--navbar-h`
+  - [X] Short viewports (`@media (max-height: 37.5rem)`, any screen): banner image capped at `calc(50svh - var(--navbar-h))` with `cover` crop; SearchBar vertically centered
 
 # Acceptance
 

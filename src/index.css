@@ -39,6 +39,8 @@
   /* DESIGN.md — layout tokens (mobile-first) */
   --page-margin: 1rem;
   --page-max: 1120px;
+  /* Sticky navbar height (mirrors Navbar .inner min-height) */
+  --navbar-h: 4rem;
 }
 
 *,
@@ -85,33 +87,43 @@ img {
   outline-offset: 2px;
 }
 
-/* Webapp-wide page shell: mobile 4-col / 1rem margin (mobile-first) */
+/* Named app container: layout responds to component width, not viewport.
+   This keeps rotated phones (wide but short) from jumping breakpoints. */
+.app-container {
+  container-name: app;
+  container-type: inline-size;
+  display: block;
+  min-inline-size: 0;
+}
 .page-shell {
   margin-inline: var(--page-margin);
   padding-block: 0 var(--space-xl);
+  font-size: 15px;
+  line-height: 24px;
 }
 
-/* Tablet 8-col / 2rem margin */
-@media (min-width: 768px) {
-  :root {
+/* Tablet 8-col / 2rem margin — container width, not viewport */
+@container app (min-width: 48rem) {
+  .page-shell {
     --page-margin: 2rem;
-  }
-
-  body {
+    /* Keep in sync with --navbar-h on Navbar .bar */
+    --navbar-h: 4.5rem;
+    margin-inline: var(--page-margin);
     font-size: 18px;
     line-height: 28px;
   }
 }
 
-/* Desktop 12-col, max 1120px centered / 3rem margin */
-@media (min-width: 1024px) {
-  :root {
-    --page-margin: 3rem;
-  }
-
-  .page-shell {
-    max-width: var(--page-max);
-    margin-inline: auto;
-    padding-inline: var(--page-margin);
+/* Desktop 12-col, max 1120px centered / 3rem margin.
+   Height + aspect guard: rotated phones are wide but short
+   (e.g. 844x390, aspect ~2.16), so they keep tablet rules. */
+@container app (min-width: 64rem) {
+  @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
+    .page-shell {
+      --page-margin: 3rem;
+      max-width: var(--page-max);
+      margin-inline: auto;
+      padding-inline: var(--page-margin);
+    }
   }
 }
