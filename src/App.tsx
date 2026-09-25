@@ -1,15 +1,15 @@
+import styles from "./App.module.css";
 import { Banner } from "./components/Banner/Banner.tsx";
 import { Explanation } from "./components/Explanation/Explanation.tsx";
 import { Navbar } from "./components/Navbar/Navbar.tsx";
 import { SearchBar } from "./components/SearchBar/SearchBar.tsx";
-import "./app.css";
 
 export function App() {
   return (
-    <div className="app-container">
+    <div className={styles.appContainer}>
       <Navbar />
-      <main className="page-shell stack">
-        <section className="call-to-action" aria-label="kanji meaning search bar">
+      <main className={styles.pageContent}>
+        <section className={styles.callToAction} aria-label="kanji meaning search bar">
           <Banner />
           <SearchBar />
         </section>

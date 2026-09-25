@@ -21,13 +21,14 @@ This document outlines the architectural rules, security constraints, and coding
 - Use best model: premium for complex tasks, mid-tier for simple tasks, docs or lookups
 - Tool call cap: stop + explain after 5 tools with no progress
 - Never use external sources (`<link>`, external CDN, dependencies) not already available in project
+- Never stage changes or commit unless explicitely told to
 
 ### TESTING
 
 - Use available test tools
 - Always test, never assume work
 - If no test tools, ask user if skip
-- `npm run build` and `npm run lint` must pass
+- `npm run build` and `npm run lint` and `npm run format` must pass
 
 ### DESIGN
 
