@@ -8,6 +8,12 @@
 
 For complete details on the architecture, tech stack, security constraints, and coding guidelines, please refer to [AGENTS.md](./AGENTS.md).
 
+### Recommended agents settings
+
+- File `skills-lock.json` indicates recommended skill. I recommend finding them on [https://www.skills.sh/]
+- I recommend scanning and populating an agent memory using the archives specifications in `./docs/specs/archive`.
+  - Example of memory: `@pepk/mcp-memory-sqlite` NPM package
+
 ### Dev server
 
 #### Remote access
