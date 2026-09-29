@@ -19,9 +19,8 @@ export function Banner() {
         </div>
       </div>
       <div className={styles.introText}>
-        <h1 id="banner-heading" className={styles.pitch}>
-          Tanuki Kanji guides you to understand Kanji real meaning. No funny memorization tricks, real history. Ready to learn?
-        </h1>
+        <h1 id="banner-heading">Understand kanji through real history.</h1>
+        <p className={styles.pitch}>Tanuki Kanji guides you to understand Kanji real meaning. No funny memorization tricks, real history. Ready to learn?</p>
       </div>
     </section>
   );

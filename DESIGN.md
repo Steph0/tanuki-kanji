@@ -1,53 +1,19 @@
 ---
 name: Tanuki Kanji
 colors:
-  surface: '#f8f9ff'
-  surface-dim: '#d8dae1'
-  surface-bright: '#f8f9ff'
-  surface-container-lowest: '#ffffff'
-  surface-container-low: '#f2f3fa'
-  surface-container: '#ecedf5'
-  surface-container-high: '#e6e8ef'
-  surface-container-highest: '#e1e2e9'
-  on-surface: '#191c21'
-  on-surface-variant: '#414943'
-  inverse-surface: '#2e3036'
-  inverse-on-surface: '#eff0f7'
-  outline: '#717973'
-  outline-variant: '#c1c9c1'
-  surface-tint: '#3b6750'
-  primary: '#002b1a'
+  canvas: '#faf8f5'
+  surface: '#ffffff'
+  sunk: '#f3efea'
+  border: '#e6e0d6'
+  ink: '#22252a'
+  ink-soft: '#414943'
+  muted: '#717973'
+  primary: '#2d5a43'
+  primary-hover: '#3a7356'
+  secondary: '#8c5b3e'
+  secondary-tint: 'rgba(140, 91, 62, 0.1)'
+  tertiary: '#c83e2b'
   on-primary: '#ffffff'
-  primary-container: '#14422d'
-  on-primary-container: '#80ae93'
-  inverse-primary: '#a1d1b4'
-  secondary: '#835337'
-  on-secondary: '#ffffff'
-  secondary-container: '#febe9b'
-  on-secondary-container: '#794b2f'
-  tertiary: '#510300'
-  on-tertiary: '#ffffff'
-  tertiary-container: '#7a0600'
-  on-tertiary-container: '#ff7e69'
-  error: '#ba1a1a'
-  on-error: '#ffffff'
-  error-container: '#ffdad6'
-  on-error-container: '#93000a'
-  primary-fixed: '#bdeed0'
-  primary-fixed-dim: '#a1d1b4'
-  on-primary-fixed: '#002112'
-  on-primary-fixed-variant: '#224f39'
-  secondary-fixed: '#ffdbc9'
-  secondary-fixed-dim: '#f8b996'
-  on-secondary-fixed: '#331200'
-  on-secondary-fixed-variant: '#673c22'
-  tertiary-fixed: '#ffdad4'
-  tertiary-fixed-dim: '#ffb4a7'
-  on-tertiary-fixed: '#400200'
-  on-tertiary-fixed-variant: '#8c1709'
-  background: '#f8f9ff'
-  on-background: '#191c21'
-  surface-variant: '#e1e2e9'
 typography:
   display-kanji-lg:
     fontFamily: Noto Sans JP
@@ -63,15 +29,9 @@ typography:
     letterSpacing: 0px
   headline-xl:
     fontFamily: Epilogue
-    fontSize: 36px
+    fontSize: 20px
     fontWeight: '700'
-    lineHeight: 44px
-    letterSpacing: -0.02em
-  headline-xl-mobile:
-    fontFamily: Epilogue
-    fontSize: 28px
-    fontWeight: '700'
-    lineHeight: 36px
+    lineHeight: 28px
     letterSpacing: -0.01em
   headline-lg:
     fontFamily: Epilogue
@@ -81,9 +41,15 @@ typography:
     letterSpacing: -0.01em
   headline-md:
     fontFamily: Epilogue
-    fontSize: 20px
+    fontSize: 18px
     fontWeight: '600'
-    lineHeight: 28px
+    lineHeight: 26px
+    letterSpacing: 0em
+  headline-sm:
+    fontFamily: Epilogue
+    fontSize: 16px
+    fontWeight: '600'
+    lineHeight: 24px
     letterSpacing: 0em
   body-lg:
     fontFamily: Plus Jakarta Sans, Noto Sans JP, sans-serif
@@ -115,6 +81,12 @@ typography:
     fontWeight: '700'
     lineHeight: 14px
     letterSpacing: 0.08em
+  input-cta:
+    fontFamily: Noto Sans JP, Plus Jakarta Sans, sans-serif
+    fontSize: 18px
+    fontWeight: '400'
+    lineHeight: 28px
+    letterSpacing: 0em
 rounded:
   sm: 0.25rem
   DEFAULT: 0.5rem
@@ -175,6 +147,11 @@ The typographic hierarchy balances character clarity and etymological warmth:
 - **Plus Jakarta Sans (Body Text & Etymological Lore):** Delivers clean readability on mobile screens with authentic character rendering that reduces reading fatigue during long study sessions.
 - **Plus Jakarta Sans (Labels & Technical Annotations):** Employs precise, clean metrics for JLPT levels, stroke counters, radical classifications, and pronunciation pitch guides.
 - **Kanji Rendering Scale:** Kanji glyphs require dedicated, uncompressed visual height. Never compress Kanji line-height; prioritize generous vertical breathing space to preserve stroke terminal subtleties and radical balance.
+- **Uppercase Is Application, Not Token:** `label-md` and `label-sm` carry letter spacing only. Uppercase comes from `text-transform: uppercase` wherever the token is used — never treat the token itself as "the uppercase style", and never let uppercase alone carry meaning.
+- **Mobile Default, Desktop Override:** an unadorned token value is the mobile default. When a token steps up on larger screens, the 48rem media block reassigns the *same* variable — consumers never change. Today only `headline-xl` steps (18/26 base → 20/28 frontmatter spec, deliberately capped well under the navbar title size — brand and call-to-action lead, the hero supports); all other tokens keep one fixed size.
+- **Search Input (`input-cta`):** Same metrics as `body-lg` (18/28, 400 weight) with the Kanji-first stack (`Noto Sans JP, Plus Jakarta Sans, sans-serif`). Applies to the call-to-action search input — large enough to invite typing, light enough to stay body copy.
+- **Units:** Frontmatter lists px for readability; CSS consumes rem throughout (px ÷ 16): 72/80→4.5/5rem, 48/56→3/3.5rem, 24/32→1.5/2rem, 20/28→1.25/1.75rem, 18/28→1.125/1.75rem, 18/26→1.125/1.625rem, 16/24→1/1.5rem, 15/24→0.9375/1.5rem, 13/20→0.8125/1.25rem, 12/16→0.75/1rem, 10/14→0.625/0.875rem.
+- **Japanese Weight:** Noto Sans JP loads in 400 and 600 so full-Japanese headings render at up to 600 weight without synthetic bolding.
 
 ## Layout & Spacing
 
@@ -238,7 +215,7 @@ Never introduce a new icon size without a design decision; when in doubt, reuse 
 
 ### Input Fields & Search Bars
 - **Style:** Background `#F3EFEA`, 1px solid `#E6E0D6`, text in Sumi Ink.
-- **Focus State:** Transitions background to `#FFFFFF`, border color shifts cleanly to `#2D5A43` (Matcha), accompanied by an ambient matcha glow (`0 0 0 3px rgba(45, 90, 67, 0.12)`). No sharp native outlines.
+- **Focus State:** Mouse focus transitions background to `#FFFFFF`, border to `#2D5A43` (Matcha), plus an ambient matcha glow (`0 0 0 3px rgba(45, 90, 67, 0.12)`). Keyboard focus instead shows a single rounded 2px `#2D5A43` outline (offset 2px) on the field wrapper — the glow may augment it, never replace it. One green line, never two; see `## Accessibility`.
 
 ### Selection Controls (Checkboxes & Radios)
 - **Checkboxes:** `rounded-md` (6px), 1.5px border `#8C5B3E`. When checked, fills with `#2D5A43` displaying a crisp white ink-check glyph.
@@ -246,3 +223,22 @@ Never introduce a new icon size without a design decision; when in doubt, reuse 
 
 ### Etymological Breakdown Lists
 - List rows sit on transparent bases separated by dotted dividers (`#E6E0D6`). Left column anchors the radical pictograph inside a square `#F3EFEA` tile; right column presents historical narrative in `body-md` typography.
+
+## Accessibility
+
+Checkable rules — "Maximum WCAG compliance" made operational. Every rule below binds code today, not aspiration.
+
+- **Contrast floors:** Reading copy targets AAA. Large text takes AA as its minimum. `muted` never carries body copy and never sits on `sunk`; it serves placeholders, counters, disabled states, and decorative marks only. Caption white (`surface`) appears only over the banner dark gradient.
+- **Focus is always visible:** `:focus-visible` draws a 2px `primary` outline with 2px offset. Glow may augment the ring, never replace it. Borderless inputs keep `outline: none` in globals; every input wrapper adds the shared `.field` class, which carries the single ring via `:has(input:focus-visible)` — never outline the input box itself, never two green lines.
+- **Targets:** Every interactive target measures at least 44×44px.
+- **Motion:** `prefers-reduced-motion` disables translation and animation — including the hover translations described under `## Components` once built. The codebase currently ships no motion, so the rule binds future work.
+- **Structure:** Heading order runs `h1 → h2 → h3` with no skips. `label-sm` never carries essential copy. Uppercase small labels keep their letter-spacing token for legibility and never carry meaning alone. Japanese spans and blocks require `lang="ja"` so the `:lang(ja)` reset applies.
+
+## Agent usage
+
+This document is self-sufficient: frontmatter holds exact values, prose explains how to apply them. Follow it strictly; when any other output conflicts with it, this document wins. Never edit it during a feature task.
+
+- **Tokens are normative, prose is context:** frontmatter (`colors`, `typography`, `rounded`, `spacing`, `components`) defines exact values. Never hardcode colors, fonts, spacing, or radii outside tokens.
+- **Globals first:** webapp-wide variables and base styles live in `src/globals.css`. Component files (`src/components/*/*.module.css`, CSS Modules + native `var()`) only consume tokens via `var(--...)`. No per-component token redefinition.
+- **Apply the standing patterns:** mobile-first base styles with desktop as variation; stepped tokens reassign the *same* variable; `:lang(ja)` on Japanese text; `.field` on every input wrapper; contrast and focus rules from `## Accessibility`.
+- **Validate every change:** frontmatter keys mirror `--var` 1:1 with no orphans either direction, and `npm run build` + `npm run lint` + `npm run format` pass. This document itself stays valid per the specification at [https://github.com/google-labs-code/design.md/blob/main/docs/spec.md].

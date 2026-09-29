@@ -4,6 +4,7 @@
 @import "@fontsource/plus-jakarta-sans/600.css";
 @import "@fontsource/plus-jakarta-sans/700.css";
 @import "@fontsource/noto-sans-jp/400.css";
+@import "@fontsource/noto-sans-jp/600.css";
 
 :root {
   /* DESIGN.md — washi canvas + tonal paper layering */
@@ -19,11 +20,62 @@
   --color-secondary: #8c5b3e;
   --color-secondary-tint: rgba(140, 91, 62, 0.1);
   --color-tertiary: #c83e2b;
+  --color-on-primary: #ffffff;
 
   /* DESIGN.md — typography stacks */
   --font-head: "Epilogue", "Plus Jakarta Sans", "Noto Sans JP", sans-serif;
   --font-body: "Plus Jakarta Sans", "Noto Sans JP", sans-serif;
   --font-kanji: "Noto Sans JP", "Plus Jakarta Sans", sans-serif;
+
+  /* DESIGN.md — text tokens (*/
+  --text-display-kanji-lg-weight: 400;
+  --text-display-kanji-lg-size: 4.5rem;
+  --text-display-kanji-lg-leading: 5rem;
+  --text-display-kanji-lg-spacing: 0;
+  --text-display-kanji-sm-weight: 400;
+  --text-display-kanji-sm-size: 3rem;
+  --text-display-kanji-sm-leading: 3.5rem;
+  --text-display-kanji-sm-spacing: 0;
+  --text-headline-xl-weight: 700;
+  --text-headline-xl-size: 1.125rem;
+  --text-headline-xl-leading: 1.625rem;
+  --text-headline-xl-spacing: -0.01em;
+  --text-headline-lg-weight: 600;
+  --text-headline-lg-size: 1.5rem;
+  --text-headline-lg-leading: 2rem;
+  --text-headline-lg-spacing: -0.01em;
+  --text-headline-md-weight: 600;
+  --text-headline-md-size: 1.125rem;
+  --text-headline-md-leading: 1.625rem;
+  --text-headline-md-spacing: 0;
+  --text-headline-sm-weight: 600;
+  --text-headline-sm-size: 1rem;
+  --text-headline-sm-leading: 1.5rem;
+  --text-headline-sm-spacing: 0;
+  --text-body-lg-weight: 400;
+  --text-body-lg-size: 1.125rem;
+  --text-body-lg-leading: 1.75rem;
+  --text-body-lg-spacing: 0;
+  --text-body-md-weight: 400;
+  --text-body-md-size: 0.9375rem;
+  --text-body-md-leading: 1.5rem;
+  --text-body-md-spacing: 0.01em;
+  --text-body-sm-weight: 400;
+  --text-body-sm-size: 0.8125rem;
+  --text-body-sm-leading: 1.25rem;
+  --text-body-sm-spacing: 0.01em;
+  --text-label-md-weight: 600;
+  --text-label-md-size: 0.75rem;
+  --text-label-md-leading: 1rem;
+  --text-label-md-spacing: 0.05em;
+  --text-label-sm-weight: 700;
+  --text-label-sm-size: 0.625rem;
+  --text-label-sm-leading: 0.875rem;
+  --text-label-sm-spacing: 0.08em;
+  --text-input-cta-weight: 400;
+  --text-input-cta-size: 1.125rem;
+  --text-input-cta-leading: 1.75rem;
+  --text-input-cta-spacing: 0;
 
   /* DESIGN.md — spacing + shape */
   --space-xs: 0.25rem;
@@ -36,10 +88,10 @@
   --radius-xl: 1.5rem;
   --radius-full: 9999px;
 
-  /* DESIGN.md — layout tokens (mobile-first) */
+  /* DESIGN.md — layout tokens */
   --page-margin: 1rem;
   --page-max: 1120px;
-  /* Sticky navbar height (mirrors Navbar .navigationContent min-height) */
+  /* Sticky navbar height */
   --navbar-h: 4rem;
 
   /* Shared icon sizes (mirror src/constants/globals.ts PX consts) */
@@ -64,28 +116,125 @@ body {
   background-color: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 24px;
-  letter-spacing: 0.01em;
+  font-weight: var(--text-body-md-weight);
+  font-size: var(--text-body-md-size);
+  line-height: var(--text-body-md-leading);
+  letter-spacing: var(--text-body-md-spacing);
   -webkit-font-smoothing: antialiased;
 }
 
-h1,
-h2,
-h3 {
-  font-family: var(--font-head);
+h1 {
   margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-head);
+  font-weight: var(--text-headline-xl-weight);
+  font-size: var(--text-headline-xl-size);
+  line-height: var(--text-headline-xl-leading);
+  letter-spacing: var(--text-headline-xl-spacing);
+}
+
+h2 {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-head);
+  font-weight: var(--text-headline-md-weight);
+  font-size: var(--text-headline-md-size);
+  line-height: var(--text-headline-md-leading);
+  letter-spacing: var(--text-headline-md-spacing);
+}
+
+h3 {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-head);
+  font-weight: var(--text-headline-sm-weight);
+  font-size: var(--text-headline-sm-size);
+  line-height: var(--text-headline-sm-leading);
+  letter-spacing: var(--text-headline-sm-spacing);
 }
 
 p {
   margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-weight: var(--text-body-md-weight);
+  font-size: var(--text-body-md-size);
+  line-height: var(--text-body-md-leading);
+  letter-spacing: var(--text-body-md-spacing);
+}
+
+input {
+  color: var(--color-ink);
+  font-family: var(--font-kanji);
+  font-weight: var(--text-input-cta-weight);
+  font-size: var(--text-input-cta-size);
+  line-height: var(--text-input-cta-leading);
+  letter-spacing: var(--text-input-cta-spacing);
+}
+
+label {
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-weight: var(--text-label-md-weight);
+  font-size: var(--text-label-md-size);
+  line-height: var(--text-label-md-leading);
+  letter-spacing: var(--text-label-md-spacing);
+}
+
+/* Stepped for bigger screens */
+@media (min-width: 48rem) {
+  :root {
+    --text-headline-xl-size: 1.25rem;
+    --text-headline-xl-leading: 1.75rem;
+    --text-headline-xl-spacing: -0.01em;
+  }
+
+  body,
+  p {
+    font-weight: var(--text-body-lg-weight);
+    font-size: var(--text-body-lg-size);
+    line-height: var(--text-body-lg-leading);
+    letter-spacing: var(--text-body-lg-spacing);
+  }
+}
+
+/* Japanese text needs different text formatting rules */
+:lang(ja) {
+  letter-spacing: 0;
+  line-height: 1.75;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  font-weight: 400;
+}
+
+h1:lang(ja),
+h2:lang(ja),
+h3:lang(ja) {
+  font-family: var(--font-kanji);
+  font-weight: 600;
 }
 
 img {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+/* Focus pattern: the visible ring lives on the nearest rounded shape.
+   Borderless inputs keep outline:none here; their rounded container shows
+   the ring via :has(input:focus-visible). */
+input:focus-visible {
+  outline: none;
+}
+
+/* Shared rounded-field behavior (same look as the call-to-action field):
+   every text-input wrapper adds the `field` class and gets the single
+   keyboard focus ring free. Border stays neutral so the ring is the only
+   green line; mouse focus keeps the border+glow treatment from the field. */
+.field:has(input:focus-visible) {
+  border-color: var(--color-border);
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 :focus-visible {

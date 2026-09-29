@@ -33,10 +33,10 @@
 
 .title {
   font-family: var(--font-head);
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 28px;
-  letter-spacing: 0;
+  font-weight: var(--text-headline-lg-weight);
+  font-size: var(--text-headline-lg-size);
+  line-height: var(--text-headline-lg-leading);
+  letter-spacing: var(--text-headline-lg-spacing);
   color: var(--color-primary);
   white-space: nowrap;
   overflow: hidden;

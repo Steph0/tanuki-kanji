@@ -48,10 +48,10 @@
 
 .caption {
   font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 16px;
-  letter-spacing: 0.05em;
+  font-weight: var(--text-label-md-weight);
+  font-size: var(--text-label-md-size);
+  line-height: var(--text-label-md-leading);
+  letter-spacing: var(--text-label-md-spacing);
   color: var(--color-surface);
 }
 
@@ -64,10 +64,10 @@
 
 .pitch {
   font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 24px;
-  letter-spacing: 0.01em;
+  font-weight: var(--text-body-md-weight);
+  font-size: var(--text-body-md-size);
+  line-height: var(--text-body-md-leading);
+  letter-spacing: var(--text-body-md-spacing);
   color: var(--color-ink);
 }
 
@@ -75,14 +75,6 @@
 @media (max-height: 37.5rem) {
   .image {
     max-height: calc(50svh - var(--navbar-h));
-  }
-}
-
-/* Tablet: keep mobile stacking, pitch scales up per DESIGN.md body-lg */
-@container app (min-width: 48rem) {
-  .pitch {
-    font-size: 18px;
-    line-height: 28px;
   }
 }
 

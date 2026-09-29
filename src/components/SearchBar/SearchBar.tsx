@@ -14,7 +14,7 @@ export function SearchBar() {
           </label>
           <span className={styles.counter}>0 / 21 chars</span>
         </div>
-        <div className={styles.fieldRow}>
+        <div className={`${styles.fieldRow} field`}>
           <input id="kanji-input" className={styles.input} type="text" placeholder="e.g. 森 or 食べる" readOnly />
           {/* Static skeleton button: real button element for a11y, no handler yet */}
           <button type="button" className={styles.submitButton} aria-label="Submit search">

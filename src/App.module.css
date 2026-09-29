@@ -9,16 +9,12 @@
   flex-direction: column;
   margin-inline: var(--page-margin);
   padding-block: 0 var(--space-xl);
-  font-size: 15px;
-  line-height: 24px;
 }
 
 @container app (min-width: 48rem) {
   .pageContent {
     --page-margin: 2rem;
     margin-inline: var(--page-margin);
-    font-size: 18px;
-    line-height: 28px;
   }
 }
 

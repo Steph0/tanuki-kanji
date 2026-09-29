@@ -27,10 +27,10 @@
   align-items: center;
   gap: 0.25rem;
   font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 16px;
-  letter-spacing: 0.05em;
+  font-weight: var(--text-label-md-weight);
+  font-size: var(--text-label-md-size);
+  line-height: var(--text-label-md-leading);
+  letter-spacing: var(--text-label-md-spacing);
   color: var(--color-ink);
 }
 
@@ -41,11 +41,12 @@
 
 .counter {
   font-family: var(--font-body);
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 14px;
-  letter-spacing: 0.08em;
-  color: var(--color-ink-soft);
+  font-weight: var(--text-label-sm-weight);
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-leading);
+  letter-spacing: var(--text-label-sm-spacing);
+  text-transform: uppercase;
+  color: var(--color-muted);
   white-space: nowrap;
 }
 
@@ -67,9 +68,10 @@
   background: transparent;
   border: 0;
   font-family: var(--font-kanji);
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 28px;
+  font-weight: var(--text-input-cta-weight);
+  font-size: var(--text-input-cta-size);
+  line-height: var(--text-input-cta-leading);
+  letter-spacing: var(--text-input-cta-spacing);
   color: var(--color-ink);
   padding: 0.25rem 0.625rem;
 }
@@ -77,10 +79,6 @@
 .input::placeholder {
   color: var(--color-muted);
   font-weight: 400;
-}
-
-.input:focus-visible {
-  outline: none;
 }
 
 .fieldRow:focus-within {
@@ -93,8 +91,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   flex-shrink: 0;
   border: 0;
   border-radius: var(--radius-full);

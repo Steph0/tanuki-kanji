@@ -40,20 +40,20 @@
 
 .heading {
   font-family: var(--font-head);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 24px;
-  letter-spacing: 0;
+  font-weight: var(--text-headline-sm-weight);
+  font-size: var(--text-headline-sm-size);
+  line-height: var(--text-headline-sm-leading);
+  letter-spacing: var(--text-headline-sm-spacing);
   color: var(--color-ink);
   white-space: nowrap;
 }
 
 .tag {
   font-family: var(--font-body);
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 14px;
-  letter-spacing: 0.08em;
+  font-weight: var(--text-label-sm-weight);
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-leading);
+  letter-spacing: var(--text-label-sm-spacing);
   text-transform: uppercase;
   color: var(--color-ink-soft);
   white-space: nowrap;
@@ -110,20 +110,27 @@
 
 .itemTitle {
   font-family: var(--font-head);
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 24px;
-  letter-spacing: 0.01em;
+  font-weight: var(--text-headline-sm-weight);
+  font-size: var(--text-headline-sm-size);
+  line-height: var(--text-headline-sm-leading);
+  letter-spacing: var(--text-headline-sm-spacing);
   color: var(--color-ink);
 }
 
 .itemText {
   font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 20px;
-  letter-spacing: 0.01em;
-  color: var(--color-ink-soft);
+  font-weight: var(--text-body-sm-weight);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-leading);
+  letter-spacing: var(--text-body-sm-spacing);
+  color: var(--color-ink);
+}
+
+/* Very small screens: hide the decorative tag so the heading stays on one line */
+@media (max-width: 22.49rem) {
+  .tag {
+    display: none;
+  }
 }
 
 /* Tablet: two-up benefit row */
