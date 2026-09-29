@@ -10,7 +10,17 @@ For complete details on the architecture, tech stack, security constraints, and 
 
 ### Dev server
 
-<TODO>
+#### Remote access
+
+By default this project is configured to not allow remote access.
+However you can easily expose a local IP and DNS using this method :
+
+- Create a `.env.development` file in your repository (will be ignored by default) and two variables
+  - `VITE_ALLOWED_HOST_REMOTE_IP=a.b.c.d`
+  - `VITE_ALLOWED_HOST_REMOTE_DNS=your.dns`
+- then run the server using `npm run dev -- --host`
+
+This will limit your dev server exposure to those entrypoints.
 
 ### Testing
 
