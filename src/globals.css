@@ -220,17 +220,18 @@ img {
   height: auto;
 }
 
-/* Focus pattern: the visible ring lives on the nearest rounded shape.
-   Borderless inputs keep outline:none here; their rounded container shows
-   the ring via :has(input:focus-visible). */
+/* Rounded focus pattern on input */
 input:focus-visible {
   outline: none;
 }
 
-/* Shared rounded-field behavior (same look as the call-to-action field):
-   every text-input wrapper adds the `field` class and gets the single
-   keyboard focus ring free. Border stays neutral so the ring is the only
-   green line; mouse focus keeps the border+glow treatment from the field. */
+/* Rounded focus pattern on input */
+.field:focus-within {
+  border-color: var(--color-border);
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 .field:has(input:focus-visible) {
   border-color: var(--color-border);
   outline: 2px solid var(--color-primary);

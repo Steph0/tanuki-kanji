@@ -71,28 +71,32 @@
   color: var(--color-ink);
 }
 
-/* Short viewports (any rotated/small-height screen): cap the image*/
-@media (max-height: 37.5rem) {
+/* Wide screens */
+@media (min-width: 48rem) {
+  .visual {
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
   .image {
-    max-height: calc(50svh - var(--navbar-h));
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 220px;
+    aspect-ratio: auto;
+    object-fit: contain;
   }
 }
 
-@container app (min-width: 64rem) {
-  @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
-    .visual {
-      width: fit-content;
-      max-width: 100%;
-      margin-inline: auto;
-    }
-
-    .image {
-      width: auto;
-      max-width: 100%;
-      height: auto;
-      max-height: 220px;
-      aspect-ratio: auto;
-      object-fit: contain;
-    }
+/* Short viewports (rotated screen) */
+@media (max-height: 37.5rem) {
+  .image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    max-height: calc(50vh - var(--navbar-h));
+    /* biome-ignore lint/suspicious/noDuplicateProperties: svh fallback for old browsers */
+    max-height: calc(50svh - var(--navbar-h));
   }
 }

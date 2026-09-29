@@ -98,7 +98,6 @@ spacing:
   gutter: 1rem
   gutter-desktop: 1.5rem
   margin: 1rem
-  margin-tablet: 2rem
   margin-desktop: 3rem
   space-xs: 0.25rem
   space-sm: 0.5rem
@@ -158,9 +157,12 @@ The typographic hierarchy balances character clarity and etymological warmth:
 The layout follows a disciplined **column-based fluid system** governed by strict maximum reading widths to preserve meditative visual pacing.
 
 ### Layout Scaling
+Two breakpoints only — mobile base, desktop variation at `48rem` (768px). Tablet is desktop: no tablet-specific rules.
+
 - **Mobile (<768px):** 4-column layout. Margin is locked to `1rem` (16px) to maximize screen area for intricate Kanji study cards while retaining outer breathing space.
-- **Tablet (768px–1023px):** 8-column layout. Canvas margins expand to `2rem` (32px), introducing side-by-side study panes (Kanji glyph alongside origin timeline).
-- **Desktop (≥1024px):** 12-column layout with a constrained maximum canvas width of `1120px`. The study card canvas remains tightly centered to eliminate sweeping head movement.
+- **Desktop (≥768px, tablet included):** 12-column layout with `3rem` (48px) margins and a constrained maximum canvas width of `1120px`. The study card canvas remains tightly centered to eliminate sweeping head movement.
+- **Banner cap (width-gated):** mobile keeps a fluid `16/9` cover crop; at `≥48rem` the banner becomes a small centered strip (`contain`, `220px` max-height). Desktop engages on width alone — never on height or aspect-ratio.
+- **Short viewports:** `@media (max-height: 37.5rem)` at any width restores the cover crop with a `vh`/`svh` fallback cap and loosens vertical centering. Declared after the desktop block so it always wins (rotated screens).
 
 ### Vertical Rhythm
 A base unit of `0.5rem` (8px) governs component padding and stack margins. Component internals utilize `space-md` (16px) for compact widgets and `space-xl` (40px) between distinct study units to preserve tranquility.

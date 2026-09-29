@@ -60,12 +60,11 @@
   height: var(--icon-md);
 }
 
-@container app (min-width: 64rem) {
-  @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
-    .navigationContent {
-      max-width: var(--page-max);
-      margin-inline: auto;
-      padding-inline: 3rem;
-    }
+/* Wide screens */
+@media (min-width: 48rem) {
+  .navigationContent {
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: 3rem;
   }
 }

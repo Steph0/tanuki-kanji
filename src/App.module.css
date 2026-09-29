@@ -1,6 +1,4 @@
 .appContainer {
-  container-name: app;
-  container-type: inline-size;
   display: block;
   min-inline-size: 0;
 }
@@ -11,21 +9,13 @@
   padding-block: 0 var(--space-xl);
 }
 
-@container app (min-width: 48rem) {
+/* Desktop screens */
+@media (min-width: 48rem) {
   .pageContent {
-    --page-margin: 2rem;
-    margin-inline: var(--page-margin);
-  }
-}
-
-@container app (min-width: 64rem) {
-  @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
-    .pageContent {
-      --page-margin: 3rem;
-      max-width: var(--page-max);
-      margin-inline: auto;
-      padding-inline: var(--page-margin);
-    }
+    --page-margin: 3rem;
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--page-margin);
   }
 }
 
@@ -35,9 +25,11 @@
   min-inline-size: 0;
 }
 
-/* Short viewports (any rotated/small-height screen): call-to-action priority */
+/* Short viewports (rotated screen) */
 @media (max-height: 37.5rem) {
   .callToAction {
+    min-height: calc(100vh - var(--navbar-h) - var(--space-md));
+    /* biome-ignore lint/suspicious/noDuplicateProperties: svh fallback for old browsers */
     min-height: calc(100svh - var(--navbar-h) - var(--space-md));
     justify-content: center;
   }

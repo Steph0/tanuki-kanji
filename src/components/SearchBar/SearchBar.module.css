@@ -106,18 +106,13 @@
   filter: brightness(0) invert(1);
 }
 
-/* Tablet: roomier card */
-@container app (min-width: 48rem) {
+/* Desktop screens */
+@media (min-width: 48rem) {
   .card {
     padding: var(--space-lg);
   }
-}
 
-/* Desktop: no further change, inherits centered shell — guarded for rotation */
-@container app (min-width: 64rem) {
-  @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
-    .search {
-      margin-top: var(--space-xl);
-    }
+  .search {
+    margin-top: var(--space-xl);
   }
 }

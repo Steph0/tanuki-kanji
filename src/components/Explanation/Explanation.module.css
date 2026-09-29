@@ -126,15 +126,15 @@
   color: var(--color-ink);
 }
 
-/* Very small screens: hide the decorative tag so the heading stays on one line */
+/* Very small screens */
 @media (max-width: 22.49rem) {
   .tag {
     display: none;
   }
 }
 
-/* Tablet: two-up benefit row */
-@container app (min-width: 48rem) {
+/* Desktop screens */
+@media (min-width: 48rem) {
   .card {
     padding: var(--space-lg);
   }
@@ -146,13 +146,8 @@
   .item {
     flex: 1;
   }
-}
 
-/* Desktop: inherits centered shell — guarded for rotation */
-@container app (min-width: 64rem) {
-  @media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1) {
-    .explanation {
-      margin-top: var(--space-xl);
-    }
+  .explanation {
+    margin-top: var(--space-xl);
   }
 }
