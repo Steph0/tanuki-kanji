@@ -75,6 +75,7 @@ pnpm-debug.log*
 # ==========================================
 # Playwright & Testing Outputs
 # ==========================================
+.vitest/
 test-results/
 playwright-report/
 blob-report/

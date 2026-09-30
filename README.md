@@ -13,6 +13,7 @@ For complete details on the architecture, tech stack, security constraints, and 
 - File `skills-lock.json` indicates recommended skill. I recommend finding them on [https://www.skills.sh/]
 - I recommend scanning and populating an agent memory using the archives specifications in `./docs/specs/archive`.
   - Example of memory: `@pepk/mcp-memory-sqlite` NPM package
+- Since the tests are using Playwright, I recommend adding the Playwright MCP server in your agent config to help your coding agent during tasks.
 
 ### Dev server
 
@@ -30,7 +31,13 @@ This will limit your dev server exposure to those entrypoints.
 
 ### Testing
 
-<TODO>
+Integration tests run in real Chromium via Vitest browser mode (`npm run test`).
+
+One-time local setup:
+
+```sh
+npx playwright install chromium
+```
 
 ## License
 
