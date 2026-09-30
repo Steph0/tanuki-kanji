@@ -7,7 +7,7 @@ colors:
   border: '#e6e0d6'
   ink: '#22252a'
   ink-soft: '#414943'
-  muted: '#717973'
+  muted: '#626964'
   primary: '#2d5a43'
   primary-hover: '#3a7356'
   secondary: '#8c5b3e'

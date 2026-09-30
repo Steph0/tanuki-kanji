@@ -71,7 +71,7 @@ Goals are:
   - [X] Renders single `banner`, single `main`, single level-1 heading.
   - [X] Order contract: `navigation` before `banner` illustration before `textbox` before `explanation` region (assert via document order with `compareDocumentPosition`, not pixel positions).
   - [X] Desktop + rotated + axe checks (App level only, no per-leaf axe): desktop guard at `1280x800` (width-only `≥48rem` engagement) asserting `pageContent` computed `max-width` is `1120px` and centered plus the banner `contain` / `220px` cap; rotated guard at `844x390` asserting the short-viewport override restores the cover crop; then 3 `axe-core` checks on the composed `App` (mobile, rotated, desktop).
-  - [ ] Gate — full `npm run test` green (Tasks 3–7) + `npm run build` + `npm run lint` + `npm run format` green.
+  - [X] Gate — full `npm run test` green (Tasks 3–7) + `npm run build` + `npm run lint` + `npm run format` green.
 
 # Acceptance
 
