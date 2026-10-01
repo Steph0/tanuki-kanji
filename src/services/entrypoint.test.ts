@@ -11,7 +11,7 @@ describe("runTanukiKanjiLesson", () => {
   });
 
   test("resolves the static lesson text after ~1s", async () => {
-    const pending = runTanukiKanjiLesson("some input");
+    const pending = runTanukiKanjiLesson("some kanji");
     const assertion = expect(pending).resolves.toBe("kanji lesson");
     await vi.advanceTimersByTimeAsync(1000);
     await assertion;

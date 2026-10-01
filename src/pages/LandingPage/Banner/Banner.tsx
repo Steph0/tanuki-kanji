@@ -1,9 +1,9 @@
 import storiesIcon from "@material-symbols/svg-400/outlined/auto_stories.svg";
-import banner400 from "../../assets/banner/landing_page_banner-400.png";
-import banner400Webp from "../../assets/banner/landing_page_banner-400.webp";
-import banner800 from "../../assets/banner/landing_page_banner-800.png";
-import banner800Webp from "../../assets/banner/landing_page_banner-800.webp";
-import { ICON_SM_PX } from "../../constants/globals";
+import banner400 from "../../../assets/banner/landing_page_banner-400.png";
+import banner400Webp from "../../../assets/banner/landing_page_banner-400.webp";
+import banner800 from "../../../assets/banner/landing_page_banner-800.png";
+import banner800Webp from "../../../assets/banner/landing_page_banner-800.webp";
+import { ICON_SM_PX } from "../../../constants/globals";
 import styles from "./Banner.module.css";
 
 const ILLUSTRATION_W = 400;

@@ -39,42 +39,41 @@ Flow rules:
         `globalThis.setTimeout` + static `"kanji lesson"` text).
   - [x] Test with the code: `src/services/entrypoint.test.ts` (`*.test.ts` = pure
         logic) with fake timers (`vi.useFakeTimers()` + `advanceTimersByTime`,
-        no real 1s wait): resolves `"kanji lesson"` after advancing 1s, still
-        pending before that.
+        no real 1s wait): resolves `"kanji lesson"` after advancing 1s.
   - [x] Gate — run the testing loop.
   - [ ] Note — `App` state/props land in their first consumer task (Tasks 2–4),
         not here: `noUnusedLocals` is on, so every task must keep the loop green.
 
-- [ ] Task 2 — `preact-iso` router wiring
-  - [ ]  `npm install preact-iso --save` (authorized exception to install this package); `App` wraps tree in `LocationProvider`
+- [x] Task 2 — `preact-iso` router wiring
+  - [x]  `npm install preact-iso --save` (authorized exception to install this package); `App` wraps tree in `LocationProvider`
         + `Router` with routes `/`, `/loading`, `/result` and `default` 404 to `/`.
         `/loading` and `/result` render temporary placeholders until next spec tasks
         replace them with the real pages.
-  - [ ] Navigation via `useLocation().route(url, replace?)`: submit uses push to
+  - [x] Navigation via `useLocation().route(url, replace?)`: submit uses push to
         `/loading`; guards and post-engine nav use `replace` (no `/loading` loop
         on Back). Move focus to `main` + reset scroll on route change.
-  - [ ] Guards: when `input`/`result` state is `null`, `/loading`/`/result` to
-        `replace("/")`. `App` owns the `input`/`result` state here
+  - [x] Guards: when `kanjiUserInput`/`tanukiKanjiLessonOutput` state is `null`, `/loading`/`/result` to
+        `replace("/")`. `App` owns the `kanjiUserInput`/`tanukiKanjiLessonOutput` state here
         (`useState<string | null>`, in-memory only, read by the guards;
         setters get wired in Tasks 3–4).
-  - [ ] Only `App` calls `route()`; pages stay router-free and receive callbacks
+  - [x] Only `App` calls `route()`; pages stay router-free and receive callbacks
         via props (testable without a provider).
-  - [ ] Tests with the code: guard redirects at router
+  - [x] Tests with the code: guard redirects at router
         level — back/forward, direct `/loading`, direct `/result`, unknown path,
         all with `null` state to `/`; no history pollution (reset URL to `/`
         first in each test — browser-mode shares real `window.location`);
         update `src/App.test.tsx` for the router shell (discovery-order test
         renders at `/` after reset). Guard redirects are tested once here —
         Tasks 4–5 test page behavior with valid state only.
-  - [ ] Gate — run the testing loop.
+  - [x] Gate — run the testing loop.
 
 - [ ] Task 3 — Landing submit wiring
   - [ ] `SearchBar`: remove `readOnly`, editable input with internal draft
         `useState`, click-only submit calling `onSubmit(draft)` (no Enter
         binding), always enabled (empty allowed, no validation). Counter stays
         static (`0 / 21 chars`, untouched — full call-to-action review later).
-  - [ ] `App` submit handler: `setInput(text)` to `route("/loading")` (push) —
-        wires the `setInput` setter here.
+  - [ ] `App` submit handler: `setKanjiUserInput(text)` to `route("/loading")` (push) —
+        wires the `setKanjiUserInput` setter here.
   - [ ] Tests with the code: update `SearchBar.test.tsx` for the new props
         (existing prop-less renders break); keep label/placeholder,
         submit-button, counter, and focus-ring guard tests green; add
@@ -83,31 +82,33 @@ Flow rules:
   - [ ] Gate — run the testing loop.
 
 - [ ] Task 4 — Loading page
-  - [ ] New `LoadingPage({ input, engine, onDone })` in
+  - [ ] New `LoadingPage({ kanjiUserInput, engine, onDone })` in
         `src/components/LoadingPage/` (repo convention, colocated
         `LoadingPage.test.tsx`): `Navbar` + `"Loading..."` with
         `aria-live="polite"` + `aria-busy="true"`.
-  - [ ] `useEffect` on mount: run `engine(input)` once (guard ref against double
+  - [ ] `useEffect` on mount: run `engine(kanjiUserInput)` once (guard ref against double
         invoke, cancellation flag on unmount to ignore late resolve after Back),
-        success to `onDone(result)`, rejection to `onDone("error")`.
+        success to `onDone(tanukiKanjiLessonOutput)`, rejection to `onDone("error")`.
         Page is router-free: `App` gains the optional `engine` prop here
-        (default `runTanukiKanjiLesson`), and `App`'s `onDone` calls `setResult`
+        (default `runTanukiKanjiLesson`), and `App`'s `onDone` calls `setTanukiKanjiLessonOutput`
         then `route("/result", true)`.
   - [ ] Tests with the code (mock `TanukiKanjiEngine): `/loading` shows;
         `onDone` receives engine text on resolve, `"error"` on rejection
         (router-free, no provider needed); App-level test: resolve to stores
-        result and lands on `/result`.
+        lesson output and lands on `/result`.
   - [ ] Gate — run the testing loop.
 
 - [ ] Task 5 — Result page
-  - [ ] New `ResultPage({ result })` in `src/components/ResultPage/` (repo convention,
+  - [ ] New `ResultPage({ tanukiKanjiLessonOutput })` in `src/components/ResultPage/` (repo convention,
         colocated `ResultPage.test.tsx`): `Navbar` + output text only
         (`aria-live="polite"`).
   - [ ] Tests with the code: `/result` shows engine text; extend axe coverage to
         all three routes by rendering `App` at the URL with valid state
-        (`/` fresh, `/loading` with submitted input, `/result` with stored
-        result) and running `axe.run(document.body)` at each viewport
+        (`/` fresh, `/loading` with submitted kanji user input, `/result` with stored
+        lesson output) and running `axe.run(document.body)` at each viewport
         (mobile `390x844`, rotated `844x390`, desktop `1280x800`) — 9 scans.
+        At that point extract all scans to table-driven `src/App.axe.test.tsx`
+        (routes × viewports); `src/App.test.tsx` keeps structure/guards only.
   - [ ] Gate — run the testing loop.
 
 # Acceptance

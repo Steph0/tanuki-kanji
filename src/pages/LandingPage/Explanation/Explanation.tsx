@@ -1,7 +1,7 @@
 import bulbIcon from "@material-symbols/svg-400/outlined/lightbulb.svg";
 import mindIcon from "@material-symbols/svg-400/outlined/psychology_alt.svg";
 import leafIcon from "@material-symbols/svg-400/outlined/temp_preferences_eco.svg";
-import { ICON_MD_PX, ICON_SM_PX } from "../../constants/globals";
+import { ICON_MD_PX, ICON_SM_PX } from "../../../constants/globals";
 import styles from "./Explanation.module.css";
 
 export function Explanation() {

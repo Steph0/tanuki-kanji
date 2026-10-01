@@ -18,19 +18,3 @@
     padding-inline: var(--page-margin);
   }
 }
-
-.callToAction {
-  display: flex;
-  flex-direction: column;
-  min-inline-size: 0;
-}
-
-/* Short viewports (rotated screen) */
-@media (max-height: 37.5rem) {
-  .callToAction {
-    min-height: calc(100vh - var(--navbar-h) - var(--space-md));
-    /* biome-ignore lint/suspicious/noDuplicateProperties: svh fallback for old browsers */
-    min-height: calc(100svh - var(--navbar-h) - var(--space-md));
-    justify-content: center;
-  }
-}

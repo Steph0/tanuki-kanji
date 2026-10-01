@@ -24,7 +24,8 @@
         "noGlobalEval": "error"
       },
       "style": {
-        "useImportType": "error"
+        "useImportType": "error",
+        "useBlockStatements": "error"
       },
       "correctness": {
         "noUnusedVariables": "error",

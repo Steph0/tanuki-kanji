@@ -1,6 +1,6 @@
 import forwardIcon from "@material-symbols/svg-400/outlined/arrow_forward.svg";
 import markerIcon from "@material-symbols/svg-400/outlined/ink_highlighter.svg";
-import { ICON_MD_PX, ICON_SM_PX } from "../../constants/globals";
+import { ICON_MD_PX, ICON_SM_PX } from "../../../constants/globals";
 import styles from "./SearchBar.module.css";
 
 export function SearchBar() {

@@ -1,1 +1,1 @@
-export type TanukiKanjiEngine = (input: string) => Promise<string>;
+export type TanukiKanjiEngine = (kanjiUserInput: string) => Promise<string>;
