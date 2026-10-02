@@ -10,6 +10,39 @@ type AppProps = {
   initialTanukiKanjiLessonOutput?: string | null;
 };
 
+export function App({ initialKanjiUserInput = null, initialTanukiKanjiLessonOutput = null }: AppProps = {}) {
+  return (
+    <LocationProvider>
+      <div className={styles.appContainer}>
+        <Navbar />
+        <main className={styles.pageContent} tabIndex={-1}>
+          <LessonFlow initialKanjiUserInput={initialKanjiUserInput} initialTanukiKanjiLessonOutput={initialTanukiKanjiLessonOutput} />
+        </main>
+      </div>
+    </LocationProvider>
+  );
+}
+
+function LessonFlow({ initialKanjiUserInput = null, initialTanukiKanjiLessonOutput = null }: AppProps) {
+  const { route } = useLocation();
+  const [kanjiUserInput, setKanjiUserInput] = useState<string | null>(initialKanjiUserInput);
+  const [tanukiKanjiLessonOutput] = useState<string | null>(initialTanukiKanjiLessonOutput);
+
+  function handleSubmit(kanjiInputValue: string) {
+    setKanjiUserInput(kanjiInputValue);
+    route("/loading");
+  }
+
+  return (
+    <Router>
+      <Route path="/" component={LandingPage} onSubmit={handleSubmit} />
+      <Route path="/loading" component={LoadingRoute} kanjiUserInput={kanjiUserInput} />
+      <Route path="/result" component={ResultRoute} tanukiKanjiLessonOutput={tanukiKanjiLessonOutput} />
+      <Route default component={PageNotFoundRoute} />
+    </Router>
+  );
+}
+
 function PageNotFoundRoute() {
   const { route } = useLocation();
 
@@ -49,26 +82,5 @@ function ResultRoute({ tanukiKanjiLessonOutput }: { tanukiKanjiLessonOutput: str
     <RouteGuard value={tanukiKanjiLessonOutput}>
       <p>{tanukiKanjiLessonOutput}</p>
     </RouteGuard>
-  );
-}
-
-export function App({ initialKanjiUserInput = null, initialTanukiKanjiLessonOutput = null }: AppProps = {}) {
-  const [kanjiUserInput] = useState<string | null>(initialKanjiUserInput);
-  const [tanukiKanjiLessonOutput] = useState<string | null>(initialTanukiKanjiLessonOutput);
-
-  return (
-    <LocationProvider>
-      <div className={styles.appContainer}>
-        <Navbar />
-        <main className={styles.pageContent} tabIndex={-1}>
-          <Router>
-            <Route path="/" component={LandingPage} />
-            <Route path="/loading" component={LoadingRoute} kanjiUserInput={kanjiUserInput} />
-            <Route path="/result" component={ResultRoute} tanukiKanjiLessonOutput={tanukiKanjiLessonOutput} />
-            <Route default component={PageNotFoundRoute} />
-          </Router>
-        </main>
-      </div>
-    </LocationProvider>
   );
 }

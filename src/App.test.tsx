@@ -75,6 +75,14 @@ describe("App", () => {
       const results = await axe.run(document.body);
       expect(results.violations).toEqual([]);
     });
+
+    test("typing and submitting takes the user to the loading screen", async () => {
+      render(<App />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      await page.getByRole("button", { name: "Submit search" }).click();
+      expect(await screen.findByText("Loading...")).toBeVisible();
+      expect(window.location.pathname).toBe("/loading");
+    });
   });
 
   describe("routing guards", () => {

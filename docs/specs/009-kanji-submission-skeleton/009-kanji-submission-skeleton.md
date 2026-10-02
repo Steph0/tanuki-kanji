@@ -51,7 +51,7 @@ Flow rules:
         replace them with the real pages.
   - [x] Navigation via `useLocation().route(url, replace?)`: submit uses push to
         `/loading`; guards and post-engine nav use `replace` (no `/loading` loop
-        on Back). Move focus to `main` + reset scroll on route change.
+        on Back).
   - [x] Guards: when `kanjiUserInput`/`tanukiKanjiLessonOutput` state is `null`, `/loading`/`/result` to
         `replace("/")`. `App` owns the `kanjiUserInput`/`tanukiKanjiLessonOutput` state here
         (`useState<string | null>`, in-memory only, read by the guards;
@@ -67,19 +67,20 @@ Flow rules:
         Tasks 4–5 test page behavior with valid state only.
   - [x] Gate — run the testing loop.
 
-- [ ] Task 3 — Landing submit wiring
-  - [ ] `SearchBar`: remove `readOnly`, editable input with internal draft
+- [x] Task 3 — Landing submit wiring
+  - [x] `SearchBar`: remove `readOnly`, editable input with internal draft
         `useState`, click-only submit calling `onSubmit(draft)` (no Enter
         binding), always enabled (empty allowed, no validation). Counter stays
         static (`0 / 21 chars`, untouched — full call-to-action review later).
-  - [ ] `App` submit handler: `setKanjiUserInput(text)` to `route("/loading")` (push) —
-        wires the `setKanjiUserInput` setter here.
-  - [ ] Tests with the code: update `SearchBar.test.tsx` for the new props
+  - [x] `App` submit handler: `LessonFlow` (inside `LocationProvider`, next to
+        the state) wires `setKanjiUserInput(text)` to `route("/loading")`
+        (push); `LandingPage({ onSubmit })` passes it to `SearchBar`.
+  - [x] Tests with the code: update `SearchBar.test.tsx` for the new props
         (existing prop-less renders break); keep label/placeholder,
         submit-button, counter, and focus-ring guard tests green; add
         `onSubmit`-receives-typed-text test plus App-level
         type + click submit to navigates to `/loading` test.
-  - [ ] Gate — run the testing loop.
+  - [x] Gate — run the testing loop.
 
 - [ ] Task 4 — Loading page
   - [ ] New `LoadingPage({ kanjiUserInput, engine, onDone })` in
