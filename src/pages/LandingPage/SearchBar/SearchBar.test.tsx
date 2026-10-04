@@ -41,9 +41,9 @@ describe("SearchBar", () => {
   test("sends the typed text when the submit action is clicked", async () => {
     const onSubmit = vi.fn();
     render(<SearchBar onSubmit={onSubmit} />);
-    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
     await page.getByRole("button", { name: "Submit search" }).click();
-    expect(onSubmit).toHaveBeenCalledWith("森");
+    expect(onSubmit).toHaveBeenCalledWith("狸");
   });
 
   test("allows submitting the field untouched", async () => {

@@ -72,8 +72,10 @@ Flow rules:
         `useState`, click-only submit calling `onSubmit(draft)` (no Enter
         binding), always enabled (empty allowed, no validation). Counter stays
         static (`0 / 21 chars`, untouched — full call-to-action review later).
-  - [x] `App` submit handler: `LessonFlow` (inside `LocationProvider`, next to
-        the state) wires `setKanjiUserInput(text)` to `route("/loading")`
+  - [x] `App` submit handler: `AppRouter` (formerly `LessonFlow`, now
+        `src/AppRouter.tsx` next to `App.tsx` with guards/routes; `App.tsx`
+        keeps shell + providers with `AppProps = { engine? }` only)
+        wires `setKanjiUserInput(text)` to `route("/loading")`
         (push); `LandingPage({ onSubmit })` passes it to `SearchBar`.
   - [x] Tests with the code: update `SearchBar.test.tsx` for the new props
         (existing prop-less renders break); keep label/placeholder,
@@ -82,22 +84,36 @@ Flow rules:
         type + click submit to navigates to `/loading` test.
   - [x] Gate — run the testing loop.
 
-- [ ] Task 4 — Loading page
-  - [ ] New `LoadingPage({ kanjiUserInput, engine, onDone })` in
-        `src/components/LoadingPage/` (repo convention, colocated
-        `LoadingPage.test.tsx`): `Navbar` + `"Loading..."` with
-        `aria-live="polite"` + `aria-busy="true"`.
-  - [ ] `useEffect` on mount: run `engine(kanjiUserInput)` once (guard ref against double
+- [x] Task 4 — Loading page
+  - [x] New `LoadingPage({ kanjiUserInput, engine, onDone })` in
+        `src/pages/LoadingPage/` (placement rule: page-exclusive; `Navbar`
+        lives in the `App` shell, colocated `LoadingPage.test.tsx`):
+        `"Loading..."` with `aria-live="polite"` + `aria-busy="true"`.
+  - [x] `useEffect` on mount: run `engine(kanjiUserInput)` once (guard ref against double
         invoke, cancellation flag on unmount to ignore late resolve after Back),
         success to `onDone(tanukiKanjiLessonOutput)`, rejection to `onDone("error")`.
         Page is router-free: `App` gains the optional `engine` prop here
         (default `runTanukiKanjiLesson`), and `App`'s `onDone` calls `setTanukiKanjiLessonOutput`
         then `route("/result", true)`.
-  - [ ] Tests with the code (mock `TanukiKanjiEngine): `/loading` shows;
+  - [x] Tests with the code (mock `TanukiKanjiEngine): `/loading` shows
+        (pending-engine App test keeps it deterministic);
         `onDone` receives engine text on resolve, `"error"` on rejection
-        (router-free, no provider needed); App-level test: resolve to stores
-        lesson output and lands on `/result`.
-  - [ ] Gate — run the testing loop.
+        (router-free, no provider needed); App-level tests: resolve stores
+        lesson output and lands on `/result`, rejection shows static `"error"`
+        on `/result`.
+  - [x] Gate — run the testing loop.
+
+  - [X] Post-Task 4 refactor — four chosen patterns:
+    - [X] Hook-controller: logic lives in hooks, component stays composition-only;
+          hook edge cases in `useLoadingPage.test.tsx` (`renderHook`), view
+          markup in `LoadingPage.test.tsx`.
+    - [X] Engine injection via context: `useTanukiKanjiEngine()` from
+          `src/hooks/useTanukiKanjiEngine.tsx`, provided once in `App`; flow
+          data stays explicit props.
+    - [X] Fail-fast context: hook throws outside
+          `<TanukiKanjiProvider>`, no silent defaults. Tests can provide their own mocked engines.
+    - [X] Separated router: `src/AppRouter.tsx` owns flow state, guards and
+          routes; `App.tsx` keeps shell + providers only.
 
 - [ ] Task 5 — Result page
   - [ ] New `ResultPage({ tanukiKanjiLessonOutput })` in `src/components/ResultPage/` (repo convention,

@@ -78,7 +78,7 @@ describe("App", () => {
 
     test("typing and submitting takes the user to the loading screen", async () => {
       render(<App />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
       await page.getByRole("button", { name: "Submit search" }).click();
       expect(await screen.findByText("Loading...")).toBeVisible();
       expect(window.location.pathname).toBe("/loading");
@@ -105,20 +105,6 @@ describe("App", () => {
       render(<App />);
       expect(await screen.findByRole("textbox", { name: "Enter your kanji" })).toBeVisible();
       expect(window.location.pathname).toBe("/");
-    });
-
-    test("shows the loading placeholder when kanji user input is stored", async () => {
-      window.history.pushState({}, "", "/loading");
-      render(<App initialKanjiUserInput="some kanji user input" />);
-      expect(await screen.findByText("Loading...")).toBeVisible();
-      expect(window.location.pathname).toBe("/loading");
-    });
-
-    test("shows the result placeholder when a lesson output is stored", async () => {
-      window.history.pushState({}, "", "/result");
-      render(<App initialTanukiKanjiLessonOutput="kanji lesson" />);
-      expect(await screen.findByText("kanji lesson")).toBeVisible();
-      expect(window.location.pathname).toBe("/result");
     });
 
     test("going back from a guarded page lands on / without a loop", async () => {
