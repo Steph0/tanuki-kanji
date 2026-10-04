@@ -1,0 +1,20 @@
+.badge {
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: 10rem;
+  margin-left: var(--space-sm);
+  margin-right: auto;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-tertiary);
+  border-radius: var(--radius-full);
+  color: var(--color-tertiary);
+  font-family: var(--font-body);
+  font-weight: var(--text-label-md-weight);
+  font-size: var(--text-label-md-size);
+  line-height: var(--text-label-md-leading);
+  letter-spacing: var(--text-label-md-spacing);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}

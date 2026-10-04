@@ -4,6 +4,7 @@ import logo72Webp from "../../assets/navbar/app_logo-72.webp";
 import logo144 from "../../assets/navbar/app_logo-144.png";
 import logo144Webp from "../../assets/navbar/app_logo-144.webp";
 import { ICON_MD_PX, ICON_XL_PX } from "../../constants/globals";
+import { DevModeBadge } from "./DevModeBadge/DevModeBadge.tsx";
 import styles from "./Navbar.module.css";
 
 const LOGO_SIZES = `${ICON_XL_PX}px`;
@@ -28,6 +29,7 @@ export function Navbar() {
           </picture>
           <span className={styles.title}>Tanuki Kanji</span>
         </div>
+        <DevModeBadge />
         <span className={styles.homeMark} aria-hidden="true">
           <img className={styles.homeIcon} src={syncIcon} alt="" width={ICON_MD_PX} height={ICON_MD_PX} />
         </span>

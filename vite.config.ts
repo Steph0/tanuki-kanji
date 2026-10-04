@@ -1,3 +1,4 @@
+import { basename } from "node:path";
 import preact from "@preact/preset-vite";
 import { playwright } from "@vitest/browser-playwright";
 import { loadEnv } from "vite";
@@ -9,6 +10,9 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [preact()],
+    define: {
+      __APP_ROOT_DIR_NAME__: JSON.stringify(basename(process.cwd())),
+    },
     server: {
       port: 5173,
       strictPort: false, // allows multiple dev servers
