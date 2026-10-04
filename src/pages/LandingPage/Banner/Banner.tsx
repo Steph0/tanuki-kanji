@@ -15,7 +15,11 @@ export function Banner() {
     <section className={styles.banner} aria-labelledby="banner-heading">
       <div className={styles.visual}>
         <picture>
-          <source type="image/webp" srcSet={`${banner400Webp} 400w, ${banner800Webp} 800w`} sizes={ILLUSTRATION_SIZES} />
+          <source
+            type="image/webp"
+            srcSet={`${banner400Webp} 400w, ${banner800Webp} 800w`}
+            sizes={ILLUSTRATION_SIZES}
+          />
           <img
             className={styles.image}
             src={banner400}
@@ -30,14 +34,24 @@ export function Banner() {
         </picture>
         <div className={styles.overlay}>
           <span className={styles.badge}>
-            <img className={styles.badgeIcon} src={storiesIcon} alt="" aria-hidden="true" width={ICON_SM_PX} height={ICON_SM_PX} />
+            <img
+              className={styles.badgeIcon}
+              src={storiesIcon}
+              alt=""
+              aria-hidden="true"
+              width={ICON_SM_PX}
+              height={ICON_SM_PX}
+            />
           </span>
           <p className={styles.caption}>Unlock the secrets behind every stroke</p>
         </div>
       </div>
       <div className={styles.introText}>
         <h1 id="banner-heading">Understand kanji through real history.</h1>
-        <p className={styles.pitch}>Tanuki Kanji guides you to understand Kanji real meaning. No funny memorization tricks, real history. Ready to learn?</p>
+        <p className={styles.pitch}>
+          Tanuki Kanji guides you to understand Kanji real meaning. No funny memorization tricks, real history. Ready to
+          learn?
+        </p>
       </div>
     </section>
   );

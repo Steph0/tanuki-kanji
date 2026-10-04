@@ -21,11 +21,17 @@ describe("Navbar", () => {
     expect(logo).toHaveAttribute("width", String(ICON_XL_PX));
     expect(logo).toHaveAttribute("height", String(ICON_XL_PX));
     expect(logo.getAttribute("src")).toContain("app_logo-72.png");
-    expect(logo).toHaveAttribute("srcset", "/src/assets/navbar/app_logo-72.png 72w, /src/assets/navbar/app_logo-144.png 144w");
+    expect(logo).toHaveAttribute(
+      "srcset",
+      "/src/assets/navbar/app_logo-72.png 72w, /src/assets/navbar/app_logo-144.png 144w",
+    );
 
     const source = logo.closest("picture")?.querySelector("source");
     expect(source?.getAttribute("type")).toBe("image/webp");
-    expect(source).toHaveAttribute("srcset", "/src/assets/navbar/app_logo-72.webp 72w, /src/assets/navbar/app_logo-144.webp 144w");
+    expect(source).toHaveAttribute(
+      "srcset",
+      "/src/assets/navbar/app_logo-72.webp 72w, /src/assets/navbar/app_logo-144.webp 144w",
+    );
     expect(screen.getByText("Tanuki Kanji")).toBeVisible();
   });
 });

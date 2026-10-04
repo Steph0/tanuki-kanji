@@ -15,7 +15,16 @@ export function Navbar() {
         <div className={styles.brand}>
           <picture className={styles.logoPicture}>
             <source type="image/webp" srcSet={`${logo72Webp} 72w, ${logo144Webp} 144w`} sizes={LOGO_SIZES} />
-            <img className={styles.logo} src={logo72} srcSet={`${logo72} 72w, ${logo144} 144w`} sizes={LOGO_SIZES} alt="Tanuki Kanji logo" width={ICON_XL_PX} height={ICON_XL_PX} decoding="async" />
+            <img
+              className={styles.logo}
+              src={logo72}
+              srcSet={`${logo72} 72w, ${logo144} 144w`}
+              sizes={LOGO_SIZES}
+              alt="Tanuki Kanji logo"
+              width={ICON_XL_PX}
+              height={ICON_XL_PX}
+              decoding="async"
+            />
           </picture>
           <span className={styles.title}>Tanuki Kanji</span>
         </div>

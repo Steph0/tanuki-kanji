@@ -61,10 +61,24 @@ function RouteGuard({ value, children }: { value: string | null; children: Compo
   return <>{children}</>;
 }
 
-function LoadingRoute({ kanjiUserInput, onDone }: { kanjiUserInput: string | null; onDone: (tanukiKanjiLessonOutput: string) => void }) {
-  return <RouteGuard value={kanjiUserInput}>{kanjiUserInput !== null && <LoadingPage kanjiUserInput={kanjiUserInput} onDone={onDone} />}</RouteGuard>;
+function LoadingRoute({
+  kanjiUserInput,
+  onDone,
+}: {
+  kanjiUserInput: string | null;
+  onDone: (tanukiKanjiLessonOutput: string) => void;
+}) {
+  return (
+    <RouteGuard value={kanjiUserInput}>
+      {kanjiUserInput !== null && <LoadingPage kanjiUserInput={kanjiUserInput} onDone={onDone} />}
+    </RouteGuard>
+  );
 }
 
 function ResultRoute({ tanukiKanjiLessonOutput }: { tanukiKanjiLessonOutput: string | null }) {
-  return <RouteGuard value={tanukiKanjiLessonOutput}>{tanukiKanjiLessonOutput !== null && <ResultPage tanukiKanjiLessonOutput={tanukiKanjiLessonOutput} />}</RouteGuard>;
+  return (
+    <RouteGuard value={tanukiKanjiLessonOutput}>
+      {tanukiKanjiLessonOutput !== null && <ResultPage tanukiKanjiLessonOutput={tanukiKanjiLessonOutput} />}
+    </RouteGuard>
+  );
 }

@@ -12,7 +12,14 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
       <div className={styles.card}>
         <div className={styles.fieldHead}>
           <label className={styles.label} htmlFor="kanji-input">
-            <img className={styles.labelIcon} src={markerIcon} alt="" aria-hidden="true" width={ICON_SM_PX} height={ICON_SM_PX} />
+            <img
+              className={styles.labelIcon}
+              src={markerIcon}
+              alt=""
+              aria-hidden="true"
+              width={ICON_SM_PX}
+              height={ICON_SM_PX}
+            />
             Enter your kanji
           </label>
           <span className={styles.counter}>0 / 21 chars</span>
@@ -36,7 +43,14 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
               onSubmit(kanjiInputValue);
             }}
           >
-            <img className={styles.submitIcon} src={forwardIcon} alt="" aria-hidden="true" width={ICON_MD_PX} height={ICON_MD_PX} />
+            <img
+              className={styles.submitIcon}
+              src={forwardIcon}
+              alt=""
+              aria-hidden="true"
+              width={ICON_MD_PX}
+              height={ICON_MD_PX}
+            />
           </button>
         </div>
       </div>

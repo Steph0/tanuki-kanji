@@ -11,7 +11,14 @@ export function Explanation() {
         <div className={styles.head}>
           <div className={styles.headLeft}>
             <span className={styles.headBadge}>
-              <img className={styles.icon} src={mindIcon} alt="" aria-hidden="true" width={ICON_MD_PX} height={ICON_MD_PX} />
+              <img
+                className={styles.icon}
+                src={mindIcon}
+                alt=""
+                aria-hidden="true"
+                width={ICON_MD_PX}
+                height={ICON_MD_PX}
+              />
             </span>
             <h2 id="etymology-heading" className={styles.heading}>
               Why Etymology Works
@@ -22,20 +29,38 @@ export function Explanation() {
         <ul className={styles.items}>
           <li className={styles.item}>
             <span className={styles.itemBadge}>
-              <img className={styles.icon} src={bulbIcon} alt="" aria-hidden="true" width={ICON_SM_PX} height={ICON_SM_PX} />
+              <img
+                className={styles.icon}
+                src={bulbIcon}
+                alt=""
+                aria-hidden="true"
+                width={ICON_SM_PX}
+                height={ICON_SM_PX}
+              />
             </span>
             <div className={styles.itemCopy}>
               <h3 className={styles.itemTitle}>Logical Radical Blocks</h3>
-              <p className={styles.itemText}>Stop treating complex characters like abstract lines. Each stroke is a meaningful story component.</p>
+              <p className={styles.itemText}>
+                Stop treating complex characters like abstract lines. Each stroke is a meaningful story component.
+              </p>
             </div>
           </li>
           <li className={styles.item}>
             <span className={styles.itemBadge}>
-              <img className={styles.icon} src={leafIcon} alt="" aria-hidden="true" width={ICON_SM_PX} height={ICON_SM_PX} />
+              <img
+                className={styles.icon}
+                src={leafIcon}
+                alt=""
+                aria-hidden="true"
+                width={ICON_SM_PX}
+                height={ICON_SM_PX}
+              />
             </span>
             <div className={styles.itemCopy}>
               <h3 className={styles.itemTitle}>Deep Cultural Folklore</h3>
-              <p className={styles.itemText}>Tanuki Kanji weaves historical tales, seasonal poems, and native idiom trivia into your daily review.</p>
+              <p className={styles.itemText}>
+                Tanuki Kanji weaves historical tales, seasonal poems, and native idiom trivia into your daily review.
+              </p>
             </div>
           </li>
         </ul>

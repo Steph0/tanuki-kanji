@@ -23,7 +23,13 @@ function renderAppRouter({
       </LocationProvider>
     );
   }
-  render(<AppRouter initialKanjiUserInput={initialKanjiUserInput} initialTanukiKanjiLessonOutput={initialTanukiKanjiLessonOutput} />, { wrapper: Wrapper });
+  render(
+    <AppRouter
+      initialKanjiUserInput={initialKanjiUserInput}
+      initialTanukiKanjiLessonOutput={initialTanukiKanjiLessonOutput}
+    />,
+    { wrapper: Wrapper },
+  );
 }
 
 describe("AppRouter", () => {

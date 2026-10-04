@@ -5,7 +5,15 @@ import { TanukiKanjiProvider } from "../../hooks/useTanukiKanjiEngine.tsx";
 import type { TanukiKanjiEngine } from "../../services/types.ts";
 import { useLoadingPage } from "./useLoadingPage.ts";
 
-function renderLoadingPageHook({ kanjiUserInput = "狸", engine, onDone }: { kanjiUserInput?: string; engine: TanukiKanjiEngine; onDone: (tanukiKanjiLessonOutput: string) => void }) {
+function renderLoadingPageHook({
+  kanjiUserInput = "狸",
+  engine,
+  onDone,
+}: {
+  kanjiUserInput?: string;
+  engine: TanukiKanjiEngine;
+  onDone: (tanukiKanjiLessonOutput: string) => void;
+}) {
   function Wrapper({ children }: { children: ComponentChildren }) {
     return <TanukiKanjiProvider engine={engine}>{children}</TanukiKanjiProvider>;
   }

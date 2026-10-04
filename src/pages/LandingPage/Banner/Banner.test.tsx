@@ -19,11 +19,17 @@ describe("Banner", () => {
     const illustration = screen.getByRole("img", { name: /tanuki calligraphing/i });
     expect(illustration).toBeVisible();
     expect(illustration.getAttribute("src")).toContain("landing_page_banner-400.png");
-    expect(illustration).toHaveAttribute("srcset", "/src/assets/banner/landing_page_banner-400.png 400w, /src/assets/banner/landing_page_banner-800.png 800w");
+    expect(illustration).toHaveAttribute(
+      "srcset",
+      "/src/assets/banner/landing_page_banner-400.png 400w, /src/assets/banner/landing_page_banner-800.png 800w",
+    );
 
     const source = illustration.closest("picture")?.querySelector("source");
     expect(source?.getAttribute("type")).toBe("image/webp");
-    expect(source).toHaveAttribute("srcset", "/src/assets/banner/landing_page_banner-400.webp 400w, /src/assets/banner/landing_page_banner-800.webp 800w");
+    expect(source).toHaveAttribute(
+      "srcset",
+      "/src/assets/banner/landing_page_banner-400.webp 400w, /src/assets/banner/landing_page_banner-800.webp 800w",
+    );
     expect(screen.getByText(/unlock the secrets/i)).toBeVisible();
   });
 
