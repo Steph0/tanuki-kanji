@@ -10,6 +10,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [preact()],
     server: {
+      port: 5173,
+      strictPort: false, // allows multiple dev servers
       host: false,
       allowedHosts: [env.VITE_ALLOWED_HOST_REMOTE_IP, env.VITE_ALLOWED_HOST_REMOTE_DNS],
     },
