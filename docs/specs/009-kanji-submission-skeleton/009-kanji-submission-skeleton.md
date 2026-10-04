@@ -115,18 +115,19 @@ Flow rules:
     - [X] Separated router: `src/AppRouter.tsx` owns flow state, guards and
           routes; `App.tsx` keeps shell + providers only.
 
-- [ ] Task 5 — Result page
-  - [ ] New `ResultPage({ tanukiKanjiLessonOutput })` in `src/components/ResultPage/` (repo convention,
-        colocated `ResultPage.test.tsx`): `Navbar` + output text only
-        (`aria-live="polite"`).
-  - [ ] Tests with the code: `/result` shows engine text; extend axe coverage to
-        all three routes by rendering `App` at the URL with valid state
-        (`/` fresh, `/loading` with submitted kanji user input, `/result` with stored
-        lesson output) and running `axe.run(document.body)` at each viewport
-        (mobile `390x844`, rotated `844x390`, desktop `1280x800`) — 9 scans.
-        At that point extract all scans to table-driven `src/App.axe.test.tsx`
-        (routes × viewports); `src/App.test.tsx` keeps structure/guards only.
-  - [ ] Gate — run the testing loop.
+- [x] Task 5 — Result page
+  - [x] New `ResultPage({ tanukiKanjiLessonOutput })` in `src/pages/ResultPage/`
+        (placement rule overrules the `src/components/` draft: page-exclusive,
+        colocated `ResultPage.test.tsx`): output text only (`aria-live="polite"`,
+        `Navbar` comes from the `App` shell); `ResultRoute` renders it behind
+        the `RouteGuard` with the same null-narrowing as `LoadingRoute`.
+  - [x] Tests with the code: `/result` shows engine text (covered at
+        `AppRouter` level via resolve/reject tests plus `ResultPage.test.tsx`);
+        axe coverage extracted to table-driven `src/App.axe.test.tsx`
+        (routes × viewports, UI-driven setup: submit for `/loading`, real
+        engine settle for `/result`) — 9 scans; `src/App.test.tsx` keeps
+        structure/guards only.
+  - [x] Gate — run the testing loop.
 
 # Acceptance
 

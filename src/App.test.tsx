@@ -1,5 +1,4 @@
 import { render, screen, waitFor } from "@testing-library/preact";
-import axe from "axe-core";
 import { beforeEach, describe, expect, test } from "vitest";
 import { page } from "vitest/browser";
 import styles from "./App.module.css";
@@ -53,27 +52,6 @@ describe("App", () => {
       // so it always wins: cover is restored over desktop contain.
       const illustration = screen.getByRole("img", { name: /tanuki calligraphing/i });
       expect(getComputedStyle(illustration).objectFit).toBe("cover");
-    });
-
-    test("has no accessibility violations on mobile", async () => {
-      await page.viewport(390, 844);
-      render(<App />);
-      const results = await axe.run(document.body);
-      expect(results.violations).toEqual([]);
-    });
-
-    test("has no accessibility violations when rotated", async () => {
-      await page.viewport(844, 390);
-      render(<App />);
-      const results = await axe.run(document.body);
-      expect(results.violations).toEqual([]);
-    });
-
-    test("has no accessibility violations on desktop", async () => {
-      await page.viewport(1280, 800);
-      render(<App />);
-      const results = await axe.run(document.body);
-      expect(results.violations).toEqual([]);
     });
 
     test("typing and submitting takes the user to the loading screen", async () => {

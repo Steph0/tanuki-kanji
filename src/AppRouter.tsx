@@ -3,6 +3,7 @@ import { useEffect, useState } from "preact/hooks";
 import { Route, Router, useLocation } from "preact-iso";
 import { LandingPage } from "./pages/LandingPage/LandingPage.tsx";
 import { LoadingPage } from "./pages/LoadingPage/LoadingPage.tsx";
+import { ResultPage } from "./pages/ResultPage/ResultPage.tsx";
 
 type AppRouterProps = {
   initialKanjiUserInput?: string | null;
@@ -65,9 +66,5 @@ function LoadingRoute({ kanjiUserInput, onDone }: { kanjiUserInput: string | nul
 }
 
 function ResultRoute({ tanukiKanjiLessonOutput }: { tanukiKanjiLessonOutput: string | null }) {
-  return (
-    <RouteGuard value={tanukiKanjiLessonOutput}>
-      <p>{tanukiKanjiLessonOutput}</p>
-    </RouteGuard>
-  );
+  return <RouteGuard value={tanukiKanjiLessonOutput}>{tanukiKanjiLessonOutput !== null && <ResultPage tanukiKanjiLessonOutput={tanukiKanjiLessonOutput} />}</RouteGuard>;
 }
