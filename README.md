@@ -15,6 +15,22 @@ For complete details on the architecture, tech stack, security constraints, and 
   - Example of memory: `@pepk/mcp-memory-sqlite` NPM package
 - Since the tests are using Playwright, I recommend adding the Playwright MCP server in your agent config to help your coding agent during tasks.
 
+#### (Re) building fresh agent memory
+
+Archived specs in `docs/specs/archive/` are ignored by LLM workspace indexing (`.ignore`) to avoid bloating agents' working memory. If you do not use local agent memory (like SQLite database) you can remove the `.ignore` instruction.
+If you wanna (re)populate your local agent memory, tell your agent to specifically re-scan the archives.
+
+Here is an example of prompt (might not use it "as-is", this is an example).
+
+```md
+# Prompt you can use
+Re-read all archived specs in docs/specs/archive/ and re-ingest their learnings into your project's memory database.
+
+1. Scan all `.md` files in `docs/specs/archive/`.
+2. For each file, extract key decisions and call `create_entities` / `add_observations` using the `Project:<repo-name>:Spec-<Name>` schema.
+3. Confirm memory restoration upon completion.
+```
+
 ### Dev server
 
 #### Remote access

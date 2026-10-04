@@ -85,3 +85,10 @@ Thumbs.db
 .vscode/
 .idea/
 *.log
+
+# ==========================================
+# Avoid context bloating
+# ==========================================
+
+# See README.md for indications about building an agent memory
+docs/specs/archive/
