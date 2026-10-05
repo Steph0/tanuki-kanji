@@ -1,11 +1,11 @@
 import forwardIcon from "@material-symbols/svg-400/outlined/arrow_forward.svg";
 import markerIcon from "@material-symbols/svg-400/outlined/ink_highlighter.svg";
-import { useState } from "preact/hooks";
 import { ICON_MD_PX, ICON_SM_PX } from "../../../constants/globals";
 import styles from "./SearchBar.module.css";
+import { useSearchBar } from "./useSearchBar.ts";
 
 export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) => void }) {
-  const [kanjiInputValue, setKanjiInputValue] = useState("");
+  const { handleKanjiInput, handleSearchSubmit, kanjiInputRef, kanjiInputValue } = useSearchBar(onSubmit);
 
   return (
     <section className={styles.search}>
@@ -24,25 +24,17 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
           </label>
           <span className={styles.counter}>0 / 21 chars</span>
         </div>
-        <div className={`${styles.fieldRow} field`}>
+        <form className={`${styles.fieldRow} field`} onSubmit={handleSearchSubmit}>
           <input
             id="kanji-input"
+            ref={kanjiInputRef}
             className={styles.input}
             type="text"
             placeholder="e.g. 森 or 食べる"
             value={kanjiInputValue}
-            onInput={(event) => {
-              setKanjiInputValue((event.target as HTMLInputElement).value);
-            }}
+            onInput={handleKanjiInput}
           />
-          <button
-            type="button"
-            className={styles.submitButton}
-            aria-label="Submit search"
-            onClick={() => {
-              onSubmit(kanjiInputValue);
-            }}
-          >
+          <button type="submit" className={styles.submitButton} aria-label="Submit search">
             <img
               className={styles.submitIcon}
               src={forwardIcon}
@@ -52,7 +44,7 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
               height={ICON_MD_PX}
             />
           </button>
-        </div>
+        </form>
       </div>
     </section>
   );

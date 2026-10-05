@@ -17,7 +17,7 @@ describe("SearchBar", () => {
     render(<SearchBar onSubmit={noop} />);
     const submit = screen.getByRole("button", { name: "Submit search" });
     expect(submit).toBeVisible();
-    expect(submit).toHaveAttribute("type", "button");
+    expect(submit).toHaveAttribute("type", "submit");
     expect(screen.getByText(/\/ 21 chars/)).toBeVisible();
   });
 
@@ -43,7 +43,33 @@ describe("SearchBar", () => {
     render(<SearchBar onSubmit={onSubmit} />);
     await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
     await page.getByRole("button", { name: "Submit search" }).click();
+    expect(onSubmit).toHaveBeenCalledTimes(1);
     expect(onSubmit).toHaveBeenCalledWith("狸");
+  });
+
+  test("sends the typed text when the form is submitted", async () => {
+    // requestSubmit drives the same onSubmit path as the Enter / mobile "go" key (native implicit submission)
+    const onSubmit = vi.fn();
+    render(<SearchBar onSubmit={onSubmit} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
+    const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+    input.closest("form")?.requestSubmit();
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith("狸");
+  });
+
+  test("ignores submits while composing Japanese text", async () => {
+    const onSubmit = vi.fn();
+    render(<SearchBar onSubmit={onSubmit} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("は");
+    const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+    input.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
+    input.closest("form")?.requestSubmit();
+    expect(onSubmit).not.toHaveBeenCalled();
+    input.dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
+    input.closest("form")?.requestSubmit();
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith("は");
   });
 
   test("allows submitting the field untouched", async () => {

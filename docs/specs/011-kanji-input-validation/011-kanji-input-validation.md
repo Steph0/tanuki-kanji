@@ -117,16 +117,19 @@ User-visible behavior for the landing call-to-action:
         `onDone("error")`.
   - [x] Gate — build + lint + format + single-file test, then full test.
 
-- [ ] Task 3 — Semantic form shell (structure first, no validation yet)
-  - [ ] Give mouse, keyboard, and mobile keyboards one single submit path, with
+- [x] Task 3 — SearchBar semantic form shell (structure first, no validation yet)
+  - [x] Give mouse, keyboard, and mobile keyboards one single submit path, with
         no double firing. Technical: `SearchBar.tsx` CTA row becomes `<form
         onSubmit={preventDefault + fire}>`, button `type="submit"`, button
         `onClick` removed. Behavior otherwise unchanged (raw value, no gates).
-  - [ ] Half-written text from the Japanese keyboard never submits. Technical:
-        Enter / "go" fires the same path, except while `isComposing`.
-  - [ ] Prove the path with tests: click fires once with the typed value; Enter
+  - [x] Half-written text from the Japanese keyboard never submits. Technical:
+        Enter / "go" fires the same path, except while `isComposing` (tracked
+        in a ref via native `compositionstart`/`compositionend` listeners —
+        Preact maps `onCompositionStart` to the never-firing
+        `"CompositionStart"`).
+  - [x] Prove the path with tests: click fires once with the typed value; Enter
         fires; composition Enter ignored; empty field behaves exactly as today.
-  - [ ] Gate — build + lint + format + single-file test, then full test.
+  - [x] Gate — build + lint + format + single-file test, then full test.
 
 - [ ] Task 4 — SearchBar validation logic (gates through the form path)
   - [ ] Step 1 — Sync status: the field always shows its current state — silent
