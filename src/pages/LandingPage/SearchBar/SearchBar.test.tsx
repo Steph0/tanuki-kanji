@@ -72,6 +72,34 @@ describe("SearchBar", () => {
     expect(onSubmit).toHaveBeenCalledWith("狸");
   });
 
+  test("freezes validation on half-composed text and settles on compositionend", async () => {
+    const onSubmit = vi.fn();
+    render(<SearchBar onSubmit={onSubmit} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+    expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
+    const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+    input.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森a");
+    expect(screen.queryByText("Only Kanji, hiragana and katakana characters are allowed")).toBeNull();
+    expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
+    input.dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
+    expect(await screen.findByText("Only Kanji, hiragana and katakana characters are allowed")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Submit search" })).toBeDisabled();
+  });
+
+  test("shows no message for intermediate text composed from empty", async () => {
+    const onSubmit = vi.fn();
+    render(<SearchBar onSubmit={onSubmit} />);
+    const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+    input.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("hello");
+    expect(screen.queryByText("Only Kanji, hiragana and katakana characters are allowed")).toBeNull();
+    expect(screen.queryByText("Enter at least one kanji.")).toBeNull();
+    expect(screen.getByRole("button", { name: "Submit search" })).toBeDisabled();
+    input.dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
+    expect(await screen.findByText("Only Kanji, hiragana and katakana characters are allowed")).toBeVisible();
+  });
+
   test("blocks the untouched field silently with a disabled submit", async () => {
     const onSubmit = vi.fn();
     render(<SearchBar onSubmit={onSubmit} />);

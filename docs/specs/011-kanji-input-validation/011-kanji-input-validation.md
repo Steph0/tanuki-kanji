@@ -139,7 +139,7 @@ User-visible behavior for the landing call-to-action:
         classifier); words live UI-side (SearchBar-local message constants,
         `EMPTY` → silent); status derived synchronously on each change; empty/invalid → `disabled`.
         Tests: each status renders its message/disabled state; empty silent.
-  - [ ] Step 2 — IME: half-composed Japanese text is never judged and never
+  - [x] Step 2 — IME: half-composed Japanese text is never judged and never
         flickers. Technical: `isComposing` skips validation, `compositionend`
         validates.
         Tests: composing shows no flicker; compositionend settles validity.

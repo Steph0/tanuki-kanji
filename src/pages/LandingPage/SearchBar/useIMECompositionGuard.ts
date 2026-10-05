@@ -1,8 +1,12 @@
 import type { RefObject } from "preact";
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 
 export function useIMECompositionGuard(kanjiInputRef: RefObject<HTMLInputElement>) {
-  const isComposingKanjiInput = useRef(false);
+  // Allows to synchronize immediate composition event state with keyboard submission
+  const submitBlockRef = useRef(false);
+
+  // The UI shows composition
+  const [isComposing, setIsComposing] = useState(false);
 
   // Native listeners: Preact 10 maps onCompositionStart to the never-firing
   // "CompositionStart" (preactjs/preact#3003, fixed in v11). Revisit on upgrade.
@@ -12,10 +16,12 @@ export function useIMECompositionGuard(kanjiInputRef: RefObject<HTMLInputElement
       return;
     }
     const startComposing = () => {
-      isComposingKanjiInput.current = true;
+      submitBlockRef.current = true;
+      setIsComposing(true);
     };
     const endComposing = () => {
-      isComposingKanjiInput.current = false;
+      submitBlockRef.current = false;
+      setIsComposing(false);
     };
 
     input.addEventListener("compositionstart", startComposing);
@@ -27,5 +33,5 @@ export function useIMECompositionGuard(kanjiInputRef: RefObject<HTMLInputElement
     };
   }, [kanjiInputRef]);
 
-  return isComposingKanjiInput;
+  return { isComposing, submitBlockRef };
 }
