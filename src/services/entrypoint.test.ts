@@ -16,4 +16,14 @@ describe("runTanukiKanjiLesson", () => {
     await vi.advanceTimersByTimeAsync(1000);
     await assertion;
   });
+
+  test("treats padded input like trimmed input", async () => {
+    const padded = runTanukiKanjiLesson(" 森 ");
+    const trimmed = runTanukiKanjiLesson("森");
+    const paddedAssertion = expect(padded).resolves.toBe("kanji lesson");
+    const trimmedAssertion = expect(trimmed).resolves.toBe("kanji lesson");
+    await vi.advanceTimersByTimeAsync(1000);
+    await paddedAssertion;
+    await trimmedAssertion;
+  });
 });
