@@ -30,6 +30,10 @@ This document outlines the architectural rules, security constraints, and coding
 - If no test tools, ask user if skip
 - `npm run build` and `npm run lint` and `npm run format` must pass
 
+### SPEC WRITING
+
+- Spec unit is `docs/specs/NNN-name/NNN-name.md`; follow the rules in `docs/specs/SPEC-SAMPLE.md`.
+
 ### DESIGN
 
 - `DESIGN.md` is the sole source of truth for styling and is self-sufficient — follow it strictly, including its `## Agent usage` and `## Accessibility` sections. If other output conflicts with it, `DESIGN.md` wins. Never edit it in feature tasks unless explicitly asked by the user.
