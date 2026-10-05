@@ -131,7 +131,7 @@ User-visible behavior for the landing call-to-action:
         fires; composition Enter ignored; empty field behaves exactly as today.
   - [x] Gate — build + lint + format + single-file test, then full test.
 
-- [ ] Task 4 — SearchBar validation logic (gates through the form path)
+- [x] Task 4 — SearchBar validation logic (gates through the form path)
   - [x] Step 1 — Sync status: the field always shows its current state — silent
         when empty, a charset message for foreign characters, a kanji message
         for kana-only, enabled when valid. Technical: the only classifier is
@@ -150,13 +150,14 @@ User-visible behavior for the landing call-to-action:
         value, invalid shows its message immediately (no `onSubmit`).
         Tests: valid fires `" 森 "` as `"森"`; invalid blocks click and Enter
         and shows the message; empty blocks silently.
-  - [ ] Step 4 — A11y: screen readers announce each state change politely and
-        label Japanese text correctly. Technical: `aria-invalid="true"` only on
-        char-error, `aria-describedby` only when a message is present, message
+  - [x] Step 4 — A11y: screen readers announce each state change politely and
+        label Japanese text correctly. Technical: `aria-invalid="true"` on any
+        error (every rejection is invalid per business rules; empty stays
+        silent), `aria-describedby` only when a message is present, message
         `<p>` with `aria-live="polite"` (no `role="alert"`), native `disabled`,
         `lang="ja"` on the `<input>`.
         Tests: attributes present/absent per state.
-  - [ ] Gate — build + lint + format + single-file test, then full test.
+  - [x] Gate — build + lint + format + single-file test, then full test.
 
 - [ ] Task 5 — Invalid styling (no layout shift, red wins, disabled look)
   - [ ] Make the invalid state unmistakable but calm: red field, red message in

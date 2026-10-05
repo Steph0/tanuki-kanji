@@ -37,9 +37,12 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
             ref={kanjiInputRef}
             className={styles.input}
             type="text"
+            lang="ja"
             placeholder="e.g. 森 or 食べる"
             value={kanjiInputValue}
             onInput={handleKanjiInput}
+            aria-invalid={kanjiInputMessage ? "true" : undefined}
+            aria-describedby={kanjiInputMessage ? "kanji-input-message" : undefined}
           />
           <button
             type="submit"
@@ -57,7 +60,11 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
             />
           </button>
         </form>
-        {kanjiInputMessage ? <p>{kanjiInputMessage}</p> : null}
+        {kanjiInputMessage ? (
+          <p id="kanji-input-message" aria-live="polite">
+            {kanjiInputMessage}
+          </p>
+        ) : null}
       </div>
     </section>
   );

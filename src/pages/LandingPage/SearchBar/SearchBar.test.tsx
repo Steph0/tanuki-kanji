@@ -175,4 +175,45 @@ describe("SearchBar", () => {
     expect(screen.queryByText("Only Kanji, hiragana and katakana characters are allowed")).toBeNull();
     expect(screen.queryByText("Enter at least one kanji.")).toBeNull();
   });
+
+  test("labels Japanese text with no error attributes when empty", () => {
+    render(<SearchBar onSubmit={noop} />);
+    const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+    expect(input).toHaveAttribute("lang", "ja");
+    expect(input).not.toHaveAttribute("aria-invalid");
+    expect(input).not.toHaveAttribute("aria-describedby");
+  });
+
+  test("marks foreign characters invalid and describes the polite message", async () => {
+    render(<SearchBar onSubmit={noop} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("hello");
+    const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+    expect(input).toHaveAttribute("lang", "ja");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    const describedBy = input.getAttribute("aria-describedby");
+    expect(describedBy).not.toBeNull();
+    const message = document.getElementById(describedBy as string);
+    expect(message).toHaveTextContent("Only Kanji, hiragana and katakana characters are allowed");
+    expect(message).toHaveAttribute("aria-live", "polite");
+    expect(message).not.toHaveAttribute("role");
+  });
+
+  test("marks kana-only input invalid and describes its message", async () => {
+    render(<SearchBar onSubmit={noop} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("ひらがな");
+    const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    const describedBy = input.getAttribute("aria-describedby");
+    expect(describedBy).not.toBeNull();
+    expect(document.getElementById(describedBy as string)).toHaveTextContent("Enter at least one kanji.");
+  });
+
+  test("clears error attributes for a valid kanji word", async () => {
+    render(<SearchBar onSubmit={noop} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+    const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+    expect(input).toHaveAttribute("lang", "ja");
+    expect(input).not.toHaveAttribute("aria-invalid");
+    expect(input).not.toHaveAttribute("aria-describedby");
+  });
 });
