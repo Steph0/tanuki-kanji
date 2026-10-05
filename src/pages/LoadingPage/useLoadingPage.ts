@@ -1,5 +1,6 @@
 import { useEffect } from "preact/hooks";
 import { useTanukiKanjiEngine } from "../../hooks/useTanukiKanjiEngine.tsx";
+import { InvalidKanjiInput } from "../../services/validate.ts";
 
 export function useLoadingPage(kanjiUserInput: string, onDone: (tanukiKanjiLessonOutput: string) => void) {
   const engine = useTanukiKanjiEngine();
@@ -14,10 +15,13 @@ export function useLoadingPage(kanjiUserInput: string, onDone: (tanukiKanjiLesso
           return;
         }
         onDone(tanukiKanjiLessonOutput);
-      } catch {
+      } catch (error) {
         if (cancelled) {
           console.warn("Kanji research got cancelled. Silently failing.");
           return;
+        }
+        if (error instanceof InvalidKanjiInput) {
+          console.warn("Invalid kanji input reached the lesson engine.");
         }
         onDone("error");
       }

@@ -1,8 +1,9 @@
 import { renderHook } from "@testing-library/preact";
 import type { ComponentChildren } from "preact";
-import { describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 import { TanukiKanjiProvider } from "../../hooks/useTanukiKanjiEngine.tsx";
 import type { TanukiKanjiEngine } from "../../services/types.ts";
+import { InvalidKanjiInput, KanjiInputStatus } from "../../services/validate.ts";
 import { useLoadingPage } from "./useLoadingPage.ts";
 
 function renderLoadingPageHook({
@@ -26,6 +27,10 @@ function renderLoadingPageHook({
 }
 
 describe("useLoadingPage", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   test("runs the engine once with the kanji user input and forwards the lesson text", async () => {
     const engine = vi.fn(async () => "kanji lesson");
     const onDone = vi.fn();
@@ -49,6 +54,20 @@ describe("useLoadingPage", () => {
       expect(onDone).toHaveBeenCalledWith("error");
     });
     expect(onDone).toHaveBeenCalledTimes(1);
+  });
+
+  test("logs invalid input reaching the lesson engine", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const onDone = vi.fn();
+    renderLoadingPageHook({
+      engine: () => Promise.reject(new InvalidKanjiInput(KanjiInputStatus.INVALID_CHARACTERS)),
+      onDone,
+    });
+
+    await vi.waitFor(() => {
+      expect(onDone).toHaveBeenCalledWith("error");
+    });
+    expect(warn).toHaveBeenCalledWith("Invalid kanji input reached the lesson engine.");
   });
 
   test("does not run the engine again on rerender", async () => {

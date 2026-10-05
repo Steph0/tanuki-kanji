@@ -56,39 +56,66 @@ User-visible behavior for the landing call-to-action:
         entrypoint with `" 森 "` resolves like `"森"`.
   - [x] Gate — build + lint + format + single-file test, then full test.
 
-- [ ] Task 2 — Validator + engine guard
-  - [ ] Accept only real Japanese single words that contain at least one kanji:
-        hiragana, katakana with long-vowel mark, kanji core plus `々`; archaic
-        marks, extensions, half-width katakana, and kana-only input are out.
-        Technical: `services/validate.ts` with `JAPANESE_WORD_PATTERN =
-        /^[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3005]+$/u`,
-        `KANJI_PATTERN = /[\u4E00-\u9FFF]/u` (`々` allowed but not counted as
-        kanji), `containsKanji` + `isValidKanjiInput(normalized:
-        NormalizedKanjiInput): boolean` (empty → `false`); static, idempotent,
-        pure, no throw. `InvalidKanjiInput` in `services/types.ts`: plain
-        `Error` subclass, `name` set, no extra fields.
-  - [ ] Rejected input never starts a lesson, even if the UI is bypassed.
-        Technical: `services/entrypoint.ts` becomes `normalize` → `validate`
-        (throw `InvalidKanjiInput("input validation failed")` on `false`) →
-        fake wait.
-  - [ ] A bypass is logged visibly instead of failing silently. Technical:
+- [x] Task 2 — Validator + engine guard
+  - [x] Only real Japanese single words get through: hiragana, katakana with
+        long-vowel mark, kanji core plus `々`; latin, numbers, symbols,
+        punctuation, and inner spaces are out. Technical:
+        `services/validate.ts` with `JAPANESE_WORD_PATTERN =
+        /^[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3005]+$/u` plus named
+        predicates (`isEmptyKanjiInput`, `hasOnlyAllowedCharacters`,
+        `hasExcludedIterationMarks`, `containsKanji`) composing the private
+        classifier — no inline regex or comparison in the decision.
+  - [x] The archaic iteration marks are rejected even though they hide inside
+        the kana blocks. Technical: `EXCLUDED_ITERATION_MARKS_PATTERN =
+        /[\u309D\u309E\u30FD\u30FE]/u` (`ゝ`/`ゞ`/`ヽ`/`ヾ` sit inside the kana
+        ranges, so ranges alone let them through); CJK extensions/compat and
+        half-width katakana never match the word pattern at all.
+  - [x] Kana-only input is rejected too, since this is a kanji lesson.
+        Technical: `KANJI_PATTERN = /[\u4E00-\u9FFF]/u` (`々` allowed but not
+        counted as kanji) behind `containsKanji`.
+  - [x] Every outcome has a code the UI and the error can share, with no
+        string literals scattered at comparison sites. Technical: statuses are
+        an `as const` object (`KanjiInputStatus.VALID`, …) doubling as the
+        union type — no `enum`. The engine carries codes only, never messages.
+  - [x] Callers get proof, not a string to re-check. Technical:
+        `safeParseKanjiInput` is the only classification the module exports —
+        Zod-style `KanjiInputParseResult` (`{ status: VALID, value:
+        ValidKanjiInput } | { status: error }`), the single sanctioned place
+        where the brand is bestowed — no `as` anywhere else. The UI (Task 4)
+        uses it too, never a second classifier. Static, idempotent, pure, no
+        throw.
+  - [x] The rejection itself carries the reason across the engine boundary.
+        Technical: `InvalidKanjiInput` in `services/validate.ts`, plain
+        `Error` subclass, `name` set, carrying only the failing `status`,
+        message always the short code.
+  - [x] Rejected input never starts a lesson, even if the UI is bypassed.
+        Technical: `services/entrypoint.ts` becomes `normalize` →
+        `safeParseKanjiInput` (throw `InvalidKanjiInput` with the failing
+        `status` attached unless `KanjiInputStatus.VALID`, then continue with
+        the proven `value`) → fake wait.
+  - [x] The failure reason travels with the rejection, so later layers never
+        re-derive it. Technical: `InvalidKanjiInput.status:
+        Exclude<KanjiInputStatus, typeof KanjiInputStatus.VALID>`. Words
+        for the user live UI-side (Task 4), never in the engine.
+  - [x] A bypass is logged visibly instead of failing silently. Technical:
         `useLoadingPage.ts` catches `InvalidKanjiInput` → existing
         `console.warn` style (`"Invalid kanji input reached the lesson
         engine."`) then the current `onDone("error")` path.
-  - [ ] The lesson output names the treated word it was built from, so `" 森 "`
+  - [x] The lesson output names the treated word it was built from, so `" 森 "`
         yields a lesson for `森`. Technical: `services/entrypoint.ts` resolves
         `` `kanji lesson: ${normalizedKanjiInput}` `` instead of the static
         string; update the tests asserting the real engine output
         (`services/entrypoint.test.ts`, `src/App.axe.test.tsx` waiting on the
         text).
-  - [ ] Prove the rejections with `services/validate.test.ts`: valid `森`,
+  - [x] Prove the rejections with `services/validate.test.ts` (through the
+        public `safeParseKanjiInput` only): valid `森`,
         `食べる`, `人々`; invalid `abc`, `123`, `森!`, `a>`, `a/b`, `a;b`, `a'b`,
         `a"b"`, `"<script>"`, `"alert('x')"`, `""`, `"   "`, `"森 森"`,
         `"、。 "`, `ゝゞヽヾ`, kana-only `ひらがな`/`カタカナ`/`ラーメン`,
         `々`-only; entrypoint rejects invalid with `InvalidKanjiInput` (name +
-        message asserted); loading hook on `InvalidKanjiInput` warns and calls
+        `status` asserted); loading hook on `InvalidKanjiInput` warns and calls
         `onDone("error")`.
-  - [ ] Gate — build + lint + format + single-file test, then full test.
+  - [x] Gate — build + lint + format + single-file test, then full test.
 
 - [ ] Task 3 — Semantic form shell (structure first, no validation yet)
   - [ ] Give mouse, keyboard, and mobile keyboards one single submit path, with
@@ -104,10 +131,10 @@ User-visible behavior for the landing call-to-action:
 - [ ] Task 4 — SearchBar validation logic (gates through the form path)
   - [ ] Step 1 — Sync status: the field always shows its current state — silent
         when empty, a charset message for foreign characters, a kanji message
-        for kana-only, enabled when valid. Technical: import checks from engine
-        (no local copy); `KanjiInputStatus = "empty" | "valid" |
-        "invalid-characters" | "missing-kanji"` + `INVALID_CHARACTERS_MESSAGE`,
-        `MISSING_KANJI_MESSAGE`; status derived synchronously on each change; empty/invalid → `disabled`.
+        for kana-only, enabled when valid. Technical: the only classifier is
+        the engine's `safeParseKanjiInput` (no local copy, no second
+        classifier); words live UI-side (SearchBar-local message constants,
+        `EMPTY` → silent); status derived synchronously on each change; empty/invalid → `disabled`.
         Tests: each status renders its message/disabled state; empty silent.
   - [ ] Step 2 — IME: half-composed Japanese text is never judged and never
         flickers. Technical: `isComposing` skips validation, `compositionend`

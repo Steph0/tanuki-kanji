@@ -50,7 +50,7 @@ describe("App accessibility on /result", () => {
     render(<App />);
     await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
     await page.getByRole("button", { name: "Submit search" }).click();
-    await screen.findByText("kanji lesson", {}, { timeout: 5000 });
+    await screen.findByText("kanji lesson: 狸", {}, { timeout: 5000 });
     const results = await axe.run(document.body);
     expect(results.violations).toEqual([]);
   });
