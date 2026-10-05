@@ -143,7 +143,7 @@ User-visible behavior for the landing call-to-action:
         flickers. Technical: `isComposing` skips validation, `compositionend`
         validates.
         Tests: composing shows no flicker; compositionend settles validity.
-  - [ ] Step 3 — Submit gate: submit double-checks at the last moment, so even
+  - [x] Step 3 — Submit gate: submit double-checks at the last moment, so even
         a lightning-fast click on a stale display can't sneak bad input
         through — and the user is told why it was blocked. Technical: form
         `onSubmit` re-validates synchronously first; valid fires the normalized

@@ -135,4 +135,44 @@ describe("SearchBar", () => {
     expect(screen.queryByText("Only Kanji, hiragana and katakana characters are allowed")).toBeNull();
     expect(screen.queryByText("Enter at least one kanji.")).toBeNull();
   });
+
+  test("fires the normalized value for padded input on submit", async () => {
+    const onSubmit = vi.fn();
+    render(<SearchBar onSubmit={onSubmit} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill(" 森 ");
+    await page.getByRole("button", { name: "Submit search" }).click();
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith("森");
+  });
+
+  test("blocks a click on invalid input with its message and no submit", async () => {
+    const onSubmit = vi.fn();
+    render(<SearchBar onSubmit={onSubmit} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("hello");
+    // Native click: Playwright's page.click refuses disabled buttons, but a
+    // real lightning-fast click can still land before the disabled redraw.
+    screen.getByRole("button", { name: "Submit search" }).click();
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(screen.getByText("Only Kanji, hiragana and katakana characters are allowed")).toBeVisible();
+  });
+
+  test("blocks Enter on invalid input with its message and no submit", async () => {
+    const onSubmit = vi.fn();
+    render(<SearchBar onSubmit={onSubmit} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("hello");
+    const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+    input.closest("form")?.requestSubmit();
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(screen.getByText("Only Kanji, hiragana and katakana characters are allowed")).toBeVisible();
+  });
+
+  test("blocks Enter on empty input silently with no submit", async () => {
+    const onSubmit = vi.fn();
+    render(<SearchBar onSubmit={onSubmit} />);
+    const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+    input.closest("form")?.requestSubmit();
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(screen.queryByText("Only Kanji, hiragana and katakana characters are allowed")).toBeNull();
+    expect(screen.queryByText("Enter at least one kanji.")).toBeNull();
+  });
 });
