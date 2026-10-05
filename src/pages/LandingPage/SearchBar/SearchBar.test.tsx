@@ -61,7 +61,7 @@ describe("SearchBar", () => {
   test("ignores submits while composing Japanese text", async () => {
     const onSubmit = vi.fn();
     render(<SearchBar onSubmit={onSubmit} />);
-    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("は");
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
     const input = screen.getByRole("textbox", { name: "Enter your kanji" });
     input.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
     input.closest("form")?.requestSubmit();
@@ -69,13 +69,42 @@ describe("SearchBar", () => {
     input.dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
     input.closest("form")?.requestSubmit();
     expect(onSubmit).toHaveBeenCalledTimes(1);
-    expect(onSubmit).toHaveBeenCalledWith("は");
+    expect(onSubmit).toHaveBeenCalledWith("狸");
   });
 
-  test("allows submitting the field untouched", async () => {
+  test("blocks the untouched field silently with a disabled submit", async () => {
     const onSubmit = vi.fn();
     render(<SearchBar onSubmit={onSubmit} />);
-    await page.getByRole("button", { name: "Submit search" }).click();
-    expect(onSubmit).toHaveBeenCalledWith("");
+    const submit = screen.getByRole("button", { name: "Submit search" });
+    expect(submit).toBeDisabled();
+    expect(screen.queryByText("Only Kanji, hiragana and katakana characters are allowed")).toBeNull();
+    expect(screen.queryByText("Enter at least one kanji.")).toBeNull();
+    await submit.click();
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  test("rejects foreign characters with a message and a disabled submit", async () => {
+    const onSubmit = vi.fn();
+    render(<SearchBar onSubmit={onSubmit} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("hello");
+    expect(screen.getByText("Only Kanji, hiragana and katakana characters are allowed")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Submit search" })).toBeDisabled();
+  });
+
+  test("rejects kana-only input with a kanji message and a disabled submit", async () => {
+    const onSubmit = vi.fn();
+    render(<SearchBar onSubmit={onSubmit} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("ひらがな");
+    expect(screen.getByText("Enter at least one kanji.")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Submit search" })).toBeDisabled();
+  });
+
+  test("enables the submit silently for a valid kanji word", async () => {
+    const onSubmit = vi.fn();
+    render(<SearchBar onSubmit={onSubmit} />);
+    await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+    expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
+    expect(screen.queryByText("Only Kanji, hiragana and katakana characters are allowed")).toBeNull();
+    expect(screen.queryByText("Enter at least one kanji.")).toBeNull();
   });
 });

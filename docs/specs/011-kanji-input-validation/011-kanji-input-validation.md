@@ -132,7 +132,7 @@ User-visible behavior for the landing call-to-action:
   - [x] Gate — build + lint + format + single-file test, then full test.
 
 - [ ] Task 4 — SearchBar validation logic (gates through the form path)
-  - [ ] Step 1 — Sync status: the field always shows its current state — silent
+  - [x] Step 1 — Sync status: the field always shows its current state — silent
         when empty, a charset message for foreign characters, a kanji message
         for kana-only, enabled when valid. Technical: the only classifier is
         the engine's `safeParseKanjiInput` (no local copy, no second

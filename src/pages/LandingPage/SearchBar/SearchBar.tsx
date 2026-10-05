@@ -5,7 +5,14 @@ import styles from "./SearchBar.module.css";
 import { useSearchBar } from "./useSearchBar.ts";
 
 export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) => void }) {
-  const { handleKanjiInput, handleSearchSubmit, kanjiInputRef, kanjiInputValue } = useSearchBar(onSubmit);
+  const {
+    handleKanjiInput,
+    handleSearchSubmit,
+    isSearchSubmitDisabled,
+    kanjiInputMessage,
+    kanjiInputRef,
+    kanjiInputValue,
+  } = useSearchBar(onSubmit);
 
   return (
     <section className={styles.search}>
@@ -34,7 +41,12 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
             value={kanjiInputValue}
             onInput={handleKanjiInput}
           />
-          <button type="submit" className={styles.submitButton} aria-label="Submit search">
+          <button
+            type="submit"
+            className={styles.submitButton}
+            aria-label="Submit search"
+            disabled={isSearchSubmitDisabled}
+          >
             <img
               className={styles.submitIcon}
               src={forwardIcon}
@@ -45,6 +57,7 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
             />
           </button>
         </form>
+        {kanjiInputMessage ? <p>{kanjiInputMessage}</p> : null}
       </div>
     </section>
   );

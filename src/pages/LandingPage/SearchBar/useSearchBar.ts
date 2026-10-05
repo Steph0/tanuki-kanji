@@ -1,31 +1,13 @@
 import type { TargetedEvent } from "preact";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
+import { useIMECompositionGuard } from "./useIMECompositionGuard.ts";
+import { useKanjiInputValidation } from "./useKanjiInputValidation.ts";
 
 export function useSearchBar(onSubmit: (kanjiInputValue: string) => void) {
   const [kanjiInputValue, setKanjiInputValue] = useState("");
   const kanjiInputRef = useRef<HTMLInputElement>(null);
-  const isComposingKanjiInput = useRef(false);
-
-  // Native listeners: Preact 10 maps onCompositionStart to the never-firing
-  // "CompositionStart" (preactjs/preact#3003, fixed in v11). Revisit on upgrade.
-  useEffect(() => {
-    const input = kanjiInputRef.current;
-    if (!input) {
-      return;
-    }
-    const startComposing = () => {
-      isComposingKanjiInput.current = true;
-    };
-    const endComposing = () => {
-      isComposingKanjiInput.current = false;
-    };
-    input.addEventListener("compositionstart", startComposing);
-    input.addEventListener("compositionend", endComposing);
-    return () => {
-      input.removeEventListener("compositionstart", startComposing);
-      input.removeEventListener("compositionend", endComposing);
-    };
-  }, []);
+  const isComposingKanjiInput = useIMECompositionGuard(kanjiInputRef);
+  const { isSearchSubmitDisabled, kanjiInputMessage } = useKanjiInputValidation(kanjiInputValue);
 
   const handleKanjiInput = (event: TargetedEvent<HTMLInputElement>) => {
     setKanjiInputValue(event.currentTarget.value);
@@ -39,5 +21,12 @@ export function useSearchBar(onSubmit: (kanjiInputValue: string) => void) {
     onSubmit(kanjiInputValue);
   };
 
-  return { handleKanjiInput, handleSearchSubmit, kanjiInputRef, kanjiInputValue };
+  return {
+    handleKanjiInput,
+    handleSearchSubmit,
+    isSearchSubmitDisabled,
+    kanjiInputMessage,
+    kanjiInputRef,
+    kanjiInputValue,
+  };
 }
