@@ -67,6 +67,8 @@
   min-width: 0;
   background: transparent;
   border: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
   font-family: var(--font-kanji);
   font-weight: var(--text-input-cta-weight);
   font-size: var(--text-input-cta-size);
@@ -83,8 +85,20 @@
 
 .fieldRow:focus-within {
   background-color: var(--color-surface);
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(45, 90, 67, 0.12);
+}
+
+.errorMessage {
+  min-height: var(--text-body-sm-leading);
+}
+
+.message {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: var(--text-body-sm-weight);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-leading);
+  letter-spacing: var(--text-body-sm-spacing);
+  color: var(--color-tertiary);
 }
 
 .submitButton {
@@ -104,6 +118,17 @@
   width: var(--icon-md);
   height: var(--icon-md);
   filter: brightness(0) invert(1);
+}
+
+/* Disabled leaves the green family: quiet gray disc, dark arrow — a faded
+   green next to a red field reads broken, gray reads untouchable */
+.submitButton:disabled {
+  background-color: var(--color-border);
+  cursor: not-allowed;
+}
+
+.submitButton:disabled .submitIcon {
+  filter: none;
 }
 
 /* Desktop screens */

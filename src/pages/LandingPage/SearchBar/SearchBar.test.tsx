@@ -184,6 +184,72 @@ describe("SearchBar", () => {
     });
   });
 
+  describe("invalid styling", () => {
+    test("paints the field border and message in the same red on invalid input", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("hello");
+      // fill focuses the input — blur to assert the at-rest red border
+      screen.getByRole("textbox", { name: "Enter your kanji" }).blur();
+      const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
+      // "invalid" is the shared .field state hook from globals, not a module class
+      expect(field?.className.split(" ")).toContain("invalid");
+      const red = "rgb(200, 62, 43)";
+      expect(getComputedStyle(field as Element).borderColor).toBe(red);
+      expect(getComputedStyle(screen.getByText("Only Kanji, hiragana and katakana characters are allowed")).color).toBe(
+        red,
+      );
+    });
+
+    test("paints a single red stroke on focused invalid input", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      // fill focuses the input, so :focus-within applies — the border goes
+      // transparent and one 2px outline takes the green outline's own +2px seat
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("hello");
+      const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
+      const stained = getComputedStyle(field as Element);
+      expect(stained.borderColor).toBe("rgba(0, 0, 0, 0)");
+      expect(stained.boxShadow).toContain("200, 62, 43");
+      expect(stained.outlineStyle).toBe("solid");
+      expect(stained.outlineColor).toBe("rgb(200, 62, 43)");
+      expect(stained.outlineWidth).toBe("2px");
+      expect(stained.outlineOffset).toBe("2px");
+    });
+
+    test("leaves the field unmarked for valid input", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
+      expect(field?.className.split(" ")).not.toContain("invalid");
+    });
+
+    test("reserves the message slot so the card never jumps", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      const card = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.card}`);
+      const calm = (card as HTMLElement).offsetHeight;
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("hello");
+      expect(screen.getByText("Only Kanji, hiragana and katakana characters are allowed")).toBeVisible();
+      expect((card as HTMLElement).offsetHeight).toBe(calm);
+    });
+
+    test("grays the disabled submit with a dark arrow while keeping its target size", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      const submit = screen.getByRole("button", { name: "Submit search" });
+      expect(submit).toBeDisabled();
+      expect(getComputedStyle(submit).backgroundColor).toBe("rgb(230, 224, 214)");
+      const arrow = submit.querySelector("img");
+      expect(getComputedStyle(arrow as Element).filter).toBe("none");
+      expect(submit.offsetWidth).toBe(44);
+      expect(submit.offsetHeight).toBe(44);
+    });
+
+    test("washes selected text in the palette tint instead of native blue", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+      expect(getComputedStyle(input, "::selection").backgroundColor).toBe("rgba(140, 91, 62, 0.1)");
+    });
+  });
+
   describe("accessibility", () => {
     test("labels Japanese text with no error attributes when empty", () => {
       render(<SearchBar onSubmit={noop} />);

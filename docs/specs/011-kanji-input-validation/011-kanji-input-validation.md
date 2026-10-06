@@ -159,19 +159,22 @@ User-visible behavior for the landing call-to-action:
         Tests: attributes present/absent per state.
   - [x] Gate — build + lint + format + single-file test, then full test.
 
-- [ ] Task 5 — Invalid styling (no layout shift, red wins, disabled look)
-  - [ ] Make the invalid state unmistakable but calm: red field, red message in
-        the same red, layout never jumps, submit looks clearly untouchable while
-        staying in the green family. Technical: `SearchBar.module.css` (tokens
-        via `var(--...)` only): `.invalid` on `fieldRow` (`--color-tertiary`
-        border, beats `:focus-within`/`.field` single ring, no matcha glow);
-        message class (`--color-tertiary`, `body-sm`); reserved error slot sized
-        so card height is identical with and without the message at 390px and
-        desktop; `submitButton:disabled` via tokens only, target size kept.
-  - [ ] Prove the look with computed-style guards: `.invalid` class present,
+- [x] Task 5 — Invalid styling (no layout shift, red wins, disabled look)
+  - [x] Make the invalid state unmistakable but calm: red field, red message in
+        the same red, layout never jumps, disabled submit turns quiet gray so a
+        faded green never sits next to the red field. Technical: the field
+        wrapper (`.field` in `globals.css`) owns the ring and its state color,
+        so `.invalid` only swaps the color — the red ring sits exactly where
+        the green ring sat, same shape and place, only the hue changes.
+        `SearchBar.module.css` keeps only its own box, the message
+        (`--color-tertiary`, `body-sm`), the reserved error slot (card height
+        identical with and without the message at 390px and desktop), and the
+        gray disabled submit (`--color-border` disc, dark arrow, target size
+        kept).
+  - [x] Prove the look with computed-style guards: `.invalid` class present,
         border color equals message color, card height unchanged when the
         message appears, disabled attr present.
-  - [ ] Gate — build + lint + format + single-file test, then full test.
+  - [x] Gate — build + lint + format + single-file test, then full test.
 
 # Acceptance
 

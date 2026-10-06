@@ -31,40 +31,44 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
           </label>
           <span className={styles.counter}>0 / 21 chars</span>
         </div>
-        <form className={`${styles.fieldRow} field`} onSubmit={handleSearchSubmit}>
-          <input
-            id="kanji-input"
-            ref={kanjiInputRef}
-            className={styles.input}
-            type="text"
-            lang="ja"
-            placeholder="e.g. 森 or 食べる"
-            value={kanjiInputValue}
-            onInput={handleKanjiInput}
-            aria-invalid={kanjiInputMessage ? "true" : undefined}
-            aria-describedby={kanjiInputMessage ? "kanji-input-message" : undefined}
-          />
-          <button
-            type="submit"
-            className={styles.submitButton}
-            aria-label="Submit search"
-            disabled={isSearchSubmitDisabled}
-          >
-            <img
-              className={styles.submitIcon}
-              src={forwardIcon}
-              alt=""
-              aria-hidden="true"
-              width={ICON_MD_PX}
-              height={ICON_MD_PX}
+        <form onSubmit={handleSearchSubmit}>
+          <div className={`${styles.fieldRow} field${kanjiInputMessage ? " invalid" : ""}`}>
+            <input
+              id="kanji-input"
+              ref={kanjiInputRef}
+              className={styles.input}
+              type="text"
+              lang="ja"
+              placeholder="e.g. 森 or 食べる"
+              value={kanjiInputValue}
+              onInput={handleKanjiInput}
+              aria-invalid={kanjiInputMessage ? "true" : undefined}
+              aria-describedby={kanjiInputMessage ? "kanji-input-message" : undefined}
             />
-          </button>
+            <button
+              type="submit"
+              className={styles.submitButton}
+              aria-label="Submit search"
+              disabled={isSearchSubmitDisabled}
+            >
+              <img
+                className={styles.submitIcon}
+                src={forwardIcon}
+                alt=""
+                aria-hidden="true"
+                width={ICON_MD_PX}
+                height={ICON_MD_PX}
+              />
+            </button>
+          </div>
         </form>
-        {kanjiInputMessage ? (
-          <p id="kanji-input-message" aria-live="polite">
-            {kanjiInputMessage}
-          </p>
-        ) : null}
+        <div className={styles.errorMessage}>
+          {kanjiInputMessage ? (
+            <p id="kanji-input-message" className={styles.message} aria-live="polite">
+              {kanjiInputMessage}
+            </p>
+          ) : null}
+        </div>
       </div>
     </section>
   );
