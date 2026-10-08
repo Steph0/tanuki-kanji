@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+<meta content="mobile_stack" name="shell-type">
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface": "#191c21",
+            "canvas": "#FAF8F5",
+            "surface": "#FFFFFF",
+            "primary": "#14422d",
+            "primary-container": "#2d5a43",
+            "muted": "#626964",
+            "ink-soft": "#414943",
+            "secondary": "#835337",
+            "secondary-tint": "rgba(140, 91, 62, 0.10)",
+            "outline-variant": "#c0c9c1",
+            "border": "#E6E0D6"
+          },
+          fontFamily: {
+            headline: ["Epilogue", "sans-serif"],
+            body: ["Plus Jakarta Sans", "sans-serif"],
+            kanji: ["Noto Sans JP", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    @layer base {
+      html, body {
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        background-color: #FAF8F5;
+      }
+      .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom, 16px);
+      }
+      .pt-safe {
+        padding-top: env(safe-area-inset-top, 0px);
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      min-height: max(884px, 100dvh);
+    }
+    @keyframes tanukiBreathe {
+      0%, 100% {
+        transform: scale(1) translateY(0px);
+      }
+      50% {
+        transform: scale(1.02) translateY(-3px);
+      }
+    }
+    @keyframes orbitRotate {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    @keyframes counterRotate {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(-360deg);
+      }
+    }
+    @keyframes haloPulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.65;
+      }
+      50% {
+        transform: scale(1.03);
+        opacity: 0.95;
+      }
+    }
+    .animate-orbit {
+      animation: orbitRotate 13s linear infinite;
+    }
+    .animate-counter-orbit {
+      animation: counterRotate 13s linear infinite;
+    }
+    .animate-halo-spin {
+      animation: orbitRotate 32s linear infinite, haloPulse 5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-canvas text-on-surface font-body h-screen min-h-screen flex flex-col antialiased selection:bg-primary-container selection:text-white overflow-hidden" style="min-height: 100vh; height: 100vh; overflow: hidden;">
+<!-- Header: Exactly identical to homepage (Tanuki logo + title + sync icon) -->
+<header class="fixed top-0 w-full z-50 pt-safe bg-surface/90 backdrop-blur-md border-b border-[#F0ECE5]">
+<div class="h-14 px-5 flex items-center justify-between max-w-[412px] mx-auto w-full">
+  <!-- Left side: Round tanuki logo image + "Tanuki Kanji" text -->
+  <div class="flex items-center gap-2.5">
+    <img alt="Tanuki Kanji Logo" class="h-8 w-8 object-cover rounded-full shadow-xs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwgY1pSHLmHLq3iawptlnBQk8C2F9LrJNlVAf95ux0PZNtr67eqkbda3AyEKaJZuoK5empzBsMe9pQu7v6y5jHKDrBublrj6BC3IrIEIYZYI_2diq7_D_1I1V9aGnGtsNTBSWVTGKyQ4O0gJLtcBndtiIALajLMfDJHKPQpGRv_tTvi_LxqnSWJFBvUUOyZwrmiEM1_0g-d_arNmDYsIAaBZ_CiJoCeJOMaw-8GP4cLj6ePv_ZK-jWQg">
+    <span class="font-headline font-bold text-[19px] tracking-tight text-[#1a442e]">Tanuki Kanji</span>
+  </div>
+  <!-- Right side: Refresh icon -->
+  <button aria-label="Refresh or reset" class="text-ink-soft hover:text-on-surface transition-colors active:rotate-180 duration-300 p-1 flex items-center justify-center">
+    <span class="material-symbols-outlined text-[23px] text-[#22252A]">sync</span>
+  </button>
+</div>
+</header>
+<!-- Main Content Area: Centered, Direct on Canvas, No White Card Wrapper -->
+<main class="flex-1 flex flex-col items-center justify-center w-full px-6 max-w-[412px] mx-auto select-none pt-14">
+  <div class="flex flex-col items-center justify-center w-full my-auto">
+    <!-- Organic Sumi & Watercolor Ripple Visualizer -->
+    <div class="relative w-72 h-72 flex items-center justify-center">
+      <!-- Outer Warm Glow & Meditative Mist -->
+      <div class="absolute w-64 h-64 rounded-full bg-gradient-to-tr from-[#E6DECF]/50 via-[#EAE3D2]/35 to-[#E1D7C6]/20 blur-2xl pointer-events-none -z-10 animate-pulse" style="animation-duration: 4s;"></div>
+
+      <!-- Sumi Ink Ripple Wave 1 (Gentle Expanding Aura) -->
+      <div class="absolute inset-0 rounded-full border border-[#835337]/15 pointer-events-none animate-ping" style="animation-duration: 4.8s; animation-iteration-count: infinite;"></div>
+
+      <!-- Organic Calligraphic Enso Ring 1 (Smooth slow rotation) -->
+      <svg class="absolute inset-0 w-full h-full pointer-events-none animate-spin" style="animation-duration: 26s;" viewBox="0 0 200 200" fill="none">
+        <path d="M100 8 C148 7, 192 48, 191 100 C190 148, 149 191, 100 192 C52 193, 9 152, 8 100 C7 62, 34 26, 70 12" stroke="#2D5A43" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="12 18 120 28" opacity="0.28"></path>
+        <circle cx="100" cy="8" r="1.8" fill="#2D5A43" opacity="0.4"></circle>
+        <circle cx="191" cy="100" r="1.5" fill="#835337" opacity="0.35"></circle>
+      </svg>
+
+      <!-- Organic Calligraphic Enso Ring 2 (Counter rotating & brush dynamic) -->
+      <svg class="absolute inset-2 w-[calc(100%-16px)] h-[calc(100%-16px)] pointer-events-none animate-spin" style="animation-duration: 38s; animation-direction: reverse;" viewBox="0 0 200 200" fill="none">
+        <path d="M100 12 C146 14, 186 52, 187 98 C188 144, 148 186, 102 188 C58 189, 14 150, 12 104 C11 70, 32 34, 68 18" stroke="#835337" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="24 36 80 40" opacity="0.24"></path>
+        <circle cx="42" cy="164" r="1.2" fill="#835337" opacity="0.3"></circle>
+      </svg>
+
+      <!-- Soft Sumi Ink Water Droplets / Floating Particles -->
+      <div class="absolute -top-1 right-12 w-1.5 h-1.5 rounded-full bg-[#2D5A43]/30 blur-[0.3px] animate-pulse" style="animation-duration: 3.2s;"></div>
+      <div class="absolute bottom-3 left-10 w-1.5 h-1.5 rounded-full bg-[#835337]/35 blur-[0.2px] animate-pulse" style="animation-duration: 4.1s;"></div>
+      <div class="absolute top-1/3 -left-1 w-1 h-1 rounded-full bg-[#2D5A43]/25"></div>
+      <div class="absolute bottom-1/4 -right-1 w-1.5 h-1.5 rounded-full bg-[#835337]/25"></div>
+
+      <!-- Center Tanuki Artwork: Seamless blended edges with canvas (#FAF8F5) -->
+      <div class="relative w-48 h-48 rounded-full flex items-center justify-center z-10" style="animation: tanukiBreathe 4.5s ease-in-out infinite;"><img alt="Meditative Tanuki consulting ancient wisdom" class="w-full h-full object-contain rounded-full select-none" style="mix-blend-mode: multiply;" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSvSdTPcURU-aJCCyhr2qk3gONNerf-pTtDx_BPofqm4qo4zlGvbTpboGOmVabDLeKjW5D6kjnRk2t6520-DdhZFRhsQdsxy5Dw3rNxibZjfJSwc8t4SlcPLUgoDjGcj5vt_XVWCDa1QTaPXJMsb4HrlOnDVLq3K3x-cNgykIAVJ4iMwkhAij5zA52gP2IbNDqoQscaf0_zCuHOnUMC0xKc4ZmJZslnjNHj3o_J2TB62EJEG-bPQo5Sg"></div>
+    </div>
+
+    <!-- Dynamic Rotating Messages -->
+    <div class="mt-8 text-center min-h-[48px] flex items-center justify-center px-4">
+      <p class="font-body text-[15px] text-[#414943] font-normal leading-relaxed tracking-normal transition-opacity duration-300 ease-in-out" id="rotating-status" style="opacity: 1;">Uncovering folklore and cultural memory...</p>
+    </div>
+  </div>
+</main>
+<!-- Dynamic Rotating Text Script -->
+<script>
+    (function initRotatingStatus() {
+      const messages = [
+        "Tanuki Kanji is consulting the scriptures...",
+        "Tracing radical origins & ancient brushwork...",
+        "Uncovering folklore and cultural memory...",
+        "Handcrafting your authentic etymology lesson..."
+      ];
+
+      let currentIndex = 0;
+      const statusEl = document.getElementById('rotating-status');
+
+      setInterval(() => {
+        currentIndex = (currentIndex + 1) % messages.length;
+        if (statusEl) {
+          statusEl.style.opacity = '0';
+
+          setTimeout(() => {
+            statusEl.textContent = messages[currentIndex];
+            statusEl.style.opacity = '1';
+          }, 300);
+        }
+      }, 3500);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+</body></html>
