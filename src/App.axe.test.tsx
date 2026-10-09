@@ -34,7 +34,7 @@ describe("App accessibility on /loading", () => {
     render(<App />);
     await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
     await page.getByRole("button", { name: "Submit search" }).click();
-    await screen.findByText("Loading...");
+    await screen.findByRole("status");
     const results = await axe.run(document.body);
     expect(results.violations).toEqual([]);
   });

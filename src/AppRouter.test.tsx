@@ -37,10 +37,10 @@ describe("AppRouter", () => {
     window.history.pushState({}, "", "/");
   });
 
-  test("shows the loading placeholder when kanji user input is stored", async () => {
+  test("shows the loading view when kanji user input is stored", async () => {
     window.history.pushState({}, "", "/loading");
     renderAppRouter({ initialKanjiUserInput: "some kanji user input", engine: dummyEngine });
-    expect(await screen.findByText("Loading...")).toBeVisible();
+    expect(await screen.findByRole("status")).toBeVisible();
     expect(window.location.pathname).toBe("/loading");
   });
 

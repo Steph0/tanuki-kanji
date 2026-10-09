@@ -19,16 +19,16 @@ Current loading page is a shell without any design. We want to make it look nice
 
 # Tasks
 
-- [ ] Task 1 — Calm mobile loading moment
-  - [ ] The user gets a finished-looking loading view on phones first: show the loading illustration with one short lore caption under it, keeping the existing polite loading announcement.
-  - [ ] Technical translation: re-implement the "Loading screen" from the vendored backup `./stitch-snapshot.md` + `./stitch-loading-screen.html` (Stitch MCP project ID `17727976435008157775` is provenance only, mobile base only) in `src/pages/LoadingPage/LoadingPage.tsx` 
+- [x] Task 1 — Calm mobile loading moment
+  - [x] The user gets a finished-looking loading view on phones first: show the loading illustration with one short lore caption under it, keeping the existing polite loading announcement.
+  - [x] Technical translation: re-implement the "Loading screen" from the vendored backup `./stitch-snapshot.md` + `./stitch-loading-screen.html` (Stitch MCP project ID `17727976435008157775` is provenance only, mobile base only) in `src/pages/LoadingPage/LoadingPage.tsx` 
         New `src/pages/LoadingPage/LoadingPage.module.css` (CSS Modules, consume tokens via `var(--...)`, no hardcoded colors/fonts/spacing/radii).
-        Move `docs/specs/012-loading-screen-design/stitch-tanuki-artwork.png` to `src/assets/loading/stitch-tanuki-artwork.png` (single variant in this task). Render via `<picture>` + `<img>` with `alt="Tanuki calligraphing by lamplight while your lesson loads"`, explicit `width`/`height`, `decoding="async"`.
+        Copy `docs/specs/012-loading-screen-design/stitch-tanuki-artwork.jpg` to `src/assets/loading/stitch-tanuki-artwork.jpg` (single variant in this task; spec-folder original stays as vendor backup). Render via `<picture>` + `<img>` with `alt="Tanuki calligraphing by lamplight while your lesson loads"`, explicit `width`/`height`, `decoding="async"`.
         Keep the live region (`aria-live="polite"`, `aria-busy="true"` on the status container) and keep `useLoadingPage.ts` engine behavior untouched. Navbar stays byte-identical in this task.
-  - [ ] Caption seed for this task only: 3 final-tone lines `"Tracing the roots of your kanji…"`. The full set comes in Task 3.
-  - [ ] Tests with the code: extend `src/pages/LoadingPage/LoadingPage.test.tsx`: illustration visible by `getByRole("img")`, 
+  - [x] Caption seed for this task only: 3 final-tone lines `"Tracing the roots of your kanji…"`. The full set comes in Task 3.
+  - [x] Tests with the code: extend `src/pages/LoadingPage/LoadingPage.test.tsx`: illustration visible by `getByRole("img")`, 
         caption visible by `getByRole("status")`, live-region attributes asserted.
-  - [ ] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- LoadingPage`.
+  - [x] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- LoadingPage`.
 
 - [ ] Task 2 — Illustration that fits every screen
   - [ ] The user sees the same centered loading view on phones, rotated screens and desktop, with no page scrollbar and no sideways drift.

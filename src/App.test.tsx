@@ -58,7 +58,7 @@ describe("App", () => {
       render(<App />);
       await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
       await page.getByRole("button", { name: "Submit search" }).click();
-      expect(await screen.findByText("Loading...")).toBeVisible();
+      expect(await screen.findByRole("status")).toBeVisible();
       expect(window.location.pathname).toBe("/loading");
     });
   });

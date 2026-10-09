@@ -1,0 +1,34 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: var(--space-xl);
+  padding-inline: var(--page-margin);
+}
+
+.visual {
+  margin: 0;
+  width: 12rem;
+  height: 12rem;
+}
+
+.artwork {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  background-color: var(--color-canvas);
+  mix-blend-mode: multiply;
+}
+
+.caption {
+  margin-top: var(--space-lg);
+  min-height: 3rem;
+  text-align: center;
+  color: var(--color-ink-soft);
+  font-family: var(--font-body);
+  font-weight: var(--text-body-md-weight);
+  font-size: var(--text-body-md-size);
+  line-height: var(--text-body-md-leading);
+  letter-spacing: var(--text-body-md-spacing);
+}
