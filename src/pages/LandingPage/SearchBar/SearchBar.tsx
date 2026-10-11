@@ -12,9 +12,9 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
     isSearchSubmitDisabled,
     kanjiInputMessage,
     kanjiInputRef,
+    kanjiInputTone,
     kanjiInputValue,
   } = useSearchBar(onSubmit);
-
   return (
     <section className={styles.search}>
       <div className={styles.card}>
@@ -35,7 +35,7 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
           </span>
         </div>
         <form onSubmit={handleSearchSubmit}>
-          <div className={`${styles.fieldRow} field${kanjiInputMessage ? " invalid" : ""}`}>
+          <div className={`${styles.fieldRow} field${kanjiInputMessage ? ` ${kanjiInputTone}` : ""}`}>
             <input
               id="kanji-input"
               ref={kanjiInputRef}
@@ -45,7 +45,7 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
               placeholder="e.g. 森 or 食べる"
               value={kanjiInputValue}
               onInput={handleKanjiInput}
-              aria-invalid={kanjiInputMessage ? "true" : undefined}
+              aria-invalid={kanjiInputTone === "error" ? "true" : undefined}
               aria-describedby={kanjiInputMessage ? "kanji-input-message" : undefined}
             />
             <button

@@ -235,7 +235,7 @@ input:focus-visible {
   --field-glow: rgba(45, 90, 67, 0.12);
 }
 
-.field.invalid {
+.field.error {
   --field-accent: var(--color-tertiary);
   --field-glow: rgba(200, 62, 43, 0.12);
   border-color: var(--color-tertiary);

@@ -58,7 +58,7 @@ function containsKanji(normalizedKanjiInput: NormalizedKanjiInput): boolean {
   return KANJI_PATTERN.test(normalizedKanjiInput);
 }
 
-function isOverLimit(normalizedKanjiInput: NormalizedKanjiInput): boolean {
+function isOverKanjiInputLimit(normalizedKanjiInput: NormalizedKanjiInput): boolean {
   return normalizedKanjiInput.length > KANJI_INPUT_MAX_LENGTH;
 }
 
@@ -67,7 +67,7 @@ function validateKanjiInput(normalizedKanjiInput: NormalizedKanjiInput): KanjiIn
     return KanjiInputStatus.EMPTY;
   }
 
-  if (isOverLimit(normalizedKanjiInput)) {
+  if (isOverKanjiInputLimit(normalizedKanjiInput)) {
     return KanjiInputStatus.TOO_LONG;
   }
 

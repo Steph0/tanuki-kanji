@@ -2,6 +2,7 @@ import type { TargetedEvent } from "preact";
 import { useRef, useState } from "preact/hooks";
 import { normalizeKanjiInput } from "../../../services/normalize.ts";
 import { KanjiInputStatus, safeParseKanjiInput } from "../../../services/validate.ts";
+import { isKanjiSubmitBlocked } from "./kanjiInputDisplay.ts";
 import { useIMECompositionGuard } from "./useIMECompositionGuard.ts";
 import { useKanjiInputValidation } from "./useKanjiInputValidation.ts";
 
@@ -11,7 +12,8 @@ export function useSearchBar(onSubmit: (kanjiInputValue: string) => void) {
   const kanjiInputRef = useRef<HTMLInputElement>(null);
   const { isComposing, submitBlockRef } = useIMECompositionGuard(kanjiInputRef);
   // Validation not taken into account until composition is done
-  const { isSearchSubmitDisabled, kanjiInputMessage } = useKanjiInputValidation(kanjiInputValue, isComposing);
+  const { tone: kanjiInputTone, message: kanjiInputMessage } = useKanjiInputValidation(kanjiInputValue, isComposing);
+  const isSearchSubmitDisabled = isKanjiSubmitBlocked(kanjiInputTone);
 
   const handleKanjiInput = (event: TargetedEvent<HTMLInputElement>) => {
     setKanjiInputValue(event.currentTarget.value);
@@ -38,6 +40,7 @@ export function useSearchBar(onSubmit: (kanjiInputValue: string) => void) {
     isSearchSubmitDisabled,
     kanjiInputMessage,
     kanjiInputRef,
+    kanjiInputTone,
     kanjiInputValue,
   };
 }

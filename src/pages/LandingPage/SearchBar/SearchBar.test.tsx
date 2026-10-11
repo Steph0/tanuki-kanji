@@ -67,6 +67,89 @@ describe("SearchBar", () => {
     });
   });
 
+  describe("over-limit warning", () => {
+    test("stays clean at the limit with no warning", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(21));
+      expect(screen.queryByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeNull();
+      expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
+    });
+
+    test("warns on a long valid word with submit on", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      expect(screen.getByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeVisible();
+      expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
+    });
+
+    test("errors live when the cut keeps foreign characters", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("ab".repeat(11));
+      expect(screen.getByText("Only Kanji, hiragana and katakana characters are allowed")).toBeVisible();
+      expect(screen.queryByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeNull();
+      expect(screen.getByRole("button", { name: "Submit search" })).toBeDisabled();
+    });
+
+    test("warns when only the tail past the limit is bad", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill(`${"森".repeat(21)}!`);
+      expect(screen.getByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeVisible();
+      expect(screen.queryByText("Only Kanji, hiragana and katakana characters are allowed")).toBeNull();
+      expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
+    });
+
+    test("clears the warning back under the limit", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      const input = page.getByRole("textbox", { name: "Enter your kanji" });
+      await input.fill("森".repeat(22));
+      expect(screen.getByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeVisible();
+      await input.fill("森");
+      expect(screen.queryByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeNull();
+    });
+
+    test("warns for a long blank of spaces with submit on but no lesson", async () => {
+      const onSubmit = vi.fn();
+      render(<SearchBar onSubmit={onSubmit} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill(" ".repeat(22));
+      expect(screen.getByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeVisible();
+      expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
+      await page.getByRole("button", { name: "Submit search" }).click();
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    test("holds the warning steady through composition", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+      input.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      expect(screen.queryByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeNull();
+      input.dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
+      expect(await screen.findByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeVisible();
+    });
+
+    test("holds an over-limit submit until the cut lands", async () => {
+      const onSubmit = vi.fn();
+      render(<SearchBar onSubmit={onSubmit} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      await page.getByRole("button", { name: "Submit search" }).click();
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    test("describes the warning without the invalid mark", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      const input = screen.getByRole("textbox", { name: "Enter your kanji" });
+      expect(input).not.toHaveAttribute("aria-invalid");
+      const describedBy = input.getAttribute("aria-describedby");
+      expect(describedBy).not.toBeNull();
+      const message = document.getElementById(describedBy as string);
+      expect(message).toHaveTextContent("Whoa, long one! Tanuki keeps first 21 chars.");
+      expect(message).toHaveAttribute("aria-live", "polite");
+      expect(message).not.toHaveAttribute("role");
+    });
+  });
+
   describe("submit path", () => {
     test("sends the typed text when the submit action is clicked", async () => {
       const onSubmit = vi.fn();
@@ -218,8 +301,8 @@ describe("SearchBar", () => {
       // fill focuses the input — blur to assert the at-rest red border
       screen.getByRole("textbox", { name: "Enter your kanji" }).blur();
       const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
-      // "invalid" is the shared .field state hook from globals, not a module class
-      expect(field?.className.split(" ")).toContain("invalid");
+      // "error" is the shared .field state hook from globals, not a module class
+      expect(field?.className.split(" ")).toContain("error");
       const red = "rgb(200, 62, 43)";
       expect(getComputedStyle(field as Element).borderColor).toBe(red);
       expect(getComputedStyle(screen.getByText("Only Kanji, hiragana and katakana characters are allowed")).color).toBe(
@@ -246,7 +329,7 @@ describe("SearchBar", () => {
       render(<SearchBar onSubmit={noop} />);
       await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
       const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
-      expect(field?.className.split(" ")).not.toContain("invalid");
+      expect(field?.className.split(" ")).not.toContain("error");
     });
 
     test("reserves the message slot so the card never jumps", async () => {
