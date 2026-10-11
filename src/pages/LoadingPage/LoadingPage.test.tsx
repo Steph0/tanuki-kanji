@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/preact";
 import { describe, expect, test } from "vitest";
+import { commands } from "vitest/browser";
 import { TanukiKanjiProvider } from "../../hooks/useTanukiKanjiEngine.tsx";
 import { dummyEngine, noop } from "../../test-utils.ts";
 import { LoadingPage } from "./LoadingPage.tsx";
@@ -51,6 +52,31 @@ describe("LoadingPage", () => {
       "/src/assets/loading/loading_page-400.webp 400w, /src/assets/loading/loading_page-800.webp 800w",
     );
   });
+
+  test("keeps the decorative illustration layers hidden from assistive tech", async () => {
+    renderLoadingPage();
+    await screen.findByRole("img", { name: ARTWORK_ALT });
+
+    // Decorative SVGs expose no role to query by, so a tag query is the last resort.
+    const rings = document.querySelectorAll("svg");
+    expect(rings).toHaveLength(2);
+    for (const ring of rings) {
+      expect(ring).toHaveAttribute("aria-hidden", "true");
+    }
+  });
+
+  test("freezes the illustration motion when reduced motion is requested", async () => {
+    await commands.emulateReducedMotion(true);
+    try {
+      renderLoadingPage();
+      await screen.findByRole("img", { name: ARTWORK_ALT });
+
+      const ring = document.querySelectorAll("svg")[0];
+      expect(getComputedStyle(ring).animationName).toBe("none");
+    } finally {
+      await commands.emulateReducedMotion(false);
+    }
+  }, 20000);
 
   test("announces the lore caption as a polite live region", async () => {
     renderLoadingPage();

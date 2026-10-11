@@ -1,0 +1,52 @@
+.outer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: orbit 26s linear infinite;
+}
+
+.inner {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  width: calc(100% - 1rem);
+  height: calc(100% - 1rem);
+  animation: counter-orbit 38s linear infinite;
+}
+
+.strokePrimary {
+  stroke: var(--color-primary);
+}
+
+.strokeSecondary {
+  stroke: var(--color-secondary);
+}
+
+.fillPrimary {
+  fill: var(--color-primary);
+}
+
+.fillSecondary {
+  fill: var(--color-secondary);
+}
+
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes counter-orbit {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+/* Still rings for users who ask for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .outer,
+  .inner {
+    animation: none;
+  }
+}

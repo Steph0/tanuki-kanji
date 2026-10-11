@@ -7,3 +7,9 @@ import "./globals.css";
 afterEach(() => {
   cleanup();
 });
+
+declare module "vitest/internal/browser" {
+  interface BrowserCommands {
+    emulateReducedMotion: (reduce: boolean) => Promise<void>;
+  }
+}

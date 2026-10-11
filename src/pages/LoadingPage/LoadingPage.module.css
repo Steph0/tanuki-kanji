@@ -8,22 +8,6 @@
   padding-inline: var(--page-margin);
 }
 
-.visual {
-  margin: 0;
-  width: 12rem;
-  max-width: 100%;
-  aspect-ratio: 1;
-}
-
-.artwork {
-  width: 100%;
-  height: 100%;
-  border-radius: var(--radius-full);
-  object-fit: cover;
-  background-color: var(--color-canvas);
-  mix-blend-mode: multiply;
-}
-
 .caption {
   margin-top: var(--space-lg);
   min-height: 3rem;
@@ -36,20 +20,9 @@
   letter-spacing: var(--text-body-md-spacing);
 }
 
-/* Wide screens */
-@media (min-width: 48rem) {
-  .visual {
-    width: 16rem;
-  }
-}
-
 /* Short viewports (rotated screen) */
 @media (max-height: 37.5rem) {
   .page {
     padding-block: var(--space-md);
-  }
-
-  .visual {
-    width: 8rem;
   }
 }
