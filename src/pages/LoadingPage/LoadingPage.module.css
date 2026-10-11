@@ -1,7 +1,9 @@
 .page {
   display: flex;
   flex-direction: column;
+  flex: 1;
   align-items: center;
+  justify-content: center;
   padding-block: var(--space-xl);
   padding-inline: var(--page-margin);
 }
@@ -9,7 +11,8 @@
 .visual {
   margin: 0;
   width: 12rem;
-  height: 12rem;
+  max-width: 100%;
+  aspect-ratio: 1;
 }
 
 .artwork {
@@ -31,4 +34,22 @@
   font-size: var(--text-body-md-size);
   line-height: var(--text-body-md-leading);
   letter-spacing: var(--text-body-md-spacing);
+}
+
+/* Wide screens */
+@media (min-width: 48rem) {
+  .visual {
+    width: 16rem;
+  }
+}
+
+/* Short viewports (rotated screen) */
+@media (max-height: 37.5rem) {
+  .page {
+    padding-block: var(--space-md);
+  }
+
+  .visual {
+    width: 8rem;
+  }
 }

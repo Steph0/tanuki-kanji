@@ -1,11 +1,15 @@
-import artwork from "../../assets/loading/stitch-tanuki-artwork.jpg";
+import artwork400 from "../../assets/loading/loading_page-400.png";
+import artwork400Webp from "../../assets/loading/loading_page-400.webp";
+import artwork800 from "../../assets/loading/loading_page-800.png";
+import artwork800Webp from "../../assets/loading/loading_page-800.webp";
 import styles from "./LoadingPage.module.css";
 import { LOADING_CAPTIONS } from "./loadingCaptions.ts";
 import { useLoadingPage } from "./useLoadingPage.ts";
 
-const ARTWORK_W = 512;
-const ARTWORK_H = 512;
+const ARTWORK_W = 400;
+const ARTWORK_H = 400;
 const ARTWORK_ALT = "Tanuki calligraphing by lamplight while your lesson loads";
+const ARTWORK_SIZES = "(max-width: 48rem) calc(100vw - 2rem), 400px";
 
 type LoadingPageProps = {
   kanjiUserInput: string;
@@ -18,9 +22,12 @@ export function LoadingPage({ kanjiUserInput, onDone }: LoadingPageProps) {
   return (
     <div className={styles.page}>
       <picture className={styles.visual}>
+        <source type="image/webp" srcSet={`${artwork400Webp} 400w, ${artwork800Webp} 800w`} sizes={ARTWORK_SIZES} />
         <img
           className={styles.artwork}
-          src={artwork}
+          src={artwork400}
+          srcSet={`${artwork400} 400w, ${artwork800} 800w`}
+          sizes={ARTWORK_SIZES}
           alt={ARTWORK_ALT}
           width={ARTWORK_W}
           height={ARTWORK_H}

@@ -30,13 +30,13 @@ Current loading page is a shell without any design. We want to make it look nice
         caption visible by `getByRole("status")`, live-region attributes asserted.
   - [x] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- LoadingPage`.
 
-- [ ] Task 2 — Illustration that fits every screen
-  - [ ] The user sees the same centered loading view on phones, rotated screens and desktop, with no page scrollbar and no sideways drift.
-  - [ ] Technical translation: add responsive variants following the `Banner.tsx` precedent — `src/assets/loading/stitch-tanuki-artwork-400.png`, `stitch-tanuki-artwork-400.webp`, `stitch-tanuki-artwork-800.png`, `stitch-tanuki-artwork-800.webp` — wired as `<source type="image/webp" srcSet="... 400w, ... 800w">` + `<img srcSet="... 400w, ... 800w" sizes="(max-width: 48rem) calc(100vw - 2rem), 400px">`, keeping explicit `width`/`height` + `decoding="async"`. Then rename assets to `loading_page-xxx;<extension>` so that the asses names refers to the Loading Page.
+- [x] Task 2 — Illustration that fits every screen
+  - [x] The user sees the same centered loading view on phones, rotated screens and desktop, with no page scrollbar and no sideways drift.
+  - [x] Technical translation: add responsive variants following the `Banner.tsx` precedent — `src/assets/loading/stitch-tanuki-artwork-400.png`, `stitch-tanuki-artwork-400.webp`, `stitch-tanuki-artwork-800.png`, `stitch-tanuki-artwork-800.webp` — wired as `<source type="image/webp" srcSet="... 400w, ... 800w">` + `<img srcSet="... 400w, ... 800w" sizes="(max-width: 48rem) calc(100vw - 2rem), 400px">`, keeping explicit `width`/`height` + `decoding="async"`. Then rename assets to `loading_page-xxx;<extension>` so that the asses names refers to the Loading Page.
         Mobile-first base styles; desktop variation in `@media (min-width: 48rem)`; short-viewport override in `@media (max-height: 37.5rem)` declared after the desktop block per `DESIGN.md` (restores cover crop, loosens vertical centering).
         Center the page shell horizontally and vertically without page scroll at `390x844`, `844x390`, `1280x800`; never use `overflow: hidden` to trap zoomed content.
-  - [ ] Tests with the code: extend `LoadingPage.test.tsx` with `srcset`/`sizes` string assertions mirroring `Navbar.test.tsx` logo assertions (`src` contains `stitch-tanuki-artwork-400.png`, webp `source` `type="image/webp"`). No new `getComputedStyle` guards.
-  - [ ] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- LoadingPage`.
+  - [x] Tests with the code: extend `LoadingPage.test.tsx` with `srcset`/`sizes` string assertions mirroring `Navbar.test.tsx` logo assertions (`src` contains `stitch-tanuki-artwork-400.png`, webp `source` `type="image/webp"`). No new `getComputedStyle` guards.
+  - [x] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- LoadingPage`.
 
 - [ ] Task 3 — Captions that rotate gently
   - [ ] While waiting, the user reads a short kanji-lore line that changes every second or two, feeling organic rather than metronomic; users who ask for reduced motion see a single static line.

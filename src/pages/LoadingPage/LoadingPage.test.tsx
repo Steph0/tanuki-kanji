@@ -17,6 +17,19 @@ describe("LoadingPage", () => {
 
     const illustration = await screen.findByRole("img", { name: ARTWORK_ALT });
     expect(illustration).toBeVisible();
+    expect(illustration.getAttribute("src")).toContain("loading_page-400.png");
+    expect(illustration).toHaveAttribute(
+      "srcset",
+      "/src/assets/loading/loading_page-400.png 400w, /src/assets/loading/loading_page-800.png 800w",
+    );
+    expect(illustration).toHaveAttribute("sizes", "(max-width: 48rem) calc(100vw - 2rem), 400px");
+
+    const source = illustration.closest("picture")?.querySelector("source");
+    expect(source?.getAttribute("type")).toBe("image/webp");
+    expect(source).toHaveAttribute(
+      "srcset",
+      "/src/assets/loading/loading_page-400.webp 400w, /src/assets/loading/loading_page-800.webp 800w",
+    );
   });
 
   test("announces the lore caption as a polite live region", async () => {
