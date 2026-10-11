@@ -36,10 +36,10 @@ User-visible behavior for the landing call-to-action:
   - [x] Prove with `services/validate.test.ts` through `safeParseKanjiInput` only: 21 kanji valid, 22 kanji `TOO_LONG`, long invalid charset still reports per the order above. Entrypoint rejects long input with `InvalidKanjiInput` carrying `TOO_LONG`.
   - [x] Gate: build plus lint plus format plus single-file test, then full test.
 
-- [ ] Task 2 — Live indicative counter
-  - [ ] Show a live count next to the label. It rises and falls with typing. No cap on typing. Technical: `SearchBar.tsx` renders `{count} / {MAX} chars` from the raw typed value with plain `.length`. Edge spaces count, since the value is not normalized here. Import `KANJI_INPUT_MAX_LENGTH` from the engine, read only. No `maxLength` attribute on the `<input>`. Counter is plain text with no live region, so screen readers stay quiet.
-  - [ ] Prove with `SearchBar.test.tsx`: empty shows `"0 / 21 chars"`. Typing `"森"` shows `"1 / 21 chars"`. Typing 22 kanji shows `"22 / 21 chars"`. Deleting returns to `"1 / 21 chars"`.
-  - [ ] Gate: build plus lint plus format plus single-file test, then full test.
+- [x] Task 2 — Live indicative counter
+  - [x] Show a live count next to the label. It rises and falls with typing. No cap on typing. Technical: `SearchBar.tsx` renders `{count} / {MAX} chars` from the raw typed value with plain `.length`. Edge spaces count, since the value is not normalized here. Import `KANJI_INPUT_MAX_LENGTH` from the engine, read only. No `maxLength` attribute on the `<input>`. Counter is plain text with no live region, so screen readers stay quiet.
+  - [x] Prove with `SearchBar.test.tsx`: empty shows `"0 / 21 chars"`. Typing `"森"` shows `"1 / 21 chars"`. Typing 22 kanji shows `"22 / 21 chars"`. Deleting returns to `"1 / 21 chars"`.
+  - [x] Gate: build plus lint plus format plus single-file test, then full test.
 
 - [ ] Task 3 — Over-limit warning, warning first, no cut yet
   - [ ] Warn gently in the existing message slot past the limit. Cut nothing yet. Warning beats error while long. Technical: `useKanjiInputValidation.ts` derives `isOverLimit` from raw typed length over the engine limit, same count as the counter. Early return: normalized empty stays silent, over-limit shows the warning, else the existing error mapping. So 22 spaces stay silent and long invalid input shows the warning. Warning copy lives in a SearchBar-local constant: `OVER_LIMIT_WARNING_MESSAGE = "Whoa, long one! Tanuki keeps first 21 chars."`. Set `aria-invalid="true"` on error only, `aria-describedby` on any message, keep `aria-live="polite"` with no `role` on the message, so the warning announces once on appearance. Over-limit alone never disables submit. Freeze warning evaluation while composing, like validation. Counter stays live during composition. Interim: submit sends the full value and the engine length guard rejects it. The cut lands in Task 5.

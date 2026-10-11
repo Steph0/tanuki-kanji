@@ -1,6 +1,7 @@
 import forwardIcon from "@material-symbols/svg-400/outlined/arrow_forward.svg";
 import markerIcon from "@material-symbols/svg-400/outlined/ink_highlighter.svg";
 import { ICON_MD_PX, ICON_SM_PX } from "../../../constants/globals";
+import { KANJI_INPUT_MAX_LENGTH } from "../../../services/validate.ts";
 import styles from "./SearchBar.module.css";
 import { useSearchBar } from "./useSearchBar.ts";
 
@@ -29,7 +30,9 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
             />
             Enter your kanji
           </label>
-          <span className={styles.counter}>0 / 21 chars</span>
+          <span className={styles.counter}>
+            {kanjiInputValue.length} / {KANJI_INPUT_MAX_LENGTH} chars
+          </span>
         </div>
         <form onSubmit={handleSearchSubmit}>
           <div className={`${styles.fieldRow} field${kanjiInputMessage ? " invalid" : ""}`}>

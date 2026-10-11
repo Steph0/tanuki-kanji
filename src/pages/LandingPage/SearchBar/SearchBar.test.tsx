@@ -40,6 +40,33 @@ describe("SearchBar", () => {
     });
   });
 
+  describe("character counter", () => {
+    test("starts at zero against the engine limit", () => {
+      render(<SearchBar onSubmit={noop} />);
+      expect(screen.getByText("0 / 21 chars")).toBeVisible();
+    });
+
+    test("counts each typed character", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      expect(screen.getByText("1 / 21 chars")).toBeVisible();
+    });
+
+    test("keeps counting past the limit without blocking typing", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      expect(screen.getByText("22 / 21 chars")).toBeVisible();
+    });
+
+    test("falls back down when characters are deleted", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      const input = page.getByRole("textbox", { name: "Enter your kanji" });
+      await input.fill("森".repeat(22));
+      await input.fill("森");
+      expect(screen.getByText("1 / 21 chars")).toBeVisible();
+    });
+  });
+
   describe("submit path", () => {
     test("sends the typed text when the submit action is clicked", async () => {
       const onSubmit = vi.fn();
