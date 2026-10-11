@@ -47,10 +47,10 @@ describe("App accessibility on /result", () => {
 
   test.each(VIEWPORTS)("has no violations at $viewportName viewport", async ({ width, height }) => {
     await page.viewport(width, height);
-    render(<App />);
+    render(<App engine={() => Promise.resolve("kanji lesson: 狸")} />);
     await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
     await page.getByRole("button", { name: "Submit search" }).click();
-    await screen.findByText("kanji lesson: 狸", {}, { timeout: 5000 });
+    expect(await screen.findByText("kanji lesson: 狸")).toBeVisible();
     const results = await axe.run(document.body);
     expect(results.violations).toEqual([]);
   });

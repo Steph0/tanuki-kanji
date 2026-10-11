@@ -3,8 +3,8 @@ import artwork400Webp from "../../assets/loading/loading_page-400.webp";
 import artwork800 from "../../assets/loading/loading_page-800.png";
 import artwork800Webp from "../../assets/loading/loading_page-800.webp";
 import styles from "./LoadingPage.module.css";
-import { LOADING_CAPTIONS } from "./loadingCaptions.ts";
 import { useLoadingPage } from "./useLoadingPage.ts";
+import { useRotatingCaption } from "./useRotatingCaption.ts";
 
 const ARTWORK_W = 400;
 const ARTWORK_H = 400;
@@ -18,6 +18,7 @@ type LoadingPageProps = {
 
 export function LoadingPage({ kanjiUserInput, onDone }: LoadingPageProps) {
   useLoadingPage(kanjiUserInput, onDone);
+  const caption = useRotatingCaption();
 
   return (
     <div className={styles.page}>
@@ -35,7 +36,7 @@ export function LoadingPage({ kanjiUserInput, onDone }: LoadingPageProps) {
         />
       </picture>
       <p role="status" aria-live="polite" aria-busy="true" className={styles.caption}>
-        {LOADING_CAPTIONS[0]}
+        {caption}
       </p>
     </div>
   );

@@ -1,19 +1,39 @@
-import { render, screen } from "@testing-library/preact";
+import { render, screen, waitFor } from "@testing-library/preact";
 import { describe, expect, test } from "vitest";
 import { TanukiKanjiProvider } from "../../hooks/useTanukiKanjiEngine.tsx";
 import { dummyEngine, noop } from "../../test-utils.ts";
 import { LoadingPage } from "./LoadingPage.tsx";
-import { LOADING_CAPTIONS } from "./loadingCaptions.ts";
 
 const ARTWORK_ALT = "Tanuki calligraphing by lamplight while your lesson loads";
 
+function renderLoadingPage() {
+  return render(
+    <TanukiKanjiProvider engine={dummyEngine}>
+      <LoadingPage kanjiUserInput="狸" onDone={noop} />
+    </TanukiKanjiProvider>,
+  );
+}
+
+function mockReducedMotion(matches: boolean) {
+  const original = window.matchMedia;
+  window.matchMedia = ((query: string) => ({
+    matches: query === "(prefers-reduced-motion: reduce)" ? matches : false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  })) as unknown as typeof window.matchMedia;
+  return () => {
+    window.matchMedia = original;
+  };
+}
+
 describe("LoadingPage", () => {
   test("shows the loading illustration with its descriptive label", async () => {
-    render(
-      <TanukiKanjiProvider engine={dummyEngine}>
-        <LoadingPage kanjiUserInput="狸" onDone={noop} />
-      </TanukiKanjiProvider>,
-    );
+    renderLoadingPage();
 
     const illustration = await screen.findByRole("img", { name: ARTWORK_ALT });
     expect(illustration).toBeVisible();
@@ -33,16 +53,39 @@ describe("LoadingPage", () => {
   });
 
   test("announces the lore caption as a polite live region", async () => {
-    render(
-      <TanukiKanjiProvider engine={dummyEngine}>
-        <LoadingPage kanjiUserInput="狸" onDone={noop} />
-      </TanukiKanjiProvider>,
-    );
+    renderLoadingPage();
 
     const caption = await screen.findByRole("status");
     expect(caption).toBeVisible();
-    expect(caption).toHaveTextContent(LOADING_CAPTIONS[0]);
+    expect(caption).not.toBeEmptyDOMElement();
     expect(caption).toHaveAttribute("aria-live", "polite");
     expect(caption).toHaveAttribute("aria-busy", "true");
   });
+
+  test("rotates to a different lore caption while the lesson loads", async () => {
+    renderLoadingPage();
+
+    const caption = await screen.findByRole("status");
+    const start = caption.textContent;
+    expect(start).toBeTruthy();
+    await waitFor(() => expect(screen.getByRole("status").textContent).not.toBe(start), {
+      timeout: 8000,
+    });
+    expect(screen.getByRole("status")).toBeVisible();
+  }, 20000);
+
+  test("keeps the first caption static when reduced motion is requested", async () => {
+    const restore = mockReducedMotion(true);
+    try {
+      renderLoadingPage();
+
+      const caption = await screen.findByRole("status");
+      const start = caption.textContent;
+      expect(start).toBeTruthy();
+      await new Promise((resolve) => setTimeout(resolve, 4500));
+      expect(caption.textContent).toBe(start);
+    } finally {
+      restore();
+    }
+  }, 20000);
 });

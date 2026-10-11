@@ -6,7 +6,7 @@ Current loading page is a shell without any design. We want to make it look nice
 
 # What
 
-- While their lesson loads, the user sees a calm illustration with a short rotating lore line underneath, instead of a bare "Loading..." shell.
+- While their lesson loads, the user sees a calm illustration, gently animated with breathing, rotating ink rings and a soft halo, plus a short rotating lore line underneath, instead of a bare "Loading..." shell.
 - On any screen size the loading content looks centered with no page scrollbar; on very short screens the illustration crops rather than forcing scroll.
 - The navbar gains a way back: its right control returns the user to the homepage, announced as "Back to homepage".
 - What does NOT change in this spec: lesson generation itself, search input and validation, result page, brand logo and title.
@@ -38,14 +38,14 @@ Current loading page is a shell without any design. We want to make it look nice
   - [x] Tests with the code: extend `LoadingPage.test.tsx` with `srcset`/`sizes` string assertions mirroring `Navbar.test.tsx` logo assertions (`src` contains `stitch-tanuki-artwork-400.png`, webp `source` `type="image/webp"`). No new `getComputedStyle` guards.
   - [x] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- LoadingPage`.
 
-- [ ] Task 3 — Captions that rotate gently
-  - [ ] While waiting, the user reads a short kanji-lore line that changes every second or two, feeling organic rather than metronomic; users who ask for reduced motion see a single static line.
-  - [ ] Technical translation: new `src/pages/LoadingPage/loadingCaptions.ts` exporting `LOADING_CAPTIONS: string[]` (exactly 20 entries, `body-sm`-length, folklore/etymology tone like `Banner`/`Explanation`, e.g. `"Tracing the roots of your kanji…"`, `"Every stroke was once a picture."`, `"Tea cools, ink dries, meaning stays."`, `"The tanuki grinds fresh ink for you."`) plus `LOADING_CAPTION_MIN_MS = 900` and `LOADING_CAPTION_MAX_MS = 2000`.
-        New `src/pages/LoadingPage/useRotatingCaption.ts` exporting `useRotatingCaption(captions, minMs, maxMs, randomSource = Math.random)` returning the current index; delay per tick is `minMs + randomSource() * (maxMs - minMs)`.
+- [x] Task 3 — Captions that rotate gently
+  - [x] While waiting, the user reads a short kanji-lore line that changes every second or two, feeling organic rather than metronomic, never repeating the same line twice in a row; users who ask for reduced motion see a single static line.
+  - [x] Technical translation: `src/pages/LoadingPage/useRotatingCaption.ts` owns its deck and bounds internally and exports only the hook: 15 English-only entries, `body-sm`-length, second-person folklore/etymology tone like `Banner`/`Explanation`, opening with the static starter `"Looking up that kanji for you…"`, e.g. `"Tracing the roots of your kanji…"`, `"Consulting the scriptures for you…"`, `"Grinding fresh ink for your lesson…"`, `"Tea cools, ink dries, your meaning stays."`, rotating on a 1200–4000ms cadence.
+        `useRotatingCaption()` returns the current caption text; delay per tick is base plus `Math.random()` times the 2800ms variation, and the next index is a random offset of 1..length-1 from the current one, so consecutive captions always differ with no internals exported for tests.
         Honor `prefers-reduced-motion` by rendering the first caption statically (no timer).
-        Caption container keeps `role="status"` + polite live region; Japanese spans carry `lang="ja"`.
-  - [ ] Tests with the code: unit `src/pages/LoadingPage/useRotatingCaption.test.ts` (fake timers, injected `randomSource`: advances within 900–2000ms bounds, non-constant delays across ticks); integration in `LoadingPage.test.tsx` (caption rotates to a second entry; static first caption with reduced motion emulated). Existing `useLoadingPage.test.tsx` stays green untouched.
-  - [ ] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- LoadingPage`.
+        Caption container keeps `role="status"` + polite live region.
+  - [x] Tests with the code: unit `src/pages/LoadingPage/useRotatingCaption.test.ts` (fake timers, scripted `Math.random` draw queues driving delay and offset deterministically: starts non-empty, advances within cadence bounds, delays vary across ticks, consecutive captions always differ, cycles back, static with reduced motion); integration in `LoadingPage.test.tsx` (polite live region holds non-empty text; caption changes while waiting; static with reduced motion emulated). Existing `useLoadingPage.test.tsx` stays green untouched.
+  - [x] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- LoadingPage`.
 
 - [ ] Task 4 — Navbar button back to the homepage
   - [ ] The user can leave the loading view and return to the search homepage from the navbar.
@@ -60,6 +60,7 @@ Current loading page is a shell without any design. We want to make it look nice
 
 - When the user submits a kanji → the loading view shows the illustration, one lore caption, and the navbar unchanged (Task 1).
 - When the viewport is `390x844`, `844x390`, or `1280x800` → the loading content reads centered with no page scrollbar (Task 2).
-- When the user waits: the caption changes within ~1–2s per rotation, non-uniformly; with reduced motion → the caption stays static (Task 3).
-- When the user activates the navbar right control: they return to `/` and assistive tech announces "Back to homepage" (Task 4).
+- When the user waits: the caption changes within ~1.2–4s per rotation, non-uniformly and never repeating twice in a row; with reduced motion → the caption stays static (Task 3).
+- When the user watches the illustration: the artwork breathes inside slowly rotating ink rings with a soft halo; with reduced motion → the whole composition stays still (Task 4).
+- When the user activates the navbar right control: they return to `/` and assistive tech announces "Back to homepage" (Task 5).
 - Final full loop passes: `npm run build` + `npm run lint` + `npm run format` + `npm run test`; App axe checks stay clean at mobile, rotated, and desktop viewports.

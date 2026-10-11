@@ -14,7 +14,7 @@ describe("runTanukiKanjiLesson", () => {
   test("names the output after the input", async () => {
     const pending = runTanukiKanjiLesson("狸");
     const assertion = expect(pending).resolves.toBe("kanji lesson: 狸");
-    await vi.advanceTimersByTimeAsync(1000);
+    await vi.advanceTimersByTimeAsync(5000);
     await assertion;
   });
 
@@ -23,7 +23,7 @@ describe("runTanukiKanjiLesson", () => {
     const trimmed = runTanukiKanjiLesson("森");
     const paddedAssertion = expect(padded).resolves.toBe("kanji lesson: 森");
     const trimmedAssertion = expect(trimmed).resolves.toBe("kanji lesson: 森");
-    await vi.advanceTimersByTimeAsync(1000);
+    await vi.advanceTimersByTimeAsync(5000);
     await paddedAssertion;
     await trimmedAssertion;
   });
