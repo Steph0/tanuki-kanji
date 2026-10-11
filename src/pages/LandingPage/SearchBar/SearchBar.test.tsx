@@ -360,6 +360,84 @@ describe("SearchBar", () => {
     });
   });
 
+  describe("warning styling", () => {
+    test("paints the counter and message in warning gold past the limit", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      // fill focuses the input — blur to assert the at-rest gold border
+      screen.getByRole("textbox", { name: "Enter your kanji" }).blur();
+      const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
+      // "warning" is the shared .field state hook from globals, not a module class
+      expect(field?.className.split(" ")).toContain("warning");
+      const gold = "rgb(138, 94, 0)";
+      expect(getComputedStyle(field as Element).borderColor).toBe(gold);
+      const counter = screen.getByText("22 / 21 chars");
+      expect(counter).toHaveClass(styles.warning);
+      expect(getComputedStyle(counter).color).toBe(gold);
+      const message = screen.getByText("Whoa, long one! Tanuki keeps first 21 chars.");
+      expect(message).toHaveClass(styles.warning);
+      expect(getComputedStyle(message).color).toBe(gold);
+      expect(getComputedStyle(message).color).not.toBe("rgb(200, 62, 43)");
+    });
+
+    test("paints a single gold stroke on focused over-limit input", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      // fill focuses the input, so :focus-within applies — the border goes
+      // transparent and one 2px outline takes the green outline's own +2px seat
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
+      const gilded = getComputedStyle(field as Element);
+      expect(gilded.borderColor).toBe("rgba(0, 0, 0, 0)");
+      expect(gilded.boxShadow).toContain("138, 94, 0");
+      expect(gilded.outlineStyle).toBe("solid");
+      expect(gilded.outlineColor).toBe("rgb(138, 94, 0)");
+      expect(gilded.outlineWidth).toBe("2px");
+      expect(gilded.outlineOffset).toBe("2px");
+    });
+
+    test("leaves error red untouched on a dirty cut past the limit", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("ab".repeat(11));
+      const error = screen.getByText("Only Kanji, hiragana and katakana characters are allowed");
+      expect(error).not.toHaveClass(styles.warning);
+      expect(getComputedStyle(error).color).toBe("rgb(200, 62, 43)");
+      const counter = screen.getByText("22 / 21 chars");
+      expect(counter).not.toHaveClass(styles.warning);
+      const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
+      expect(field?.className.split(" ")).toContain("error");
+    });
+
+    test("keeps the calm look at the limit", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(21));
+      expect(screen.getByText("21 / 21 chars")).not.toHaveClass(styles.warning);
+      const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
+      expect(field?.className.split(" ")).not.toContain("warning");
+    });
+
+    test("drops the warning look back under the limit", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      const input = page.getByRole("textbox", { name: "Enter your kanji" });
+      await input.fill("森".repeat(22));
+      expect(screen.getByText("22 / 21 chars")).toHaveClass(styles.warning);
+      await input.fill("森");
+      expect(screen.getByText("1 / 21 chars")).not.toHaveClass(styles.warning);
+      expect(screen.queryByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeNull();
+    });
+
+    test("keeps the card height identical across silence, warning, error", async () => {
+      render(<SearchBar onSubmit={noop} />);
+      const card = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.card}`);
+      const calm = (card as HTMLElement).offsetHeight;
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      expect(screen.getByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeVisible();
+      expect((card as HTMLElement).offsetHeight).toBe(calm);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("hello");
+      expect(screen.getByText("Only Kanji, hiragana and katakana characters are allowed")).toBeVisible();
+      expect((card as HTMLElement).offsetHeight).toBe(calm);
+    });
+  });
+
   describe("accessibility", () => {
     test("labels Japanese text with no error attributes when empty", () => {
       render(<SearchBar onSubmit={noop} />);

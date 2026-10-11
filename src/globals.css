@@ -20,6 +20,7 @@
   --color-secondary: #8c5b3e;
   --color-secondary-tint: rgba(140, 91, 62, 0.1);
   --color-tertiary: #c83e2b;
+  --color-warning: #8a5e00;
   --color-on-primary: #ffffff;
 
   /* DESIGN.md — typography stacks */
@@ -239,6 +240,12 @@ input:focus-visible {
   --field-accent: var(--color-tertiary);
   --field-glow: rgba(200, 62, 43, 0.12);
   border-color: var(--color-tertiary);
+}
+
+.field.warning {
+  --field-accent: var(--color-warning);
+  --field-glow: rgba(138, 94, 0, 0.12);
+  border-color: var(--color-warning);
 }
 
 .field:focus-within,

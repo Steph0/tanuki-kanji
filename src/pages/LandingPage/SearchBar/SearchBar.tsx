@@ -30,7 +30,7 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
             />
             Enter your kanji
           </label>
-          <span className={styles.counter}>
+          <span className={`${styles.counter}${kanjiInputTone === "warning" ? ` ${styles.warning}` : ""}`}>
             {kanjiInputValue.length} / {KANJI_INPUT_MAX_LENGTH} chars
           </span>
         </div>
@@ -67,7 +67,11 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
         </form>
         <div className={styles.errorMessage}>
           {kanjiInputMessage ? (
-            <p id="kanji-input-message" className={styles.message} aria-live="polite">
+            <p
+              id="kanji-input-message"
+              className={`${styles.message}${kanjiInputTone === "warning" ? ` ${styles.warning}` : ""}`}
+              aria-live="polite"
+            >
               {kanjiInputMessage}
             </p>
           ) : null}

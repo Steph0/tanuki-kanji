@@ -13,6 +13,7 @@ colors:
   secondary: '#8c5b3e'
   secondary-tint: 'rgba(140, 91, 62, 0.1)'
   tertiary: '#c83e2b'
+  warning: '#8A5E00'
   on-primary: '#ffffff'
 typography:
   display-kanji-lg:
@@ -130,6 +131,7 @@ The color palette draws directly from classical Japanese mineral pigments (*iwa-
 - **Primary (`#2D5A43` Deep Matcha / Koke Moss):** Represents focus, growth, and grounding presence. Applied to key navigation markers, dominant CTA actions, and mastery indicators.
 - **Secondary (`#8C5B3E` Roasted Tea / Hojicha Cedar):** Radiates warmth, craft, and organic structure. Applied to radical components, etymological timelines, and secondary interactive states.
 - **Tertiary (`#C83E2B` Cinnabar / Shunin Vermilion):** Inspired by Japanese Hanko seals and shrine torii gates. Reserved strictly for etymology anchors, stamp badges, critical memory hooks, and subtle callouts.
+- **Warning (`#8A5E00` Darkened Yamabuki Gold):** Signals over-limit input without alarm. Applied to the counter, the warning message, and the field ring past the length limit.
 - **Neutral Core (`#22252A` Sumi Ink):** Deep soot slate delivering high-contrast, effortless legibility without the harshness of pure black.
 
 ### Surface System

@@ -50,6 +50,10 @@
   white-space: nowrap;
 }
 
+.counter.warning {
+  color: var(--color-warning);
+}
+
 .fieldRow {
   position: relative;
   display: flex;
@@ -99,6 +103,10 @@
   line-height: var(--text-body-sm-leading);
   letter-spacing: var(--text-body-sm-spacing);
   color: var(--color-tertiary);
+}
+
+.message.warning {
+  color: var(--color-warning);
 }
 
 .submitButton {
