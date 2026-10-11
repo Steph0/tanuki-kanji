@@ -3,7 +3,7 @@ import preact from "@preact/preset-vite";
 import { playwright } from "@vitest/browser-playwright";
 import { loadEnv } from "vite";
 import { defineConfig } from "vitest/config";
-import { emulateReducedMotion } from "./browser-commands.ts";
+import { emulateReducedMotion, pressTab } from "./browser-commands.ts";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
         provider: playwright(),
         headless: true,
         instances: [{ browser: "chromium" }],
-        commands: { emulateReducedMotion },
+        commands: { emulateReducedMotion, pressTab },
       },
     },
   };

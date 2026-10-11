@@ -54,14 +54,14 @@ Current loading page is a shell without any design. We want to make it look nice
   - [x] Tests with the code: extend `src/pages/LoadingPage/LoadingPage.test.tsx`: decorative layers render hidden from assistive tech; with reduced motion emulated the rings carry no animation (single `getComputedStyle` guard, a technical necessity under the `DESIGN.md` Motion rule).
   - [x] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- LoadingPage`, then full `npm run test`.
 
-- [ ] Task 5 — Navbar button back to the homepage
-  - [ ] The user can leave the loading view and return to the search homepage from the navbar.
-  - [ ] Technical translation: in `src/components/Navbar/Navbar.tsx`, replace the non-interactive `span.homeMark` (`aria-hidden`, `sync.svg`) with a real `<button type="button">` reusing the existing `.homeMark` 44×44 target, labeled `aria-label="Back to homepage"` with a visible tooltip reading `"Back to homepage"` on both `:hover` and `:focus-visible` (never hover-only).
-        Icon is an already-installed `@material-symbols/svg-400/outlined` back glyph (e.g. `arrow_back.svg`), sized via `ICON_MD_PX` + `width`/`height` attrs like today.
-        Click routes home via `preact-iso` `useLocation().route("/")` (same pattern as `AppRouter.tsx` `handleSubmit`).
+- [x] Task 5 — Navbar button back to the homepage
+  - [x] The user can leave the loading view and return to the search homepage from the navbar.
+  - [x] Technical translation: in `src/components/Navbar/Navbar.tsx`, replace the non-interactive `span.homeMark` (`aria-hidden`, `sync.svg`) with a real `<button type="button">` reusing the existing `.homeMark` 44×44 target, labeled `aria-label="Back to homepage"` with a visible tooltip reading `"Back to homepage"` on both `:hover` and `:focus-visible` (never hover-only).
+        Icon stays the existing `sync.svg`, sized via `ICON_MD_PX` + `width`/`height` attrs like today.
+        Click routes home through the `useNavbar.ts` hook-controller (`preact-iso` `useLocation().route("/")`, same pattern as `AppRouter.tsx` `handleSubmit`); `Navbar.tsx` stays presentational.
         Keyboard focus shows the `DESIGN.md` 2px `primary` outline with 2px offset.
-  - [ ] Tests with the code: extend `src/components/Navbar/Navbar.test.tsx` (one `render` per test, `getByRole` priority): button `getByRole("button", { name: "Back to homepage" })` is visible, activates home navigation, tooltip text appears on hover and on focus. Axe stays at App level only.
-  - [ ] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- Navbar`, then full `npm run test`.
+  - [x] Tests with the code: extend `src/components/Navbar/Navbar.test.tsx` (one `render` per test, `getByRole` priority): button `getByRole("button", { name: "Back to homepage" })` is visible, activates home navigation, tooltip text appears on hover and on focus. Axe stays at App level only.
+  - [x] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- Navbar`, then full `npm run test`.
 
 # Acceptance
 

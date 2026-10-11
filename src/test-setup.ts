@@ -11,5 +11,6 @@ afterEach(() => {
 declare module "vitest/internal/browser" {
   interface BrowserCommands {
     emulateReducedMotion: (reduce: boolean) => Promise<void>;
+    pressTab: () => Promise<void>;
   }
 }

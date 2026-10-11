@@ -1,10 +1,21 @@
 import { render, screen } from "@testing-library/preact";
-import { afterEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { commands, page } from "vitest/browser";
 import { ICON_XL_PX } from "../../constants/globals.ts";
 import { Navbar } from "./Navbar.tsx";
 
+const { mockRoute } = vi.hoisted(() => ({ mockRoute: vi.fn() }));
+
+vi.mock("preact-iso", () => ({
+  useLocation: () => ({ route: mockRoute }),
+}));
+
 const originalDev = import.meta.env.DEV;
 const originalMode = import.meta.env.MODE;
+
+beforeEach(() => {
+  mockRoute.mockClear();
+});
 
 afterEach(() => {
   import.meta.env.DEV = originalDev;
@@ -57,5 +68,48 @@ describe("Navbar", () => {
     expect(badge).toBeVisible();
     expect(navigation.children[1]).toBe(badge);
     expect(badge.nextElementSibling).toBe(navigation.lastElementChild);
+  });
+
+  describe("home button", () => {
+    test("returns the user to the homepage when activated", async () => {
+      render(<Navbar />);
+      const home = screen.getByRole("button", { name: "Back to homepage" });
+      expect(home).toBeVisible();
+      expect(home).toHaveAttribute("type", "button");
+      await page.getByRole("button", { name: "Back to homepage" }).click();
+      expect(mockRoute).toHaveBeenCalledTimes(1);
+      expect(mockRoute).toHaveBeenCalledWith("/");
+    });
+
+    test("reveals its tooltip on hover", async () => {
+      render(<Navbar />);
+      const tooltip = screen.getByText("Back to homepage");
+      // Park the real mouse away first: earlier tests may have left it over the button.
+      await page.getByRole("img", { name: "Tanuki Kanji logo" }).hover();
+      await vi.waitFor(() => expect(tooltip).not.toBeVisible());
+      await page.getByRole("button", { name: "Back to homepage" }).hover();
+      await vi.waitFor(() => expect(tooltip).toBeVisible());
+      // Park the mouse away again so the keyboard test below starts hover-free.
+      await page.getByRole("img", { name: "Tanuki Kanji logo" }).hover();
+      await vi.waitFor(() => expect(tooltip).not.toBeVisible());
+    });
+
+    test("reveals its tooltip and the focus ring on keyboard focus, never hover-only", async () => {
+      render(<Navbar />);
+      const home = screen.getByRole("button", { name: "Back to homepage" });
+      const tooltip = screen.getByText("Back to homepage");
+      expect(tooltip).not.toBeVisible();
+      await commands.pressTab();
+      // The parked mouse is on the logo, so only keyboard focus can reveal this.
+      expect(home.matches(":hover")).toBe(false);
+      await vi.waitFor(() => expect(tooltip).toBeVisible());
+
+      // The DESIGN.md focus ring arrives via the global :focus-visible rule
+      const ring = getComputedStyle(home);
+      expect(ring.outlineStyle).toBe("solid");
+      expect(ring.outlineWidth).toBe("2px");
+      expect(ring.outlineColor).toBe("rgb(45, 90, 67)");
+      expect(ring.outlineOffset).toBe("2px");
+    });
   });
 });

@@ -48,21 +48,55 @@
   text-overflow: ellipsis;
 }
 
-/* Future home link: explicitly non-interactive in 002 */
 .homeMark {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2.75rem;
   height: 2.75rem;
+  padding: 0;
+  border: none;
   border-radius: var(--radius-full);
+  background: none;
   color: var(--color-ink-soft);
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .homeIcon {
   width: var(--icon-md);
   height: var(--icon-md);
+}
+
+.tooltip {
+  position: absolute;
+  top: calc(100% + var(--space-xs));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  background-color: var(--color-ink);
+  color: var(--color-canvas);
+  font-family: var(--font-body);
+  font-weight: var(--text-label-sm-weight);
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-leading);
+  letter-spacing: var(--text-label-sm-spacing);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 150ms ease,
+    visibility 0s linear 150ms;
+  pointer-events: none;
+}
+
+.homeMark:hover .tooltip,
+.homeMark:focus-visible .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 150ms ease;
 }
 
 /* Wide screens */
