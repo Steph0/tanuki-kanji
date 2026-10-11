@@ -4,6 +4,10 @@ Spec unit: `docs/specs/NNN-name/NNN-name.md`. Copy this skeleton for a new spec.
 
 Rule of thumb: a non-technical reader should understand `Why` + `What` fully.
 Exact values live in `Tasks`, next to the code they constrain.
+Style: short sentences. Use `:` to explain. Use `to` or `into`, for example, to indicate transformations or links.
+Never use em dashes or arrows. Keep `Why` plus `What` board short, like a Product MAnager
+to the board. No parens details in `What`. Tasks read like a Product Owner to devs:
+functional goal first, then "Senior dev" talks in details.
 
 ```md
 # NNN — Feature name
