@@ -47,7 +47,14 @@ Current loading page is a shell without any design. We want to make it look nice
   - [x] Tests with the code: unit `src/pages/LoadingPage/useRotatingCaption.test.ts` (fake timers, scripted `Math.random` draw queues driving delay and offset deterministically: starts non-empty, advances within cadence bounds, delays vary across ticks, consecutive captions always differ, cycles back, static with reduced motion); integration in `LoadingPage.test.tsx` (polite live region holds non-empty text; caption changes while waiting; static with reduced motion emulated). Existing `useLoadingPage.test.tsx` stays green untouched.
   - [x] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- LoadingPage`.
 
-- [ ] Task 4 — Navbar button back to the homepage
+- [ ] Task 4 — Illustration that feels alive
+  - [ ] While waiting, the user sees the artwork breathing calmly inside slowly rotating ink rings with a soft halo glow, so the loading moment feels meditative rather than frozen; users who ask for reduced motion see the same composition completely still.
+  - [ ] Technical translation: re-implement the "Organic Sumi & Watercolor Ripple Visualizer" from `./stitch-loading-screen.html` (Motion spec in `./stitch-snapshot.md`) in `src/pages/LoadingPage/LoadingPage.tsx` + `src/pages/LoadingPage/LoadingPage.module.css`, consuming tokens via `var(--...)` (`DESIGN.md` wins every Stitch conflict: primary `#2d5a43`, secondary `#8c5b3e`): halo glow pulse ~4s, expanding ripple ring ~4.8s, two dashed enso SVG rings rotating 26s and counter-rotating 38s, four sumi dots (two gently pulsing), artwork breathe (scale 1→1.02 with slight lift, 4.5s ease-in-out infinite).
+        Every layer is decorative: `aria-hidden`, no pointer events, outside the live region. `prefers-reduced-motion` renders the whole composition static (same fallback pattern as the Task 3 captions).
+  - [ ] Tests with the code: extend `src/pages/LoadingPage/LoadingPage.test.tsx`: decorative layers render hidden from assistive tech; with reduced motion emulated the rings carry no animation (single `getComputedStyle` guard, a technical necessity under the `DESIGN.md` Motion rule).
+  - [ ] Gate: `npm run build` + `npm run lint` + `npm run format` + `npm run test -- LoadingPage`, then full `npm run test`.
+
+- [ ] Task 5 — Navbar button back to the homepage
   - [ ] The user can leave the loading view and return to the search homepage from the navbar.
   - [ ] Technical translation: in `src/components/Navbar/Navbar.tsx`, replace the non-interactive `span.homeMark` (`aria-hidden`, `sync.svg`) with a real `<button type="button">` reusing the existing `.homeMark` 44×44 target, labeled `aria-label="Back to homepage"` with a visible tooltip reading `"Back to homepage"` on both `:hover` and `:focus-visible` (never hover-only).
         Icon is an already-installed `@material-symbols/svg-400/outlined` back glyph (e.g. `arrow_back.svg`), sized via `ICON_MD_PX` + `width`/`height` attrs like today.
