@@ -48,21 +48,21 @@ describe("SearchBar", () => {
 
     test("counts each typed character", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
       expect(screen.getByText("1 / 21 chars")).toBeVisible();
     });
 
     test("keeps counting past the limit without blocking typing", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸".repeat(22));
       expect(screen.getByText("22 / 21 chars")).toBeVisible();
     });
 
     test("falls back down when characters are deleted", async () => {
       render(<SearchBar onSubmit={noop} />);
       const input = page.getByRole("textbox", { name: "Enter your kanji" });
-      await input.fill("森".repeat(22));
-      await input.fill("森");
+      await input.fill("狸".repeat(22));
+      await input.fill("狸");
       expect(screen.getByText("1 / 21 chars")).toBeVisible();
     });
   });
@@ -70,14 +70,14 @@ describe("SearchBar", () => {
   describe("over-limit warning", () => {
     test("stays clean at the limit with no warning", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(21));
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸".repeat(21));
       expect(screen.queryByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeNull();
       expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
     });
 
     test("warns on a long valid word with submit on", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸".repeat(22));
       expect(screen.getByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeVisible();
       expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
     });
@@ -92,7 +92,7 @@ describe("SearchBar", () => {
 
     test("warns when only the tail past the limit is bad", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill(`${"森".repeat(21)}!`);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill(`${"狸".repeat(21)}!`);
       expect(screen.getByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeVisible();
       expect(screen.queryByText("Only Kanji, hiragana and katakana characters are allowed")).toBeNull();
       expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
@@ -101,9 +101,9 @@ describe("SearchBar", () => {
     test("clears the warning back under the limit", async () => {
       render(<SearchBar onSubmit={noop} />);
       const input = page.getByRole("textbox", { name: "Enter your kanji" });
-      await input.fill("森".repeat(22));
+      await input.fill("狸".repeat(22));
       expect(screen.getByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeVisible();
-      await input.fill("森");
+      await input.fill("狸");
       expect(screen.queryByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeNull();
     });
 
@@ -119,26 +119,27 @@ describe("SearchBar", () => {
 
     test("holds the warning steady through composition", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
       const input = screen.getByRole("textbox", { name: "Enter your kanji" });
       input.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸".repeat(22));
       expect(screen.queryByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeNull();
       input.dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
       expect(await screen.findByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeVisible();
     });
 
-    test("holds an over-limit submit until the cut lands", async () => {
+    test("submits the first 21 characters on a warned submit", async () => {
       const onSubmit = vi.fn();
       render(<SearchBar onSubmit={onSubmit} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸".repeat(22));
       await page.getByRole("button", { name: "Submit search" }).click();
-      expect(onSubmit).not.toHaveBeenCalled();
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+      expect(onSubmit).toHaveBeenCalledWith("狸".repeat(21));
     });
 
     test("describes the warning without the invalid mark", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸".repeat(22));
       const input = screen.getByRole("textbox", { name: "Enter your kanji" });
       expect(input).not.toHaveAttribute("aria-invalid");
       const describedBy = input.getAttribute("aria-describedby");
@@ -217,7 +218,7 @@ describe("SearchBar", () => {
     test("enables the submit silently for a valid kanji word", async () => {
       const onSubmit = vi.fn();
       render(<SearchBar onSubmit={onSubmit} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
       expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
       expect(screen.queryByText("Only Kanji, hiragana and katakana characters are allowed")).toBeNull();
       expect(screen.queryByText("Enter at least one kanji.")).toBeNull();
@@ -226,11 +227,11 @@ describe("SearchBar", () => {
     test("freezes validation on half-composed text and settles on compositionend", async () => {
       const onSubmit = vi.fn();
       render(<SearchBar onSubmit={onSubmit} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
       expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
       const input = screen.getByRole("textbox", { name: "Enter your kanji" });
       input.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森a");
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸a");
       expect(screen.queryByText("Only Kanji, hiragana and katakana characters are allowed")).toBeNull();
       expect(screen.getByRole("button", { name: "Submit search" })).toBeEnabled();
       input.dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
@@ -256,10 +257,19 @@ describe("SearchBar", () => {
     test("fires the normalized value for padded input on submit", async () => {
       const onSubmit = vi.fn();
       render(<SearchBar onSubmit={onSubmit} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill(" 森 ");
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill(" 狸 ");
       await page.getByRole("button", { name: "Submit search" }).click();
       expect(onSubmit).toHaveBeenCalledTimes(1);
-      expect(onSubmit).toHaveBeenCalledWith("森");
+      expect(onSubmit).toHaveBeenCalledWith("狸");
+    });
+
+    test("submits the clean cut when only the tail past the limit is bad", async () => {
+      const onSubmit = vi.fn();
+      render(<SearchBar onSubmit={onSubmit} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill(`${"狸".repeat(21)}!`);
+      await page.getByRole("button", { name: "Submit search" }).click();
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+      expect(onSubmit).toHaveBeenCalledWith("狸".repeat(21));
     });
 
     test("blocks a click on invalid input with its message and no submit", async () => {
@@ -268,6 +278,17 @@ describe("SearchBar", () => {
       await page.getByRole("textbox", { name: "Enter your kanji" }).fill("hello");
       // Native click: Playwright's page.click refuses disabled buttons, but a
       // real lightning-fast click can still land before the disabled redraw.
+      screen.getByRole("button", { name: "Submit search" }).click();
+      expect(onSubmit).not.toHaveBeenCalled();
+      expect(screen.getByText("Only Kanji, hiragana and katakana characters are allowed")).toBeVisible();
+    });
+
+    test("blocks a click on a dirty cut past the limit with its error and no submit", async () => {
+      const onSubmit = vi.fn();
+      render(<SearchBar onSubmit={onSubmit} />);
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("ab".repeat(11));
+      // Error tone disables the button — a real lightning-fast click can
+      // still land before the disabled redraw, and the sync gate holds it
       screen.getByRole("button", { name: "Submit search" }).click();
       expect(onSubmit).not.toHaveBeenCalled();
       expect(screen.getByText("Only Kanji, hiragana and katakana characters are allowed")).toBeVisible();
@@ -327,7 +348,7 @@ describe("SearchBar", () => {
 
     test("leaves the field unmarked for valid input", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
       const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
       expect(field?.className.split(" ")).not.toContain("error");
     });
@@ -354,7 +375,7 @@ describe("SearchBar", () => {
 
     test("washes selected text in the palette tint instead of native blue", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
       const input = screen.getByRole("textbox", { name: "Enter your kanji" });
       expect(getComputedStyle(input, "::selection").backgroundColor).toBe("rgba(140, 91, 62, 0.1)");
     });
@@ -363,7 +384,7 @@ describe("SearchBar", () => {
   describe("warning styling", () => {
     test("paints the counter and message in warning gold past the limit", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸".repeat(22));
       // fill focuses the input — blur to assert the at-rest gold border
       screen.getByRole("textbox", { name: "Enter your kanji" }).blur();
       const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
@@ -384,7 +405,7 @@ describe("SearchBar", () => {
       render(<SearchBar onSubmit={noop} />);
       // fill focuses the input, so :focus-within applies — the border goes
       // transparent and one 2px outline takes the green outline's own +2px seat
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸".repeat(22));
       const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
       const gilded = getComputedStyle(field as Element);
       expect(gilded.borderColor).toBe("rgba(0, 0, 0, 0)");
@@ -409,7 +430,7 @@ describe("SearchBar", () => {
 
     test("keeps the calm look at the limit", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(21));
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸".repeat(21));
       expect(screen.getByText("21 / 21 chars")).not.toHaveClass(styles.warning);
       const field = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.fieldRow}`);
       expect(field?.className.split(" ")).not.toContain("warning");
@@ -418,9 +439,9 @@ describe("SearchBar", () => {
     test("drops the warning look back under the limit", async () => {
       render(<SearchBar onSubmit={noop} />);
       const input = page.getByRole("textbox", { name: "Enter your kanji" });
-      await input.fill("森".repeat(22));
+      await input.fill("狸".repeat(22));
       expect(screen.getByText("22 / 21 chars")).toHaveClass(styles.warning);
-      await input.fill("森");
+      await input.fill("狸");
       expect(screen.getByText("1 / 21 chars")).not.toHaveClass(styles.warning);
       expect(screen.queryByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeNull();
     });
@@ -429,7 +450,7 @@ describe("SearchBar", () => {
       render(<SearchBar onSubmit={noop} />);
       const card = screen.getByRole("textbox", { name: "Enter your kanji" }).closest(`.${styles.card}`);
       const calm = (card as HTMLElement).offsetHeight;
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森".repeat(22));
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸".repeat(22));
       expect(screen.getByText("Whoa, long one! Tanuki keeps first 21 chars.")).toBeVisible();
       expect((card as HTMLElement).offsetHeight).toBe(calm);
       await page.getByRole("textbox", { name: "Enter your kanji" }).fill("hello");
@@ -473,7 +494,7 @@ describe("SearchBar", () => {
 
     test("clears error attributes for a valid kanji word", async () => {
       render(<SearchBar onSubmit={noop} />);
-      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("森");
+      await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
       const input = screen.getByRole("textbox", { name: "Enter your kanji" });
       expect(input).toHaveAttribute("lang", "ja");
       expect(input).not.toHaveAttribute("aria-invalid");

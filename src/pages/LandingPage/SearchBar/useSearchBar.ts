@@ -2,7 +2,7 @@ import type { TargetedEvent } from "preact";
 import { useRef, useState } from "preact/hooks";
 import { normalizeKanjiInput } from "../../../services/normalize.ts";
 import { KanjiInputStatus, safeParseKanjiInput } from "../../../services/validate.ts";
-import { isKanjiSubmitBlocked } from "./kanjiInputDisplay.ts";
+import { isKanjiSubmitBlocked, truncateKanjiInput } from "./kanjiInputDisplay.ts";
 import { useIMECompositionGuard } from "./useIMECompositionGuard.ts";
 import { useKanjiInputValidation } from "./useKanjiInputValidation.ts";
 
@@ -26,7 +26,8 @@ export function useSearchBar(onSubmit: (kanjiInputValue: string) => void) {
     }
     // Sync validation : for a brief moment during an UI redraw,
     // user can input and submit invalid kanji using enter
-    const normalizedKanjiInput = normalizeKanjiInput(kanjiInputValue);
+    const submittedKanjiInput = truncateKanjiInput(kanjiInputValue);
+    const normalizedKanjiInput = normalizeKanjiInput(submittedKanjiInput);
     const parseResult = safeParseKanjiInput(normalizedKanjiInput);
     if (parseResult.status !== KanjiInputStatus.VALID) {
       return;

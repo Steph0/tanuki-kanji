@@ -4,25 +4,25 @@ import { isKanjiSubmitBlocked, resolveKanjiInputDisplay, truncateKanjiInput } fr
 
 describe("truncateKanjiInput", () => {
   test("keeps only the first characters past the limit", () => {
-    expect(truncateKanjiInput("森".repeat(KANJI_INPUT_MAX_LENGTH + 1))).toBe("森".repeat(KANJI_INPUT_MAX_LENGTH));
+    expect(truncateKanjiInput("狸".repeat(KANJI_INPUT_MAX_LENGTH + 1))).toBe("狸".repeat(KANJI_INPUT_MAX_LENGTH));
   });
 
   test("leaves a word at the limit untouched", () => {
-    expect(truncateKanjiInput("森".repeat(KANJI_INPUT_MAX_LENGTH))).toBe("森".repeat(KANJI_INPUT_MAX_LENGTH));
+    expect(truncateKanjiInput("狸".repeat(KANJI_INPUT_MAX_LENGTH))).toBe("狸".repeat(KANJI_INPUT_MAX_LENGTH));
   });
 
   test("leaves a short word untouched", () => {
-    expect(truncateKanjiInput("森")).toBe("森");
+    expect(truncateKanjiInput("狸")).toBe("狸");
   });
 });
 
 describe("resolveKanjiInputDisplay", () => {
   test("stays clean for a valid kanji word", () => {
-    expect(resolveKanjiInputDisplay("森")).toEqual({ tone: "clean", message: null });
+    expect(resolveKanjiInputDisplay("狸")).toEqual({ tone: "clean", message: null });
   });
 
   test("stays clean at the limit", () => {
-    expect(resolveKanjiInputDisplay("森".repeat(KANJI_INPUT_MAX_LENGTH))).toEqual({ tone: "clean", message: null });
+    expect(resolveKanjiInputDisplay("狸".repeat(KANJI_INPUT_MAX_LENGTH))).toEqual({ tone: "clean", message: null });
   });
 
   test("stays silent when empty", () => {
@@ -41,14 +41,14 @@ describe("resolveKanjiInputDisplay", () => {
   });
 
   test("warns past the limit when the cut stays valid", () => {
-    expect(resolveKanjiInputDisplay("森".repeat(KANJI_INPUT_MAX_LENGTH + 1))).toEqual({
+    expect(resolveKanjiInputDisplay("狸".repeat(KANJI_INPUT_MAX_LENGTH + 1))).toEqual({
       tone: "warning",
       message: "Whoa, long one! Tanuki keeps first 21 chars.",
     });
   });
 
   test("warns when only the tail past the limit is bad", () => {
-    expect(resolveKanjiInputDisplay(`${"森".repeat(KANJI_INPUT_MAX_LENGTH)}!`)).toEqual({
+    expect(resolveKanjiInputDisplay(`${"狸".repeat(KANJI_INPUT_MAX_LENGTH)}!`)).toEqual({
       tone: "warning",
       message: "Whoa, long one! Tanuki keeps first 21 chars.",
     });
@@ -73,7 +73,7 @@ describe("resolveKanjiInputDisplay", () => {
   });
 
   test("errors live when the cut stays kana-only", () => {
-    expect(resolveKanjiInputDisplay(`${"あ".repeat(KANJI_INPUT_MAX_LENGTH)}森`)).toEqual({
+    expect(resolveKanjiInputDisplay(`${"あ".repeat(KANJI_INPUT_MAX_LENGTH)}狸`)).toEqual({
       tone: "error",
       message: "Enter at least one kanji.",
     });

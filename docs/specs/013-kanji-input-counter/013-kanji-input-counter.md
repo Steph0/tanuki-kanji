@@ -51,10 +51,10 @@ User-visible behavior for the landing call-to-action:
   - [x] Prove the look with computed-style guards: `.warning` present past the limit only. Counter color equals warning message color on `surface` and on `sunk`. Warning color differs from `--color-tertiary`. Card height unchanged across silent, warning, error.
   - [x] Gate: build plus lint plus format plus single-file test, then full test.
 
-- [ ] Task 5 — UI-side gentle truncation on submit
-  - [ ] Turn a warned submit into a lesson from the first characters only. Never cut typing itself. Technical: reuse the UI-side `truncateKanjiInput` from `kanjiInputDisplay.ts` with a naive slice to `KANJI_INPUT_MAX_LENGTH`. `useSearchBar.ts` `handleSearchSubmit` applies the cut to the field value first when the display warns, then runs the standard normalize plus validate gate on the cut value. A cut that stays valid submits the cut value. Error display keeps blocking with no submit, as in Task 3. Engine files stay as in Task 1, so direct engine calls keep the hard `TOO_LONG` rule.
-  - [ ] Prove with unit `kanjiInputDisplay.test.ts` plus `SearchBar.test.tsx`: over-limit valid submit fires once with exactly the first 21 characters. Over-limit invalid submit stays blocked with its live error and no submit. Update the Task 3 interim assertion to the truncated value. Engine bypass with long input still rejects `TOO_LONG`.
-  - [ ] Gate: build plus lint plus format plus single-file test, then full test.
+- [x] Task 5 — UI-side gentle truncation on submit
+  - [x] Turn a warned submit into a lesson from the first characters only. Never cut typing itself. Technical: reuse the UI-side `truncateKanjiInput` from `kanjiInputDisplay.ts` with a naive slice to `KANJI_INPUT_MAX_LENGTH`. `useSearchBar.ts` `handleSearchSubmit` applies the cut to the field value first (a no-op at or under the limit), then runs the standard normalize plus validate gate on the cut value. A cut that stays valid submits the cut value. Error display keeps blocking with no submit, as in Task 3. Engine files stay as in Task 1, so direct engine calls keep the hard `TOO_LONG` rule.
+  - [x] Prove with unit `kanjiInputDisplay.test.ts` plus `SearchBar.test.tsx`: over-limit valid submit fires once with exactly the first 21 characters. Over-limit invalid submit stays blocked with its live error and no submit. Update the Task 3 interim assertion to the truncated value. Engine bypass with long input still rejects `TOO_LONG`.
+  - [x] Gate: build plus lint plus format plus single-file test, then full test.
 
 # Acceptance
 
