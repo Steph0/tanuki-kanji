@@ -6,11 +6,14 @@ const EXCLUDED_ITERATION_MARKS_PATTERN = /[\u309D\u309E\u30FD\u30FE]/u;
 
 const KANJI_PATTERN = /[\u4E00-\u9FFF]/u;
 
+export const KANJI_INPUT_MAX_LENGTH = 21;
+
 export const KanjiInputStatus = {
   EMPTY: "empty",
   VALID: "valid",
   INVALID_CHARACTERS: "invalid-characters",
   MISSING_KANJI: "missing-kanji",
+  TOO_LONG: "too-long",
 } as const;
 
 export type KanjiInputStatus = (typeof KanjiInputStatus)[keyof typeof KanjiInputStatus];
@@ -55,9 +58,17 @@ function containsKanji(normalizedKanjiInput: NormalizedKanjiInput): boolean {
   return KANJI_PATTERN.test(normalizedKanjiInput);
 }
 
+function isOverLimit(normalizedKanjiInput: NormalizedKanjiInput): boolean {
+  return normalizedKanjiInput.length > KANJI_INPUT_MAX_LENGTH;
+}
+
 function validateKanjiInput(normalizedKanjiInput: NormalizedKanjiInput): KanjiInputStatus {
   if (isEmpty(normalizedKanjiInput)) {
     return KanjiInputStatus.EMPTY;
+  }
+
+  if (isOverLimit(normalizedKanjiInput)) {
+    return KanjiInputStatus.TOO_LONG;
   }
 
   if (!hasOnlyJapaneseCharacters(normalizedKanjiInput)) {

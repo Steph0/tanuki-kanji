@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { runTanukiKanjiLesson } from "./entrypoint.ts";
-import { InvalidKanjiInput, KanjiInputStatus } from "./validate.ts";
+import { InvalidKanjiInput, KANJI_INPUT_MAX_LENGTH, KanjiInputStatus } from "./validate.ts";
 
 describe("runTanukiKanjiLesson", () => {
   beforeEach(() => {
@@ -33,6 +33,7 @@ describe("runTanukiKanjiLesson", () => {
     { expected: KanjiInputStatus.MISSING_KANJI, raw: "ひらがな" },
     { expected: KanjiInputStatus.EMPTY, raw: "" },
     { expected: KanjiInputStatus.EMPTY, raw: "   " },
+    { expected: KanjiInputStatus.TOO_LONG, raw: "森".repeat(KANJI_INPUT_MAX_LENGTH + 1) },
   ])("rejects $raw with status $expected before any lesson", ({ expected, raw }) => {
     try {
       runTanukiKanjiLesson(raw);
