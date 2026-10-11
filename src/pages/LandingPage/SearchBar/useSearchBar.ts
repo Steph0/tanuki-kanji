@@ -15,11 +15,11 @@ export function useSearchBar(onSubmit: (kanjiInputValue: string) => void) {
   const { tone: kanjiInputTone, message: kanjiInputMessage } = useKanjiInputValidation(kanjiInputValue, isComposing);
   const isSearchSubmitDisabled = isKanjiSubmitBlocked(kanjiInputTone);
 
-  const handleKanjiInput = (event: TargetedEvent<HTMLInputElement>) => {
+  function handleKanjiInput(event: TargetedEvent<HTMLInputElement>) {
     setKanjiInputValue(event.currentTarget.value);
-  };
+  }
 
-  const handleSearchSubmit = (event: TargetedEvent<HTMLFormElement>) => {
+  function handleSearchSubmit(event: TargetedEvent<HTMLFormElement>) {
     event.preventDefault();
     if (submitBlockRef.current) {
       return;
@@ -33,7 +33,7 @@ export function useSearchBar(onSubmit: (kanjiInputValue: string) => void) {
       return;
     }
     onSubmit(parseResult.value);
-  };
+  }
 
   return {
     handleKanjiInput,

@@ -15,14 +15,14 @@ export function useIMECompositionGuard(kanjiInputRef: RefObject<HTMLInputElement
     if (!input) {
       return;
     }
-    const startComposing = () => {
+    function startComposing() {
       submitBlockRef.current = true;
       setIsComposing(true);
-    };
-    const endComposing = () => {
+    }
+    function endComposing() {
       submitBlockRef.current = false;
       setIsComposing(false);
-    };
+    }
 
     input.addEventListener("compositionstart", startComposing);
     input.addEventListener("compositionend", endComposing);
