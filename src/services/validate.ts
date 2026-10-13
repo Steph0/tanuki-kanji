@@ -1,23 +1,10 @@
+import { KANJI_INPUT_MAX_LENGTH } from "./engine/domain/kanji-input/validation/KanjiInputValidationPolicy.ts";
+import { KanjiInputValidationStatus as KanjiInputStatus } from "./engine/domain/kanji-input/validation/KanjiInputValidationStatus.ts";
+import { validateKanjiInput } from "./engine/domain/kanji-input/validation/validateKanjiInput.ts";
 import type { NormalizedKanjiInput } from "./normalize.ts";
 import { normalizeKanjiInput } from "./normalize.ts";
 
-const JAPANESE_WORD_PATTERN = /^[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3005]+$/u;
-
-const EXCLUDED_ITERATION_MARKS_PATTERN = /[\u309D\u309E\u30FD\u30FE]/u;
-
-const KANJI_PATTERN = /[\u4E00-\u9FFF]/u;
-
-export const KANJI_INPUT_MAX_LENGTH = 21;
-
-export const KanjiInputStatus = {
-  EMPTY: "empty",
-  VALID: "valid",
-  INVALID_CHARACTERS: "invalid-characters",
-  MISSING_KANJI: "missing-kanji",
-  TOO_LONG: "too-long",
-} as const;
-
-export type KanjiInputStatus = (typeof KanjiInputStatus)[keyof typeof KanjiInputStatus];
+export { KANJI_INPUT_MAX_LENGTH, KanjiInputStatus };
 
 export type ValidKanjiInput = NormalizedKanjiInput & { readonly validKanjiInput: unique symbol };
 
@@ -42,48 +29,4 @@ export function safeParseKanjiInput(rawKanjiInput: string): KanjiInputParseResul
     return { status, value: normalizedKanjiInput as ValidKanjiInput };
   }
   return { status };
-}
-
-function isEmpty(normalizedKanjiInput: NormalizedKanjiInput): boolean {
-  return normalizedKanjiInput === "";
-}
-
-function hasOnlyJapaneseCharacters(normalizedKanjiInput: NormalizedKanjiInput): boolean {
-  return JAPANESE_WORD_PATTERN.test(normalizedKanjiInput);
-}
-
-function hasExcludedIterationMarks(normalizedKanjiInput: NormalizedKanjiInput): boolean {
-  return EXCLUDED_ITERATION_MARKS_PATTERN.test(normalizedKanjiInput);
-}
-
-function containsKanji(normalizedKanjiInput: NormalizedKanjiInput): boolean {
-  return KANJI_PATTERN.test(normalizedKanjiInput);
-}
-
-function isOverKanjiInputLimit(normalizedKanjiInput: NormalizedKanjiInput): boolean {
-  return normalizedKanjiInput.length > KANJI_INPUT_MAX_LENGTH;
-}
-
-function validateKanjiInput(normalizedKanjiInput: NormalizedKanjiInput): KanjiInputStatus {
-  if (isEmpty(normalizedKanjiInput)) {
-    return KanjiInputStatus.EMPTY;
-  }
-
-  if (isOverKanjiInputLimit(normalizedKanjiInput)) {
-    return KanjiInputStatus.TOO_LONG;
-  }
-
-  if (!hasOnlyJapaneseCharacters(normalizedKanjiInput)) {
-    return KanjiInputStatus.INVALID_CHARACTERS;
-  }
-
-  if (hasExcludedIterationMarks(normalizedKanjiInput)) {
-    return KanjiInputStatus.INVALID_CHARACTERS;
-  }
-
-  if (!containsKanji(normalizedKanjiInput)) {
-    return KanjiInputStatus.MISSING_KANJI;
-  }
-
-  return KanjiInputStatus.VALID;
 }

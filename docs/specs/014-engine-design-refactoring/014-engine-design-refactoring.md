@@ -75,17 +75,20 @@ single reading place for the screens, and the old paths of engine disappear.
         re-export.
   - [x] Gate: build plus lint plus format plus `normalizeKanjiInput.test.ts` single-file test, then full test.
 
-- [ ] Task 4 - Validation logic lives in the domain
-  - [ ] The validation vocabulary belongs to the validation logic.
+- [x] Task 4 - Validation logic lives in the domain
+  - [x] The validation vocabulary belongs to the validation logic.
         Technical: new
         `src/services/engine/domain/kanji-input/validation/KanjiInputValidationStatus.ts`
-        holding the status codes plus `KANJI_INPUT_MAX_LENGTH` with keys
+        holding the status codes with keys
         plus values frozen (`EMPTY: "empty"`, `VALID: "valid"`,
         `INVALID_CHARACTERS: "invalid-characters"`,
-        `MISSING_KANJI: "missing-kanji"`, `TOO_LONG: "too-long"`, limit
-        `21`) so only the container name and address move;
+        `MISSING_KANJI: "missing-kanji"`, `TOO_LONG: "too-long"`)
+        so only the container name and address move; new
+        `src/services/engine/domain/kanji-input/validation/KanjiInputValidationPolicy.ts`
+        holding the `KANJI_INPUT_MAX_LENGTH` rule (limit `21`) as the shared
+        policy both the classifier and outside consumers read;
         `src/services/validate.ts` re-exports them; no caller changes.
-  - [ ] The checks run as a pure idempotent domain service on cleaned text.
+  - [x] The checks run as a pure idempotent domain service on cleaned text.
         Technical: new
         `src/services/engine/domain/kanji-input/validation/validateKanjiInput.ts`
         holding `validateKanjiInput` plus the named predicates with patterns
@@ -93,14 +96,14 @@ single reading place for the screens, and the old paths of engine disappear.
         single check from the two domain services and keeps its result
         shape, brand, plus boundary error locally until Task 8; no caller
         changes.
-  - [ ] Prove the move with the code. Technical: new colocated unit
+  - [x] Prove the move with the code. Technical: new colocated unit
         `src/services/engine/domain/kanji-input/validation/validateKanjiInput.test.ts`
         feeding cleaned text built through the Task 3 service with no casts
         into the classifier across every status via case arrays duplicated
         in this suite (no shared fixture file); the legacy
         `src/services/validate.test.ts` stays as written and green through
         the re-exports.
-  - [ ] Gate: build plus lint plus format plus `validateKanjiInput.test.ts` single-file test, then full test.
+  - [x] Gate: build plus lint plus format plus `validateKanjiInput.test.ts` single-file test, then full test.
 
 - [ ] Task 5 - KanjiInput value object answers the familiar result
   - [ ] Only valid text becomes a KanjiInput object, and every answer carries
