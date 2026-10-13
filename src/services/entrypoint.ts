@@ -1,13 +1,10 @@
-import { normalizeKanjiInput } from "./normalize.ts";
 import type { TanukiKanjiEngine } from "./types.ts";
 import { InvalidKanjiInput, KanjiInputStatus, safeParseKanjiInput } from "./validate.ts";
 
 const FAKE_DELAY_MS = 5000;
 
 export const runTanukiKanjiLesson: TanukiKanjiEngine = (kanjiUserInput) => {
-  const normalizedKanjiInput = normalizeKanjiInput(kanjiUserInput);
-
-  const parsedKanjiInput = safeParseKanjiInput(normalizedKanjiInput);
+  const parsedKanjiInput = safeParseKanjiInput(kanjiUserInput);
   if (parsedKanjiInput.status !== KanjiInputStatus.VALID) {
     throw new InvalidKanjiInput(parsedKanjiInput.status);
   }

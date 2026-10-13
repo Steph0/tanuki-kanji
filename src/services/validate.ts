@@ -1,4 +1,5 @@
 import type { NormalizedKanjiInput } from "./normalize.ts";
+import { normalizeKanjiInput } from "./normalize.ts";
 
 const JAPANESE_WORD_PATTERN = /^[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3005]+$/u;
 
@@ -34,7 +35,8 @@ export type KanjiInputParseResult =
   | { status: typeof KanjiInputStatus.VALID; value: ValidKanjiInput }
   | { status: Exclude<KanjiInputStatus, typeof KanjiInputStatus.VALID> };
 
-export function safeParseKanjiInput(normalizedKanjiInput: NormalizedKanjiInput): KanjiInputParseResult {
+export function safeParseKanjiInput(rawKanjiInput: string): KanjiInputParseResult {
+  const normalizedKanjiInput = normalizeKanjiInput(rawKanjiInput);
   const status = validateKanjiInput(normalizedKanjiInput);
   if (status === KanjiInputStatus.VALID) {
     return { status, value: normalizedKanjiInput as ValidKanjiInput };

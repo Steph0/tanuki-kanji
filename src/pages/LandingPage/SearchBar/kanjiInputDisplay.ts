@@ -1,4 +1,3 @@
-import { normalizeKanjiInput } from "../../../services/normalize.ts";
 import { KANJI_INPUT_MAX_LENGTH, KanjiInputStatus, safeParseKanjiInput } from "../../../services/validate.ts";
 
 export type KanjiInputTone = "clean" | "empty" | "warning" | "error";
@@ -15,8 +14,7 @@ export function truncateKanjiInput(kanjiInputValue: string): string {
 
 export function resolveKanjiInputDisplay(kanjiInputValue: string): KanjiInputDisplay {
   const truncatedValue = truncateKanjiInput(kanjiInputValue);
-  const normalizedValue = normalizeKanjiInput(truncatedValue);
-  const truncatedStatus = safeParseKanjiInput(normalizedValue).status;
+  const truncatedStatus = safeParseKanjiInput(truncatedValue).status;
   if (isValidInput(truncatedStatus, kanjiInputValue)) {
     return { tone: "clean", message: null };
   }

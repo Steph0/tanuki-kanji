@@ -1,9 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { normalizeKanjiInput } from "./normalize.ts";
 import { InvalidKanjiInput, KANJI_INPUT_MAX_LENGTH, KanjiInputStatus, safeParseKanjiInput } from "./validate.ts";
 
 function parseStatus(raw: string) {
-  return safeParseKanjiInput(normalizeKanjiInput(raw)).status;
+  return safeParseKanjiInput(raw).status;
 }
 
 describe("safeParseKanjiInput", () => {
@@ -12,11 +11,15 @@ describe("safeParseKanjiInput", () => {
   });
 
   test("hands back the proven value when valid", () => {
-    const parsed = safeParseKanjiInput(normalizeKanjiInput(" 森 "));
+    const parsed = safeParseKanjiInput(" 森 ");
     expect(parsed.status).toBe(KanjiInputStatus.VALID);
     if (parsed.status === KanjiInputStatus.VALID) {
       expect(parsed.value).toBe("森");
     }
+  });
+
+  test("padded input behaves like trimmed input", () => {
+    expect(parseStatus("  森  ")).toBe(parseStatus("森"));
   });
 
   test.each(["ソ", "ゾ"])("accepts katakana %s as kana-only", (raw) => {
@@ -70,12 +73,12 @@ describe("safeParseKanjiInput", () => {
   });
 
   test("hands back only the status when too long", () => {
-    const parsed = safeParseKanjiInput(normalizeKanjiInput("森".repeat(KANJI_INPUT_MAX_LENGTH + 1)));
+    const parsed = safeParseKanjiInput("森".repeat(KANJI_INPUT_MAX_LENGTH + 1));
     expect(parsed).toEqual({ status: KanjiInputStatus.TOO_LONG });
   });
 
   test("hands back only the status when invalid", () => {
-    const parsed = safeParseKanjiInput(normalizeKanjiInput("hello"));
+    const parsed = safeParseKanjiInput("hello");
     expect(parsed).toEqual({ status: KanjiInputStatus.INVALID_CHARACTERS });
   });
 

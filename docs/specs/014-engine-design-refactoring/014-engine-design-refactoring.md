@@ -28,25 +28,25 @@ single reading place for the screens, and the old paths of engine disappear.
 
 # Tasks
 
-- [ ] Task 1 - Input normalization becoming part of input parsing
-  - [ ] Pasted text with extra spaces around it counts like the trimmed
+- [x] Task 1 - Input normalization becoming part of input parsing
+  - [x] Pasted text with extra spaces around it counts like the trimmed
         word, and spaces-only still counts as empty. Technical:
         `src/services/validate.ts` owns the single check and opens by
         calling `normalizeKanjiInput` from `src/services/normalize.ts`; the
         `NormalizedKanjiInput` brand stays inside that step and
         `src/services/normalize.ts` itself is untouched.
-  - [ ] The lesson start and both search files use the single check with no
+  - [x] The lesson start and both search files use the single check with no
         behavior change. Technical: simplify `src/services/entrypoint.ts`,
         `src/pages/LandingPage/SearchBar/useSearchBar.ts`,
         `src/pages/LandingPage/SearchBar/kanjiInputDisplay.ts`; drop the now
         unused `normalizeKanjiInput` imports.
-  - [ ] Tests move with the code. Technical: update
+  - [x] Tests move with the code. Technical: update
         `src/services/validate.test.ts` to feed raw text into the single
         check and keep every existing case, with padded input behaving like
         trimmed input and spaces-only staying empty;
         `src/services/normalize.test.ts` untouched; entrypoint plus SearchBar
         suites stay green.
-  - [ ] Gate: build plus lint plus format plus `validate.test.ts` single-file test, then full test.
+  - [x] Gate: build plus lint plus format plus `validate.test.ts` single-file test, then full test.
 
 - [ ] Task 2 - Empty engine layer folders exist
   - [ ] Later moves land in a visible home with nothing wired yet.
