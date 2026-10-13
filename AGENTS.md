@@ -22,13 +22,24 @@ This document outlines the architectural rules, security constraints, and coding
 - Tool call cap: stop + explain after 5 tools with no progress
 - Never use external sources (`<link>`, external CDN, dependencies) not already available in project
 - Never stage changes or commit unless explicitely told to
+- No destructive work or changes should be done outside project folder without explicit user permission
 
 ### TESTING
 
 - Use available test tools
+  - If no test tools, ask explicitely user if skip
 - Always test, never assume work
-- If no test tools, ask user if skip
-- `npm run build` and `npm run lint` and `npm run format` must pass
+- Testing commands to always run
+  - `npm run test` : for test cases
+  - `npm run lint` : for linting violations
+  - `npm run format` : for formatting the codebase
+- When a task is done and stable, check project builds
+  - RUn `npm run build` if other testing commands are green
+- CRITICAL: If possible, run testing command in the background
+  - Do not dump the full stdout log into the primary session chat context
+  - If test are green: only report a clean pass summary
+  - If a test or lint run fails: immediately re-run the specific failing command without truncation
+    and be sure to report failures with full stacktraces
 
 ### SPEC WRITING
 
