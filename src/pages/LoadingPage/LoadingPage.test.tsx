@@ -1,5 +1,5 @@
-import { render, screen, waitFor } from "@testing-library/preact";
-import { describe, expect, test } from "vitest";
+import { act, render, screen } from "@testing-library/preact";
+import { describe, expect, test, vi } from "vitest";
 import { commands } from "vitest/browser";
 import { TanukiKanjiProvider } from "../../hooks/useTanukiKanjiEngine.tsx";
 import { dummyEngine, noop } from "../../test-utils.ts";
@@ -88,30 +88,40 @@ describe("LoadingPage", () => {
     expect(caption).toHaveAttribute("aria-busy", "true");
   });
 
-  test("rotates to a different lore caption while the lesson loads", async () => {
-    renderLoadingPage();
-
-    const caption = await screen.findByRole("status");
-    const start = caption.textContent;
-    expect(start).toBeTruthy();
-    await waitFor(() => expect(screen.getByRole("status").textContent).not.toBe(start), {
-      timeout: 8000,
-    });
-    expect(screen.getByRole("status")).toBeVisible();
-  }, 20000);
-
-  test("keeps the first caption static when reduced motion is requested", async () => {
-    const restore = mockReducedMotion(true);
+  test("rotates to a different lore caption while the lesson loads", () => {
+    vi.useFakeTimers();
     try {
       renderLoadingPage();
 
-      const caption = await screen.findByRole("status");
+      const caption = screen.getByRole("status");
       const start = caption.textContent;
       expect(start).toBeTruthy();
-      await new Promise((resolve) => setTimeout(resolve, 4500));
+      act(() => {
+        vi.advanceTimersByTime(4500);
+      });
+      expect(screen.getByRole("status").textContent).not.toBe(start);
+      expect(screen.getByRole("status")).toBeVisible();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  test("keeps the first caption static when reduced motion is requested", () => {
+    const restore = mockReducedMotion(true);
+    vi.useFakeTimers();
+    try {
+      renderLoadingPage();
+
+      const caption = screen.getByRole("status");
+      const start = caption.textContent;
+      expect(start).toBeTruthy();
+      act(() => {
+        vi.advanceTimersByTime(4500);
+      });
       expect(caption.textContent).toBe(start);
     } finally {
+      vi.useRealTimers();
       restore();
     }
-  }, 20000);
+  });
 });
