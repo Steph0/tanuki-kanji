@@ -60,20 +60,20 @@ single reading place for the screens, and the old paths of engine disappear.
         and vocabulary, lowercase for domain services.
   - [x] Gate: build plus lint plus format plus full test.
 
-- [ ] Task 3 - Normalizing in engine lives in the domain
-  - [ ] Pasted text is cleaned by the domain, not by callers. Technical:
+- [x] Task 3 - Normalizing in engine lives in the domain
+  - [x] Pasted text is cleaned by the domain, not by callers. Technical:
         new `src/services/engine/domain/kanji-input/normalizeKanjiInput.ts`
         holding the pure idempotent domain service `normalizeKanjiInput`
         returning the branded `NormalizedKanjiInput`;
         `src/services/normalize.ts` becomes a one-line re-export; remove the
         now-unneeded `domain/.gitkeep`; no caller changes.
-  - [ ] Prove the move with relocated tests. Technical: move
+  - [x] Prove the move with relocated tests. Technical: move
         `src/services/normalize.test.ts` to
         `src/services/engine/domain/kanji-input/normalizeKanjiInput.test.ts`
         targeting the domain path, with trimming, spaces-only, inner spaces
         kept, and double application stable; no duplicate suite for the
         re-export.
-  - [ ] Gate: build plus lint plus format plus `normalizeKanjiInput.test.ts` single-file test, then full test.
+  - [x] Gate: build plus lint plus format plus `normalizeKanjiInput.test.ts` single-file test, then full test.
 
 - [ ] Task 4 - Validation logic lives in the domain
   - [ ] The validation vocabulary belongs to the validation logic.

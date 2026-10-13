@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { normalizeKanjiInput } from "./normalize.ts";
+import { normalizeKanjiInput } from "./normalizeKanjiInput.ts";
 
 describe("normalizeKanjiInput", () => {
   test.each([
