@@ -9,22 +9,29 @@ This document outlines the architectural rules, security constraints, and coding
 ### RESPONSES
 
 - Be concise
+- Reference code as `path:line` when pointing at source
+- Ground claims in executed evidence, not speculation
 
-### PLANNING MODE
+### PHASE 1 — SPECIFICATION / PLAN
 
 - Ask clarifying questions
 - Never assume design, tech stack, features
+- Follow `docs/ARCHITECTURE.md` for structure and `DESIGN.md` for styling when specifying
+- Spec unit is `docs/specs/NNN-name/NNN-name.md`; follow the rules in `docs/specs/SPEC-SAMPLE.md`.
 
-### CHANGE / EDIT MODE
+### PHASE 2 — IMPLEMENTATION / CHANGE / EDIT
 
 - Update/create tests for features
+- Check memory (`Project:<repo>:`) and neighboring code before adding new patterns
 - Use best model: premium for complex tasks, mid-tier for simple tasks, docs or lookups
 - Tool call cap: stop + explain after 5 tools with no progress
 - Never use external sources (`<link>`, external CDN, dependencies) not already available in project
 - Never stage changes or commit unless explicitely told to
 - No destructive work or changes should be done outside project folder without explicit user permission
 
-### TESTING
+### PHASE 3 — TESTING
+
+#### Testing loop
 
 - Use available test tools
   - If no test tools, ask explicitely user if skip
@@ -34,20 +41,23 @@ This document outlines the architectural rules, security constraints, and coding
   - `npm run lint` : for linting violations
   - `npm run format` : for formatting the codebase
 - When a task is done and stable, check project builds
-  - RUn `npm run build` if other testing commands are green
+  - Run `npm run build` if other testing commands are green
 - CRITICAL: If possible, run testing command in the background
   - Do not dump the full stdout log into the primary session chat context
   - If test are green: only report a clean pass summary
   - If a test or lint run fails: immediately re-run the specific failing command without truncation
     and be sure to report failures with full stacktraces
 
-### SPEC WRITING
+#### Testing guidelines
 
-- Spec unit is `docs/specs/NNN-name/NNN-name.md`; follow the rules in `docs/specs/SPEC-SAMPLE.md`.
-
-### DESIGN
-
-- `DESIGN.md` is the sole source of truth for styling and is self-sufficient — follow it strictly, including its `## Agent usage` and `## Accessibility` sections. If other output conflicts with it, `DESIGN.md` wins. Never edit it in feature tasks unless explicitly asked by the user.
+- Unit = pure logic (`*.test.ts`); integration = `*.test.tsx` colocated with component, run in browser mode with real CSS (headless Chromium via `@vitest/browser-playwright`); no E2E suite; manual visual checklist + MCP driving cover design polish.
+- Conventions: colocated `src/components/*/*.test.tsx` + `src/App.test.tsx`; one `render` per test; accessible-query priority `getByRole` > `getByLabelText` > `getByPlaceholderText` > `getByText` > `getByAltText` with `toBeVisible` / text assertions by default; ban `getByTestId`, `container.querySelector`, id/class selectors except as documented last resort. `getComputedStyle` only for guards: SearchBar focus, App desktop shell, App rotated override.
+- Setup: `src/test-setup.ts` imports `./globals.css`, mirroring `src/main.tsx`, so computed-style guards assert production CSS; `vite.config.ts` uses `defineConfig` from `vitest/config`.
+- Naming: test descriptions are product-oriented or tied to a technical necessity, always meaningful (never bare `renders X` statements).
+- Axe (`axe-core`, run directly — `vitest-axe` is Node-only and cannot run in browser mode) checks at App level only, 3 viewports: mobile `390x844`, rotated screens `844x390`, desktop `1280x800`.
+- Failure-only screenshots via Vitest's built-in `screenshotFailures` in gitignored `.vitest/attachments/failure-screenshots/`. No custom hook.
+- Agent loop: run single file (`npm run test -- <name>`), read text diff first, open `.vitest/attachments/failure-screenshots/` png only if diff is ambiguous. No screenshot-update workflow. `npm run build` + `npm run lint` + `npm run format` + `npm run test` must pass.
+- Engine-layer integration stays in `*.test.ts` (no DOM); `*.test.tsx` browser integration is UI-only. Details in `docs/ARCHITECTURE.md`.
 
 ---
 
@@ -59,14 +69,10 @@ This document outlines the architectural rules, security constraints, and coding
 - **Linting & Formatting**: `@biomejs/biome` 2.5.x
 - **Types**: `@types/node` 24.x
 
----
+### DESIGN
 
-## Testing Strategy
+- `DESIGN.md` is the sole source of truth for styling and is self-sufficient — follow it strictly, including its `## Agent usage` and `## Accessibility` sections. If other output conflicts with it, `DESIGN.md` wins. Never edit it in feature tasks unless explicitly asked by the user.
 
-- Unit = pure logic (`*.test.ts`); integration = `*.test.tsx` colocated with component, run in browser mode with real CSS (headless Chromium via `@vitest/browser-playwright`); no E2E suite; manual visual checklist + MCP driving cover design polish.
-- Conventions: colocated `src/components/*/*.test.tsx` + `src/App.test.tsx`; one `render` per test; accessible-query priority `getByRole` > `getByLabelText` > `getByPlaceholderText` > `getByText` > `getByAltText` with `toBeVisible` / text assertions by default; ban `getByTestId`, `container.querySelector`, id/class selectors except as documented last resort. `getComputedStyle` only for guards: SearchBar focus, App desktop shell, App rotated override.
-- Setup: `src/test-setup.ts` imports `./globals.css`, mirroring `src/main.tsx`, so computed-style guards assert production CSS; `vite.config.ts` uses `defineConfig` from `vitest/config`.
-- Naming: test descriptions are product-oriented or tied to a technical necessity, always meaningful (never bare `renders X` statements).
-- Axe (`axe-core`, run directly — `vitest-axe` is Node-only and cannot run in browser mode) checks at App level only, 3 viewports: mobile `390x844`, rotated screens `844x390`, desktop `1280x800`.
-- Failure-only screenshots via Vitest's built-in `screenshotFailures` in gitignored `.vitest/attachments/failure-screenshots/`. No custom hook.
-- Agent loop: run single file (`npm run test -- <name>`), read text diff first, open `.vitest/attachments/failure-screenshots/` png only if diff is ambiguous. No screenshot-update workflow. `npm run build` + `npm run lint` + `npm run format` + `npm run test` must pass.
+### ARCHITECTURE
+
+- `docs/ARCHITECTURE.md` is the sole source of truth for code organization (UI vs Engine layering, naming, engine testing split) — follow it strictly. If other output conflicts with it, `ARCHITECTURE.md` wins for structure like `DESIGN.md` wins for styling.
