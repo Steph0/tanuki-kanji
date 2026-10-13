@@ -105,8 +105,8 @@ single reading place for the screens, and the old paths of engine disappear.
         the re-exports.
   - [x] Gate: build plus lint plus format plus `validateKanjiInput.test.ts` single-file test, then full test.
 
-- [ ] Task 5 - KanjiInput value object answers the familiar result
-  - [ ] Only valid text becomes a KanjiInput object, and every answer carries
+- [x] Task 5 - KanjiInput value object answers the familiar result
+  - [x] Only valid text becomes a KanjiInput object, and every answer carries
         its status. Technical: new
         `src/services/engine/domain/kanji-input/KanjiInput.ts` holding the
         `KanjiInput` value object with a private constructor plus the static
@@ -116,14 +116,14 @@ single reading place for the screens, and the old paths of engine disappear.
         answers the Result pattern shaped like the legacy parse result with
         the instance as value only when valid; it never throws; the instance
         exposes its proven text through a readonly value.
-  - [ ] Prove the answers with the code. Technical: new colocated unit
+  - [x] Prove the answers with the code. Technical: new colocated unit
         `src/services/engine/domain/kanji-input/KanjiInput.test.ts` through
         `create` only, covering valid text handing back an instance with its
         proven text, padded input behaving like trimmed input, each failing
         status asserted with exact shape and no value key, and no
         construction test since the private constructor is the guarantee;
         no caller changes in this task.
-  - [ ] Gate: build plus lint plus format plus `KanjiInput.test.ts` single-file test, then full test.
+  - [x] Gate: build plus lint plus format plus `KanjiInput.test.ts` single-file test, then full test.
 
 - [ ] Task 6 - Narrow consumer calls with a public surface
   - [ ] Screens will talk to the controller layer that never hard-codes the rule.
