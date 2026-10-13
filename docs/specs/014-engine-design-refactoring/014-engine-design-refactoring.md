@@ -48,8 +48,8 @@ single reading place for the screens, and the old paths of engine disappear.
         suites stay green.
   - [x] Gate: build plus lint plus format plus `validate.test.ts` single-file test, then full test.
 
-- [ ] Task 2 - Empty engine layer folders exist
-  - [ ] Later moves land in a visible home with nothing wired yet.
+- [x] Task 2 - Empty engine layer folders exist
+  - [x] Later moves land in a visible home with nothing wired yet.
         Technical: create `src/services/engine/controller/`,
         `src/services/engine/domain/`,
         `src/services/engine/infrastructure/`, each holding a `.gitkeep` so
@@ -58,7 +58,7 @@ single reading place for the screens, and the old paths of engine disappear.
         no imports, no behavior change. Naming from here on: one
         kebab-case folder per world, Uppercase files for value objects
         and vocabulary, lowercase for domain services.
-  - [ ] Gate: build plus lint plus format plus full test.
+  - [x] Gate: build plus lint plus format plus full test.
 
 - [ ] Task 3 - Normalizing in engine lives in the domain
   - [ ] Pasted text is cleaned by the domain, not by callers. Technical:
