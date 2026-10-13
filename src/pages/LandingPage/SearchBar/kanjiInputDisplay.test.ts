@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { KANJI_INPUT_MAX_LENGTH } from "../../../services/validate.ts";
+import { KANJI_INPUT_MAX_LENGTH } from "../../../services/engine/controller/kanji-input/parseKanjiInputApi.ts";
 import { isKanjiSubmitBlocked, resolveKanjiInputDisplay, truncateKanjiInput } from "./kanjiInputDisplay.ts";
 
 describe("truncateKanjiInput", () => {

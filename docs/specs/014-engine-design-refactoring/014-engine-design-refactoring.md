@@ -161,8 +161,8 @@ single reading place for the screens, and the old paths of engine disappear.
         error). Domain rules stay covered in the domain suites.
   - [x] Gate: build plus lint plus format plus `parseKanjiInputController.test.ts` then `parseKanjiInputApi.test.ts` single-file tests, then full test.
 
-- [ ] Task 7 - Search screens use the API
-  - [ ] Typing feedback, the submit gate, and the counter read from the
+- [x] Task 7 - Search screens use the API
+  - [x] Typing feedback, the submit gate, and the counter read from the
         API file, and this is the only time the screens move.
         Technical: rewire
         `src/pages/LandingPage/SearchBar/useSearchBar.ts` and
@@ -177,10 +177,10 @@ single reading place for the screens, and the old paths of engine disappear.
         `src/services/entrypoint.ts` keeps its direct check and
         `useLoadingPage.ts` keeps `InvalidKanjiInput` from the legacy path
         until Task 8.
-  - [ ] Prove the switch with unchanged screens. Technical: no UI test file
+  - [x] Prove the switch with unchanged screens. Technical: no UI test file
         changes; `kanjiInputDisplay.test.ts` plus `SearchBar.test.tsx` stay
         green as written; the Task 6 suite covers the rewired path.
-  - [ ] Gate: build plus lint plus format plus `parseKanjiInputApi.test.ts`
+  - [x] Gate: build plus lint plus format plus `parseKanjiInputApi.test.ts`
         then `kanjiInputDisplay.test.ts` then `SearchBar.test.tsx` single-file
         tests, then full test.
 

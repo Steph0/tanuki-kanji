@@ -1,7 +1,7 @@
 import forwardIcon from "@material-symbols/svg-400/outlined/arrow_forward.svg";
 import markerIcon from "@material-symbols/svg-400/outlined/ink_highlighter.svg";
 import { ICON_MD_PX, ICON_SM_PX } from "../../../constants/globals";
-import { KANJI_INPUT_MAX_LENGTH } from "../../../services/validate.ts";
+import { KANJI_INPUT_MAX_LENGTH } from "../../../services/engine/controller/kanji-input/parseKanjiInputApi.ts";
 import styles from "./SearchBar.module.css";
 import { useSearchBar } from "./useSearchBar.ts";
 

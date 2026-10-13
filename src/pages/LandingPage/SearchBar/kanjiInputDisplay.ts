@@ -1,4 +1,9 @@
-import { KANJI_INPUT_MAX_LENGTH, KanjiInputStatus, safeParseKanjiInput } from "../../../services/validate.ts";
+import type { KanjiInputValidationStatus } from "../../../services/engine/controller/kanji-input/parseKanjiInputApi.ts";
+import {
+  KANJI_INPUT_MAX_LENGTH,
+  KANJI_INPUT_VALIDATION_STATUS,
+  parseKanjiInputAPI,
+} from "../../../services/engine/controller/kanji-input/parseKanjiInputApi.ts";
 
 export type KanjiInputTone = "clean" | "empty" | "warning" | "error";
 
@@ -14,14 +19,14 @@ export function truncateKanjiInput(kanjiInputValue: string): string {
 
 export function resolveKanjiInputDisplay(kanjiInputValue: string): KanjiInputDisplay {
   const truncatedValue = truncateKanjiInput(kanjiInputValue);
-  const truncatedStatus = safeParseKanjiInput(truncatedValue).status;
+  const truncatedStatus = parseKanjiInputAPI(truncatedValue).status;
   if (isValidInput(truncatedStatus, kanjiInputValue)) {
     return { tone: "clean", message: null };
   }
-  if (truncatedStatus === KanjiInputStatus.INVALID_CHARACTERS) {
+  if (truncatedStatus === KANJI_INPUT_VALIDATION_STATUS.INVALID_CHARACTERS) {
     return { tone: "error", message: INVALID_CHARACTERS_MESSAGE };
   }
-  if (truncatedStatus === KanjiInputStatus.MISSING_KANJI) {
+  if (truncatedStatus === KANJI_INPUT_VALIDATION_STATUS.MISSING_KANJI) {
     return { tone: "error", message: MISSING_KANJI_MESSAGE };
   }
   if (kanjiInputValue.length > KANJI_INPUT_MAX_LENGTH) {
@@ -40,6 +45,6 @@ export function isKanjiSubmitBlocked(tone: KanjiInputTone): boolean {
   return true;
 }
 
-function isValidInput(truncatedStatus: KanjiInputStatus, kanjiInputValue: string): boolean {
-  return truncatedStatus === KanjiInputStatus.VALID && kanjiInputValue.length <= KANJI_INPUT_MAX_LENGTH;
+function isValidInput(truncatedStatus: KanjiInputValidationStatus, kanjiInputValue: string): boolean {
+  return truncatedStatus === KANJI_INPUT_VALIDATION_STATUS.VALID && kanjiInputValue.length <= KANJI_INPUT_MAX_LENGTH;
 }
