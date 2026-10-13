@@ -22,7 +22,7 @@ single reading place for the screens, and the old paths of engine disappear.
 - No new `package.json` dependencies, no external CDN/`<link>`.
 - Tasks run in the given order. Strangler: new path beside the old with re-exports green, screens switch once (Task 7), legacy deleted last (Task 8).
 - Granted bypass: this spec names files and symbols early to keep the small steps unambiguous, and review may rename without breaking intent.
-- Hexagonal direction: domain never imports outward; pages import only the controller file. Controller plus entrypoint are inbound adapters and may import inward.
+- Hexagonal direction: domain never imports outward; pages import only the `parseKanjiInputApi.ts` file, and only the `parseKanjiInputAPI` singleton plus statuses, limit, and response types — never the controller file or its `parseKanjiInputControllerFactory` factory (dev-only test seam). Controller plus entrypoint are inbound adapters and may import inward.
 - Deliberate non-goals: no CQRS, no event bus, no aggregates or repositories, no use case layer. The single value object needs none of that yet.
 - Out of scope: lesson generation content, new statuses or new rules, infrastructure work (`infrastructure/` stays a `.gitkeep` placeholder), any behavior or copy change.
 
@@ -125,49 +125,53 @@ single reading place for the screens, and the old paths of engine disappear.
         no caller changes in this task.
   - [x] Gate: build plus lint plus format plus `KanjiInput.test.ts` single-file test, then full test.
 
-- [ ] Task 6 - Narrow consumer calls with a public surface
-  - [ ] Screens will talk to the controller layer that never hard-codes the rule.
+- [x] Task 6 - Narrow consumer calls with a public surface
+  - [x] Screens will talk to the API layer that never hard-codes the rule.
         Technical: new
-        `src/services/engine/controller/parseKanjiInputController.ts`
-        holding the public surface alongside the controller, with
+        `src/services/engine/controller/kanji-input/parseKanjiInputApi.ts`
+        holding the public surface, with
         `KANJI_INPUT_VALIDATION_STATUS` plus type
         `KanjiInputValidationStatus` aliasing the domain codes,
-        `ParseKanjiInputResponse` carrying a plain string value, and the
+        `ParseKanjiInputResponse` re-exported from the controller (defined
+        where it is produced, carrying a plain string value), and the
         `KANJI_INPUT_MAX_LENGTH` re-export from the domain, all by same
-        reference (no copies) so `===` keeps working; the same file
-        holds the factory `createParseKanjiInputController` receiving the
+        reference (no copies) so `===` keeps working, plus the ready
+        `parseKanjiInputAPI` singleton built from the controller factory.
+        New `src/services/engine/controller/kanji-input/parseKanjiInputController.ts`
+        holds the factory `parseKanjiInputControllerFactory` receiving the
         creator by injection defaulting to
         `(raw: string) => KanjiInput.create(raw)` with no use case layer
-        in between, so screens create once
-        at module scope with no args and call the returned controller
-        per event. This is the first and only public API the UI will use.
-  - [ ] Screen shapes and rule shapes never mix. Technical: the same file
-        holds the dumb `mapToParseKanjiInputResponse` mapper with an
+        in between. The factory is a dev-only test seam; screens use the
+        singleton and never the factory. The API file is the first and only
+        public API the UI will use.
+  - [x] Screen shapes and rule shapes never mix. Technical: the controller
+        file holds the dumb `mapToResponse` mapper with an
         exhaustive status switch plus a `never` check from the domain
         answer into the public response plus the instance to plain string
         unwrap; no wording and no logic live in the mapper; remove the
         now-unneeded `controller/.gitkeep`.
-  - [ ] Prove faithful delegation with the code. Technical: new colocated
-        unit `src/services/engine/controller/parseKanjiInputController.test.ts`
-        through the public factory only, asserting the public statuses across
-        every case via case arrays duplicated in this suite (no shared
-        fixture file) covering valid, padded, empty, foreign
-        characters, kana-only, and over-limit built from the public limit,
-        with exact failure shapes and no value key; plus one stub creator
-        case proving the injected creator is the one called.
-  - [ ] Gate: build plus lint plus format plus `parseKanjiInputController.test.ts` single-file test, then full test.
+  - [x] Prove faithful delegation with the code. Technical: colocated unit
+        `src/services/engine/controller/kanji-input/parseKanjiInputController.test.ts`
+        testing the controller contract only with a stubbed creator: valid
+        maps to a plain string value, each failure status maps to a
+        status-only shape with no value key, the injected creator receives
+        the raw text untouched; plus colocated integration
+        `src/services/engine/controller/kanji-input/parseKanjiInputApi.test.ts` wiring
+        the `parseKanjiInputAPI` singleton end to end (nominal plus one
+        error). Domain rules stay covered in the domain suites.
+  - [x] Gate: build plus lint plus format plus `parseKanjiInputController.test.ts` then `parseKanjiInputApi.test.ts` single-file tests, then full test.
 
-- [ ] Task 7 - Search screens use the controller
+- [ ] Task 7 - Search screens use the API
   - [ ] Typing feedback, the submit gate, and the counter read from the
-        controller file, and this is the only time the screens move.
+        API file, and this is the only time the screens move.
         Technical: rewire
         `src/pages/LandingPage/SearchBar/useSearchBar.ts` and
         `src/pages/LandingPage/SearchBar/kanjiInputDisplay.ts` to the Task 6
-        module-scope controller plus the public statuses;
+        `parseKanjiInputAPI` singleton plus the public statuses;
         `truncateKanjiInput` stays where it is and still runs before the
         controller call so the warning path is untouched and the engine
         `TOO_LONG` stays unreachable on that path by design; move the limit
-        imports in those files plus `SearchBar.tsx` to the controller file; no
+        imports in those files plus `SearchBar.tsx` to the API file; no
         legacy import remains in the three files and no file imports the
         domain directly;
         `src/services/entrypoint.ts` keeps its direct check and
@@ -176,7 +180,7 @@ single reading place for the screens, and the old paths of engine disappear.
   - [ ] Prove the switch with unchanged screens. Technical: no UI test file
         changes; `kanjiInputDisplay.test.ts` plus `SearchBar.test.tsx` stay
         green as written; the Task 6 suite covers the rewired path.
-  - [ ] Gate: build plus lint plus format plus `parseKanjiInputController.test.ts`
+  - [ ] Gate: build plus lint plus format plus `parseKanjiInputApi.test.ts`
         then `kanjiInputDisplay.test.ts` then `SearchBar.test.tsx` single-file
         tests, then full test.
 
@@ -189,13 +193,13 @@ single reading place for the screens, and the old paths of engine disappear.
         text, and throws the boundary error unless valid; the boundary error
         moves with name plus message plus shape unchanged into
         `src/services/engine/domain/kanji-input/validation/InvalidKanjiInput.ts`
-        and the controller file re-exports it so pages never import the
-        domain; `useLoadingPage.ts` catches the class via the controller
+        and the API file re-exports it so pages never import the
+        domain; `useLoadingPage.ts` catches the class via the API
         file; the search files stay untouched since they already read the
-        controller file; move the error import in
+        API file; move the error import in
         `src/services/entrypoint.test.ts` plus `useLoadingPage.test.tsx` to
-        the controller file, and the status plus limit imports in those
-        suites to the controller file as well.
+        the API file, and the status plus limit imports in those
+        suites to the API file as well.
   - [ ] Prove the removal with updated suites. Technical: entrypoint plus
         loading suites assert the boundary error path with name plus status;
         every SearchBar suite stays green as written; full text search shows
