@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { runTanukiKanjiLesson } from "./entrypoint.ts";
-import { InvalidKanjiInput, KANJI_INPUT_MAX_LENGTH, KanjiInputStatus } from "./validate.ts";
+import {
+  KANJI_INPUT_MAX_LENGTH,
+  KANJI_INPUT_VALIDATION_STATUS,
+} from "./engine/controller/kanji-input/parseKanjiInputApi.ts";
+import { InvalidKanjiInput, runTanukiKanjiLesson } from "./entrypoint.ts";
 
 describe("runTanukiKanjiLesson", () => {
   beforeEach(() => {
@@ -29,11 +32,11 @@ describe("runTanukiKanjiLesson", () => {
   });
 
   test.each([
-    { expected: KanjiInputStatus.INVALID_CHARACTERS, raw: "hello" },
-    { expected: KanjiInputStatus.MISSING_KANJI, raw: "ひらがな" },
-    { expected: KanjiInputStatus.EMPTY, raw: "" },
-    { expected: KanjiInputStatus.EMPTY, raw: "   " },
-    { expected: KanjiInputStatus.TOO_LONG, raw: "森".repeat(KANJI_INPUT_MAX_LENGTH + 1) },
+    { expected: KANJI_INPUT_VALIDATION_STATUS.INVALID_CHARACTERS, raw: "hello" },
+    { expected: KANJI_INPUT_VALIDATION_STATUS.MISSING_KANJI, raw: "ひらがな" },
+    { expected: KANJI_INPUT_VALIDATION_STATUS.EMPTY, raw: "" },
+    { expected: KANJI_INPUT_VALIDATION_STATUS.EMPTY, raw: "   " },
+    { expected: KANJI_INPUT_VALIDATION_STATUS.TOO_LONG, raw: "森".repeat(KANJI_INPUT_MAX_LENGTH + 1) },
   ])("rejects $raw with status $expected before any lesson", ({ expected, raw }) => {
     try {
       runTanukiKanjiLesson(raw);
@@ -41,6 +44,7 @@ describe("runTanukiKanjiLesson", () => {
     } catch (error) {
       expect(error).toBeInstanceOf(InvalidKanjiInput);
       expect((error as InvalidKanjiInput).status).toBe(expected);
+      expect((error as InvalidKanjiInput).name).toBe("InvalidKanjiInput");
     }
   });
 });

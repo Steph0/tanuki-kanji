@@ -184,27 +184,29 @@ single reading place for the screens, and the old paths of engine disappear.
         then `kanjiInputDisplay.test.ts` then `SearchBar.test.tsx` single-file
         tests, then full test.
 
-- [ ] Task 8 - Legacy engine files disappear
-  - [ ] No import path points at the legacy files anymore. Technical: delete
+- [x] Task 8 - Legacy engine files disappear
+  - [x] No import path points at the legacy files anymore. Technical: delete
         `src/services/validate.ts`, `src/services/normalize.ts`, plus
         `src/services/validate.test.ts`; `src/services/entrypoint.ts` (an
         adapter, so domain import is allowed) builds
         its lesson from the `KanjiInput.create` answer, unwraps the proven
         text, and throws the boundary error unless valid; the boundary error
-        moves with name plus message plus shape unchanged into
-        `src/services/engine/domain/kanji-input/validation/InvalidKanjiInput.ts`
-        and the API file re-exports it so pages never import the
-        domain; `useLoadingPage.ts` catches the class via the API
-        file; the search files stay untouched since they already read the
-        API file; move the error import in
-        `src/services/entrypoint.test.ts` plus `useLoadingPage.test.tsx` to
-        the API file, and the status plus limit imports in those
-        suites to the API file as well.
-  - [ ] Prove the removal with updated suites. Technical: entrypoint plus
-        loading suites assert the boundary error path with name plus status;
+        stays alongside `src/services/entrypoint.ts` (its only user) with
+        name plus message plus shape unchanged — the engine-domain move
+        waits for a later spec; the API file does not expose it so pages
+        never see engine internals; `useLoadingPage.ts` logs
+        any engine failure via `console.error` with no `instanceof` check
+        (unreachable by design since screens parse before submitting);
+        the search files stay untouched since they already read the
+        API file; `src/services/entrypoint.test.ts` imports the error from
+        the entrypoint file, and the status plus limit imports in that suite
+        plus `kanjiInputDisplay.test.ts` come from the API file.
+  - [x] Prove the removal with updated suites. Technical: the entrypoint
+        suite asserts the boundary error path with name plus status, the
+        loading suite asserts `console.error` plus the static error text;
         every SearchBar suite stays green as written; full text search shows
         no import of the deleted paths and no `pages` import of the domain.
-  - [ ] Gate: build plus lint plus format plus `entrypoint.test.ts` then
+  - [x] Gate: build plus lint plus format plus `entrypoint.test.ts` then
         `useLoadingPage.test.tsx` single-file tests, then full test.
 
 # Acceptance
