@@ -283,8 +283,8 @@ their old paths disappear too.
         then `useLoadingPage.test.tsx` then `AppRouter.test.tsx` single-file
         tests, then full test.
 
-- [ ] Task 11 - Legacy lesson files disappear
-  - [ ] No import path points at the legacy lesson files anymore. Technical:
+- [x] Task 11 - Legacy lesson files disappear
+  - [x] No import path points at the legacy lesson files anymore. Technical:
         delete `src/services/entrypoint.ts`, `src/services/types.ts`, plus
         `src/services/entrypoint.test.ts` with its cases now covered by the
         Task 9 suites; the API file is the sole source of the singleton plus
@@ -294,12 +294,12 @@ their old paths disappear too.
         the API file or the context; full text search shows no import of the
         deleted paths and no `pages` or `hooks` import of the domain or the
         controller file.
-  - [ ] Prove the removal with updated suites. Technical: the API integration
+  - [x] Prove the removal with updated suites. Technical: the API integration
         suite asserts the nominal text plus the boundary error shape with name
         plus status, the loading suite asserts `console.error` plus the
         static error text; every SearchBar plus AppRouter suite stays green
         as written.
-  - [ ] Gate: build plus lint plus format plus `runTanukiKanjiLessonApi.test.ts`
+  - [x] Gate: build plus lint plus format plus `runTanukiKanjiLessonApi.test.ts`
         then `useLoadingPage.test.tsx` single-file tests, then full test.
 
 # Acceptance
