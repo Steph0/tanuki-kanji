@@ -4,7 +4,7 @@ import { LocationProvider } from "preact-iso";
 import { beforeEach, describe, expect, test } from "vitest";
 import { AppRouter } from "./AppRouter.tsx";
 import { TanukiKanjiProvider } from "./hooks/useTanukiKanjiEngine.tsx";
-import type { TanukiKanjiEngine } from "./services/types.ts";
+import type { TanukiKanjiEngine } from "./services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
 import { dummyEngine } from "./test-utils.ts";
 
 function renderAppRouter({

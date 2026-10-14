@@ -1,4 +1,4 @@
-import type { TanukiKanjiEngine } from "./services/types.ts";
+import type { TanukiKanjiEngine } from "./services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
 
 export function noop(): void {
   return;

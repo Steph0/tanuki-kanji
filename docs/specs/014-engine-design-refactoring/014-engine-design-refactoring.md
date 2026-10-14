@@ -258,8 +258,8 @@ their old paths disappear too.
   - [x] Gate: build plus lint plus format plus `runTanukiKanjiLessonController.test.ts`
         then `runTanukiKanjiLessonApi.test.ts` single-file tests, then full test.
 
-- [ ] Task 10 - Lesson consumers use the API
-  - [ ] App wiring, providers, and suites read the lesson runner from the API
+- [x] Task 10 - Lesson consumers use the API
+  - [x] App wiring, providers, and suites read the lesson runner from the API
         file, and this is the only time those files move. Technical: rewire
         `src/App.tsx` default engine to the Task 9 `runTanukiKanjiLessonAPI`
         singleton; move the engine type imports in
@@ -275,11 +275,11 @@ their old paths disappear too.
         they read the engine from context; no legacy import remains in the
         moved files and no file imports the domain or the controller file
         directly.
-  - [ ] Prove the switch with unchanged screens. Technical: no UI test file
+  - [x] Prove the switch with unchanged screens. Technical: no UI test file
         changes; `useLoadingPage.test.tsx` plus `AppRouter.test.tsx` stay
         green as written, keeping their stub-engine injection through the
         provider; the Task 9 suite covers the rewired path.
-  - [ ] Gate: build plus lint plus format plus `runTanukiKanjiLessonApi.test.ts`
+  - [x] Gate: build plus lint plus format plus `runTanukiKanjiLessonApi.test.ts`
         then `useLoadingPage.test.tsx` then `AppRouter.test.tsx` single-file
         tests, then full test.
 

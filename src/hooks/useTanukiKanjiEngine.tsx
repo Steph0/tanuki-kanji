@@ -1,7 +1,7 @@
 import type { ComponentChildren } from "preact";
 import { createContext } from "preact";
 import { useContext } from "preact/hooks";
-import type { TanukiKanjiEngine } from "../services/types.ts";
+import type { TanukiKanjiEngine } from "../services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
 
 const EngineContext = createContext<TanukiKanjiEngine | null>(null);
 

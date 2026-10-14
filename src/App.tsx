@@ -3,14 +3,14 @@ import styles from "./App.module.css";
 import { AppRouter } from "./AppRouter.tsx";
 import { Navbar } from "./components/Navbar/Navbar.tsx";
 import { TanukiKanjiProvider } from "./hooks/useTanukiKanjiEngine.tsx";
-import { runTanukiKanjiLesson } from "./services/entrypoint.ts";
-import type { TanukiKanjiEngine } from "./services/types.ts";
+import type { TanukiKanjiEngine } from "./services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
+import { runTanukiKanjiLessonAPI } from "./services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
 
 type AppProps = {
   engine?: TanukiKanjiEngine;
 };
 
-export function App({ engine = runTanukiKanjiLesson }: AppProps = {}) {
+export function App({ engine = runTanukiKanjiLessonAPI }: AppProps = {}) {
   return (
     <LocationProvider>
       <div className={styles.appContainer}>

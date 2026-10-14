@@ -2,7 +2,7 @@ import { renderHook } from "@testing-library/preact";
 import type { ComponentChildren } from "preact";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { TanukiKanjiProvider } from "../../hooks/useTanukiKanjiEngine.tsx";
-import type { TanukiKanjiEngine } from "../../services/types.ts";
+import type { TanukiKanjiEngine } from "../../services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
 import { useLoadingPage } from "./useLoadingPage.ts";
 
 function renderLoadingPageHook({
