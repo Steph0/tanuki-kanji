@@ -1,1 +1,1 @@
-export type TanukiKanjiEngine = (kanjiUserInput: string) => Promise<string>;
+export type { TanukiKanjiEngine } from "./engine/controller/lesson/runTanukiKanjiLessonController.ts";

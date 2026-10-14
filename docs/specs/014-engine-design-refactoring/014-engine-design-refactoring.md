@@ -8,6 +8,11 @@ break typing feedback or lesson start by accident. This spec rebuilds those
 checks as a layered engine with one stable place the screens read from, so
 later features land inside without touching the screens.
 
+The lesson start still reads a loose runner plus a loose engine type in the
+services root. The same risk applies there, so the same rebuild moves that
+runner into the engine with one stable reading place, so later lesson work
+lands inside without touching the providers or screens.
+
 # What
 
 The shop stays open while the engine room is rebuilt. This is a technical refactoring, no
@@ -16,15 +21,19 @@ functional changes.
 Behind the scenes, the scattered checks become one new layered engine with a
 single reading place for the screens, and the old paths of engine disappear.
 
+The lesson runner plus its engine type plus its boundary error take the same
+trip into the engine with a second reading place for the app wiring, and
+their old paths disappear too.
+
 # Constraints
 
 - Follow `DESIGN.md`, `AGENTS.md` (incl. Testing Strategy), and project memory conventions.
 - No new `package.json` dependencies, no external CDN/`<link>`.
-- Tasks run in the given order. Strangler: new path beside the old with re-exports green, screens switch once (Task 7), legacy deleted last (Task 8).
+- Tasks run in the given order. Strangler: new path beside the old with re-exports green, screens switch once (Task 7 for search, Task 10 for lesson), legacy deleted last (Task 8 for search, Task 11 for lesson).
 - Granted bypass: this spec names files and symbols early to keep the small steps unambiguous, and review may rename without breaking intent.
-- Hexagonal direction: domain never imports outward; pages import only the `parseKanjiInputApi.ts` file, and only the `parseKanjiInputAPI` singleton plus statuses, limit, and response types — never the controller file or its `parseKanjiInputControllerFactory` factory (dev-only test seam). Controller plus entrypoint are inbound adapters and may import inward.
-- Deliberate non-goals: no CQRS, no event bus, no aggregates or repositories, no use case layer. The single value object needs none of that yet.
-- Out of scope: lesson generation content, new statuses or new rules, infrastructure work (`infrastructure/` stays a `.gitkeep` placeholder), any behavior or copy change.
+- Hexagonal direction: domain never imports outward; pages plus hooks import only the `parseKanjiInputApi.ts` or `runTanukiKanjiLessonApi.ts` files, and only the singletons plus statuses, limit, response and engine types — never the controller files or their `parseKanjiInputControllerFactory` and `runTanukiKanjiLessonControllerFactory` factories (dev-only test seams). The boundary error stays defined in the lesson controller file and is never read through the Api file. Controller plus entrypoint are inbound adapters and may import inward.
+- Deliberate non-goals: no CQRS, no event bus, no aggregates or repositories, no use case layer. The single value object plus the thin lesson runner need none of that yet.
+- Out of scope: lesson generation content, timing, and copy (5s delay plus `kanji lesson:` prefix plus error text unchanged), new statuses or new rules, infrastructure work (`infrastructure/` stays a `.gitkeep` placeholder), any behavior or copy change.
 
 # Tasks
 
@@ -136,7 +145,8 @@ single reading place for the screens, and the old paths of engine disappear.
         where it is produced, carrying a plain string value), and the
         `KANJI_INPUT_MAX_LENGTH` re-export from the domain, all by same
         reference (no copies) so `===` keeps working, plus the ready
-        `parseKanjiInputAPI` singleton built from the controller factory.
+        `parseKanjiInputAPI` singleton explicitly annotated
+        `(raw: string) => ParseKanjiInputResponse` and built from the controller factory.
         New `src/services/engine/controller/kanji-input/parseKanjiInputController.ts`
         holds the factory `parseKanjiInputControllerFactory` receiving the
         creator by injection defaulting to
@@ -209,6 +219,89 @@ single reading place for the screens, and the old paths of engine disappear.
   - [x] Gate: build plus lint plus format plus `entrypoint.test.ts` then
         `useLoadingPage.test.tsx` single-file tests, then full test.
 
+- [x] Task 9 - Lesson runner lives beside the old path
+  - [x] The lesson starts exactly as before while the new engine path exists
+        beside the old, and no caller moves yet. Technical: new
+        `src/services/engine/controller/lesson/runTanukiKanjiLessonController.ts`
+        holding the factory `runTanukiKanjiLessonControllerFactory` receiving
+        the creator by injection defaulting to
+        `(raw: string) => KanjiInput.create(raw)` plus a sleeper defaulting
+        to the 5s timeout, defining the `TanukiKanjiEngine` type plus the
+        `InvalidKanjiInput` boundary error where they are produced with name
+        plus message plus shape unchanged and the delay value unchanged; new
+        `src/services/engine/controller/lesson/runTanukiKanjiLessonApi.ts`
+        holding the public surface, re-exporting the engine type and
+        annotating the ready `runTanukiKanjiLessonAPI` singleton as
+        `TanukiKanjiEngine` built from the controller factory, with no error
+        re-export; the factory is a
+        dev-only test seam and consumers use the singleton, never the
+        factory; `src/services/entrypoint.ts` re-exports the singleton from
+        the Api file plus the error from the controller file, and
+        `src/services/types.ts` re-exports the engine type; no
+        caller changes. This answers the `types.ts` question: the engine
+        function type is the lesson controller contract, defined in the
+        controller file and re-exported through the Api file, so `types.ts`
+        holds no logic of its own and disappears in Task 11.
+  - [x] Prove faithful delegation with the code. Technical: colocated unit
+        `src/services/engine/controller/lesson/runTanukiKanjiLessonController.test.ts`
+        testing the controller contract only with a stubbed creator plus an
+        immediate sleeper: valid maps to the `kanji lesson:` text, each
+        failure status rejects with the boundary error carrying name plus
+        status, the injected creator receives the raw text untouched; plus
+        colocated black-box integration
+        `src/services/engine/controller/lesson/runTanukiKanjiLessonApi.test.ts`
+        wiring the `runTanukiKanjiLessonAPI` singleton end to end with fake
+        timers (nominal plus one error) asserting the rejection shape
+        (`name` plus `status`, never the error class); the legacy
+        `src/services/entrypoint.test.ts` stays as written and green through
+        the re-exports.
+  - [x] Gate: build plus lint plus format plus `runTanukiKanjiLessonController.test.ts`
+        then `runTanukiKanjiLessonApi.test.ts` single-file tests, then full test.
+
+- [ ] Task 10 - Lesson consumers use the API
+  - [ ] App wiring, providers, and suites read the lesson runner from the API
+        file, and this is the only time those files move. Technical: rewire
+        `src/App.tsx` default engine to the Task 9 `runTanukiKanjiLessonAPI`
+        singleton; move the engine type imports in
+        `src/hooks/useTanukiKanjiEngine.tsx`, `src/test-utils.ts`,
+        `src/AppRouter.test.tsx`, plus
+        `src/pages/LoadingPage/useLoadingPage.test.tsx` to the Task 9 API
+        file; the dependency injection seam stays intact:
+        `TanukiKanjiProvider` plus `useTanukiKanjiEngine` keep their
+        signatures and only their type import path moves, so stub engines in
+        suites still inject through the provider against the API-exported
+        type; `src/pages/LoadingPage/useLoadingPage.ts` plus
+        `src/pages/LoadingPage/LoadingPage.test.tsx` stay untouched since
+        they read the engine from context; no legacy import remains in the
+        moved files and no file imports the domain or the controller file
+        directly.
+  - [ ] Prove the switch with unchanged screens. Technical: no UI test file
+        changes; `useLoadingPage.test.tsx` plus `AppRouter.test.tsx` stay
+        green as written, keeping their stub-engine injection through the
+        provider; the Task 9 suite covers the rewired path.
+  - [ ] Gate: build plus lint plus format plus `runTanukiKanjiLessonApi.test.ts`
+        then `useLoadingPage.test.tsx` then `AppRouter.test.tsx` single-file
+        tests, then full test.
+
+- [ ] Task 11 - Legacy lesson files disappear
+  - [ ] No import path points at the legacy lesson files anymore. Technical:
+        delete `src/services/entrypoint.ts`, `src/services/types.ts`, plus
+        `src/services/entrypoint.test.ts` with its cases now covered by the
+        Task 9 suites; the API file is the sole source of the singleton plus
+        the engine type, and the controller file is the sole source of the
+        boundary error; the search, loading, app,
+        hook, plus test-utils files stay untouched since they already read
+        the API file or the context; full text search shows no import of the
+        deleted paths and no `pages` or `hooks` import of the domain or the
+        controller file.
+  - [ ] Prove the removal with updated suites. Technical: the API integration
+        suite asserts the nominal text plus the boundary error shape with name
+        plus status, the loading suite asserts `console.error` plus the
+        static error text; every SearchBar plus AppRouter suite stays green
+        as written.
+  - [ ] Gate: build plus lint plus format plus `runTanukiKanjiLessonApi.test.ts`
+        then `useLoadingPage.test.tsx` single-file tests, then full test.
+
 # Acceptance
 
 - When a user submits a word with surrounding spaces, the lesson starts for
@@ -221,5 +314,7 @@ single reading place for the screens, and the old paths of engine disappear.
 - When the field holds kana alone, `"Enter at least one kanji."` shows with
   disabled submit.
 - When the field holds an overlong word, `"Whoa, long one! Tanuki keeps first 21 chars."` shows with submit enabled.
+- When a valid word is submitted, the lesson resolves the `"kanji lesson: <word>"` text for the trimmed word.
+- When an invalid word reaches the lesson runner, it rejects with the boundary error carrying its status and the loading screen shows the static error text.
 - Final full loop: `npm run build` plus `npm run lint` plus `npm run format`
   plus `npm run test`; axe at App level stays clean.
