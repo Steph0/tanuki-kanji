@@ -76,3 +76,12 @@ owns layering, naming, and how each side is tested.
   sub-contexts where a matrix exists.
 - Only the Api integration suite calls the real singleton, offline; every
   other suite stays on a mock.
+- No suite reaches the network. HTTP is fully intercepted by MSW through
+  `msw/browser` `setupWorker`; `msw/node` is unusable, since the browser
+  runner rejects its `node:http` import.
+- A suite starts the worker with an origin-root URL,
+  `worker.start({ serviceWorker: { url: "/mockServiceWorker.js" } })`, since
+  the worker only holds the page scope from there.
+- `vite.config.ts` registers `msw/vite` in `worker-only` mode, gated on
+  `process.env.VITEST`. Ungated, the plugin writes `mockServiceWorker.js`
+  into every build; never commit it under `public/`.

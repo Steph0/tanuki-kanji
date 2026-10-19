@@ -75,26 +75,26 @@ lesson feels alive before richer content arrives.
 
 - [x] Task 2 — UI suites run on mock engine by default
   - [x] No UI suite fires the real engine by accident, and a new engine API
-        cannot slip past the test layer. Technical: add one shared test
-        render helper wrapping `TanukiKanjiProvider` that requires an
-        explicit engine choice, defaults to a generic record-and-resolve
-        mock for call-with assertions, and still accepts a per-test custom
-        mock; refactor every UI suite to render through it so no suite
-        renders a bare singleton-backed tree; production default stays as
-        written.
+        cannot slip past the test layer. Technical: `App` takes a required
+        `engine` prop so no test can render it against the singleton by
+        accident, and `src/main.tsx` stays the only composition root wiring
+        the real one; one shared test render helper wraps
+        `TanukiKanjiProvider` for suites below `App` and requires an explicit
+        engine argument, a plain `vi.fn` being the mock; refactor every UI
+        suite so no suite renders a bare singleton-backed tree.
   - [x] Gate: build plus lint plus format plus `App.test.tsx` plus
         `App.axe.test.tsx`, then full test.
 
-- [ ] Task 3 — Install the provider SDK and document local setup
-  - [ ] The project can import the typed OpenRouter client, mock its HTTP in
+- [x] Task 3 — Install the provider SDK and document local setup
+  - [x] The project can import the typed OpenRouter client, mock its HTTP in
         needs it and the task names it; add an untracked local env file
         following Vite's `.env.development` convention plus a committed
-        `.env.example` carrying a placeholder only plus short `README` setup
-        notes stating localhost-only, never ship
-        a personal key in a build, and apply the dashboard referer allowlist
-        plus spend limit; no other new prod dep unless the SDK contract
-        needs it and the task names it.
-  - [ ] Gate: build plus lint plus format plus full test.
+        `.env.example` mirroring the keys that file already holds; no other
+        new prod dep unless the SDK contract needs it and the task names it.
+        The OpenRouter key itself is Task 4: its `ImportMetaEnv` typing, its
+        `.env.example` placeholder, its `.env.development` entry and its
+        `README` setup notes all land there, next to the code that reads it.
+  - [x] Gate: build plus lint plus format plus full test.
 
 - [ ] Task 4 — Kanji story provider lives in infrastructure
   - [ ] The engine can ask for one funny history story about a proven word
@@ -125,7 +125,12 @@ lesson feels alive before richer content arrives.
         minimal sanitized provider error carrying a safe cause only (status
         or code, never headers, key, or prompt), so nothing above re-logs
         detail and prod logs and UI never leak secrets; SDK default timeout
-        is kept.
+        is kept. The key material deferred from Task 3 lands here: declare
+        `VITE_OPENROUTER_API_KEY` on `ImportMetaEnv` in `src/vite-env.d.ts` so
+        it is `string | undefined` rather than Vite's `any`, add the
+        placeholder to `.env.example`, and add short `README` setup notes
+        stating localhost-only, never ship a personal key in a build, and
+        apply the dashboard referer allowlist plus spend limit.
   - [ ] Prove the seam with the code. Technical: colocated unit
         `*.test.ts` on the shared browser runner using `msw/browser`
         `setupWorker` with no real network, asserting the router id plus

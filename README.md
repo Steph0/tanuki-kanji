@@ -2,7 +2,9 @@
 
 ## Key Features
 
-<TODO>
+- **Type any Japanese word** — IME-aware kanji and kana composition up to 21 characters, checked as you type.
+- **Accessible at every size** — mobile-first app, a11y practices and inclusive design philosophy.
+- <TO_BE_COMPLETED>
 
 ## Development & Technical Guidelines
 
@@ -48,6 +50,7 @@ This will limit your dev server exposure to those entrypoints.
 ### Testing
 
 Integration tests run in real Chromium via Vitest browser mode (`npm run test`).
+Outbound HTTP is fully intercepted by [MSW](https://mswjs.io/), so the suite never reaches the LLM provider.
 
 One-time local setup:
 
