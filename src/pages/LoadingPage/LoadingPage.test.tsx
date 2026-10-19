@@ -1,17 +1,15 @@
-import { act, render, screen } from "@testing-library/preact";
+import { act, screen } from "@testing-library/preact";
 import { describe, expect, test, vi } from "vitest";
 import { commands } from "vitest/browser";
-import { TanukiKanjiProvider } from "../../hooks/useTanukiKanjiEngine.tsx";
-import { dummyEngine, noop } from "../../test-utils.ts";
+import { noop, renderWithEngine } from "../../test-utils.tsx";
 import { LoadingPage } from "./LoadingPage.tsx";
 
 const ARTWORK_ALT = "Tanuki calligraphing by lamplight while your lesson loads";
 
 function renderLoadingPage() {
-  return render(
-    <TanukiKanjiProvider engine={dummyEngine}>
-      <LoadingPage kanjiUserInput="狸" onDone={noop} />
-    </TanukiKanjiProvider>,
+  return renderWithEngine(
+    <LoadingPage kanjiUserInput="狸" onDone={noop} />,
+    vi.fn(async () => "kanji lesson"),
   );
 }
 

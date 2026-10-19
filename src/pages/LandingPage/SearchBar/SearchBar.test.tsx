@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/preact";
 import { describe, expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
-import { noop } from "../../../test-utils.ts";
+import { noop } from "../../../test-utils.tsx";
 import styles from "./SearchBar.module.css";
 import { SearchBar } from "./SearchBar.tsx";
 

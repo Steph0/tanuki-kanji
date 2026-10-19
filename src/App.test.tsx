@@ -1,8 +1,14 @@
 import { render, screen, waitFor } from "@testing-library/preact";
-import { beforeEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import styles from "./App.module.css";
 import { App } from "./App.tsx";
+import type { TanukiKanjiEngine } from "./services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
+import { pendingEngine } from "./test-utils.tsx";
+
+function renderApp(engine: TanukiKanjiEngine = vi.fn(async () => "kanji lesson")) {
+  render(<App engine={engine} />);
+}
 
 describe("App", () => {
   beforeEach(() => {
@@ -10,14 +16,14 @@ describe("App", () => {
   });
   describe("landing route", () => {
     test("shows a single site header, main content, and headline", () => {
-      render(<App />);
+      renderApp();
       expect(screen.getByRole("banner")).toBeVisible();
       expect(screen.getByRole("main")).toBeVisible();
       expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     });
 
     test("keeps discovery order: navigation, illustration, search, explanation", () => {
-      render(<App />);
+      renderApp();
       const navigation = screen.getByRole("navigation", { name: "Primary" });
       const illustration = screen.getByRole("img", { name: /tanuki calligraphing/i });
       const search = screen.getByRole("textbox", { name: "Enter your kanji" });
@@ -30,7 +36,7 @@ describe("App", () => {
 
     test("constrains and centers the page shell on desktop", async () => {
       await page.viewport(1280, 800);
-      render(<App />);
+      renderApp();
       // Last-resort lookup, documented: the page shell is a plain div with no
       // accessible role, so reach it via its CSS module class.
       const shell = document.querySelector(`.${styles.pageContent}`);
@@ -47,7 +53,7 @@ describe("App", () => {
 
     test("restores the cover crop on short viewports", async () => {
       await page.viewport(844, 390);
-      render(<App />);
+      renderApp();
       // The max-height short-viewport block is declared after the desktop block
       // so it always wins: cover is restored over desktop contain.
       const illustration = screen.getByRole("img", { name: /tanuki calligraphing/i });
@@ -55,7 +61,7 @@ describe("App", () => {
     });
 
     test("typing and submitting takes the user to the loading screen", async () => {
-      render(<App />);
+      renderApp(pendingEngine());
       await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
       await page.getByRole("button", { name: "Submit search" }).click();
       expect(await screen.findByRole("status")).toBeVisible();
@@ -66,28 +72,28 @@ describe("App", () => {
   describe("routing guards", () => {
     test("redirects a direct /loading visit to landing when no kanji user input is stored", async () => {
       window.history.pushState({}, "", "/loading");
-      render(<App />);
+      renderApp();
       expect(await screen.findByRole("textbox", { name: "Enter your kanji" })).toBeVisible();
       expect(window.location.pathname).toBe("/");
     });
 
     test("redirects a direct /result visit to landing when no lesson output is stored", async () => {
       window.history.pushState({}, "", "/result");
-      render(<App />);
+      renderApp();
       expect(await screen.findByRole("textbox", { name: "Enter your kanji" })).toBeVisible();
       expect(window.location.pathname).toBe("/");
     });
 
     test("redirects unknown paths to landing", async () => {
       window.history.pushState({}, "", "/no-such-page");
-      render(<App />);
+      renderApp();
       expect(await screen.findByRole("textbox", { name: "Enter your kanji" })).toBeVisible();
       expect(window.location.pathname).toBe("/");
     });
 
     test("going back from a guarded page lands on / without a loop", async () => {
       window.history.pushState({}, "", "/loading");
-      render(<App />);
+      renderApp();
       await screen.findByRole("textbox", { name: "Enter your kanji" });
       window.history.back();
       await waitFor(() => expect(window.location.pathname).toBe("/"));

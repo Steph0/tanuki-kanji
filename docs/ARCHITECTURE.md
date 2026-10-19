@@ -25,6 +25,14 @@ owns layering, naming, and how each side is tested.
 
 - `*.test.tsx` suites colocated with components, running in browser mode
   with real CSS.
+- Mock engine is a plain `vi.fn`; assert calls with
+  `expect(engine).toHaveBeenCalledWith(...)`.
+- `pendingEngine()` from `src/test-utils.tsx` covers the never-settles case.
+- Sub-app suites render through `renderWithEngine(ui, engine)`. Hook suites
+  declare the provider as a local `renderHook` wrapper.
+- `App` takes a required `engine` prop, picked in `src/main.tsx` beside the
+  global stylesheet import. App suites render `<App engine={engine} />`.
+- A new engine API extends the helper, or types fail.
 
 ## Engine
 
@@ -66,3 +74,5 @@ owns layering, naming, and how each side is tested.
   singleton.
 - `describe` names carry `unit` / `integration`, with `nominal` / `errors`
   sub-contexts where a matrix exists.
+- Only the Api integration suite calls the real singleton, offline; every
+  other suite stays on a mock.

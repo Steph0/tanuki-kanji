@@ -1,14 +1,20 @@
 import { render, screen } from "@testing-library/preact";
 import axe from "axe-core";
-import { beforeEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import { App } from "./App.tsx";
+import type { TanukiKanjiEngine } from "./services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
+import { pendingEngine } from "./test-utils.tsx";
 
 const MOBILE = { viewportName: "mobile", width: 390, height: 844 };
 const ROTATED = { viewportName: "rotated", width: 844, height: 390 };
 const DESKTOP = { viewportName: "desktop", width: 1280, height: 800 };
 
 const VIEWPORTS = [MOBILE, ROTATED, DESKTOP];
+
+function renderApp(engine: TanukiKanjiEngine = vi.fn(async () => "kanji lesson")) {
+  render(<App engine={engine} />);
+}
 
 describe("App accessibility on /", () => {
   beforeEach(() => {
@@ -17,7 +23,7 @@ describe("App accessibility on /", () => {
 
   test.each(VIEWPORTS)("has no violations at $viewportName viewport", async ({ width, height }) => {
     await page.viewport(width, height);
-    render(<App />);
+    renderApp();
     await screen.findByRole("textbox", { name: "Enter your kanji" });
     const results = await axe.run(document.body);
     expect(results.violations).toEqual([]);
@@ -31,7 +37,7 @@ describe("App accessibility on /loading", () => {
 
   test.each(VIEWPORTS)("has no violations at $viewportName viewport", async ({ width, height }) => {
     await page.viewport(width, height);
-    render(<App />);
+    renderApp(pendingEngine());
     await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
     await page.getByRole("button", { name: "Submit search" }).click();
     await screen.findByRole("status");
@@ -47,7 +53,7 @@ describe("App accessibility on /result", () => {
 
   test.each(VIEWPORTS)("has no violations at $viewportName viewport", async ({ width, height }) => {
     await page.viewport(width, height);
-    render(<App engine={() => Promise.resolve("kanji lesson: 狸")} />);
+    renderApp(vi.fn(async () => "kanji lesson: 狸"));
     await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
     await page.getByRole("button", { name: "Submit search" }).click();
     expect(await screen.findByText("kanji lesson: 狸")).toBeVisible();

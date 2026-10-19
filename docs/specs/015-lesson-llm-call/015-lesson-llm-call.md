@@ -73,8 +73,8 @@ lesson feels alive before richer content arrives.
   - [x] Gate: build plus lint plus format plus single-file tests, then full
         test.
 
-- [ ] Task 2 — UI suites run on mock engine by default
-  - [ ] No UI suite fires the real engine by accident, and a new engine API
+- [x] Task 2 — UI suites run on mock engine by default
+  - [x] No UI suite fires the real engine by accident, and a new engine API
         cannot slip past the test layer. Technical: add one shared test
         render helper wrapping `TanukiKanjiProvider` that requires an
         explicit engine choice, defaults to a generic record-and-resolve
@@ -82,7 +82,7 @@ lesson feels alive before richer content arrives.
         mock; refactor every UI suite to render through it so no suite
         renders a bare singleton-backed tree; production default stays as
         written.
-  - [ ] Gate: build plus lint plus format plus `App.test.tsx` plus
+  - [x] Gate: build plus lint plus format plus `App.test.tsx` plus
         `App.axe.test.tsx`, then full test.
 
 - [ ] Task 3 — Install the provider SDK and document local setup

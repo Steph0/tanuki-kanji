@@ -14,14 +14,14 @@ function renderLoadingPageHook({
   engine: TanukiKanjiEngine;
   onDone: (tanukiKanjiLessonOutput: string) => void;
 }) {
-  function Wrapper({ children }: { children: ComponentChildren }) {
+  function EngineProvider({ children }: { children?: ComponentChildren }) {
     return <TanukiKanjiProvider engine={engine}>{children}</TanukiKanjiProvider>;
   }
   return renderHook(
     () => {
       useLoadingPage(kanjiUserInput, onDone);
     },
-    { wrapper: Wrapper },
+    { wrapper: EngineProvider },
   );
 }
 

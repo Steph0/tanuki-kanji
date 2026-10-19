@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/preact";
 import { describe, expect, test } from "vitest";
-import { noop } from "../../test-utils.ts";
+import { noop } from "../../test-utils.tsx";
 import { LandingPage } from "./LandingPage.tsx";
 
 describe("LandingPage", () => {
