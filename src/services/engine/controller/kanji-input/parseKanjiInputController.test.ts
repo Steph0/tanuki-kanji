@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { KanjiInput } from "../../domain/kanji-input/KanjiInput.ts";
-import type { KanjiInputValidationStatus } from "./parseKanjiInputApi.ts";
-import { KANJI_INPUT_VALIDATION_STATUS } from "./parseKanjiInputApi.ts";
+import type { KanjiInputValidationStatus } from "../../domain/kanji-input/validation/KanjiInputValidationStatus.ts";
+import { KanjiInputValidationStatus as KANJI_INPUT_VALIDATION_STATUS } from "../../domain/kanji-input/validation/KanjiInputValidationStatus.ts";
 import { parseKanjiInputControllerFactory } from "./parseKanjiInputController.ts";
 
 function stubFailure(status: Exclude<KanjiInputValidationStatus, typeof KANJI_INPUT_VALIDATION_STATUS.VALID>) {
@@ -36,8 +36,8 @@ describe("parseKanjiInputController unit", () => {
     });
   });
 
-  describe("interaction with creator", () => {
-    test("calls the injected creator with the raw text untouched", () => {
+  describe("interaction with the use case", () => {
+    test("calls the use case with the raw text untouched", () => {
       let seen: string | undefined;
       const stub = (raw: string) => {
         seen = raw;
