@@ -12,8 +12,9 @@ owns layering, naming, and how each side is tested.
 - UI calls the engine through one public file per API (`parseXApi.ts`),
   exposing a singleton plus statuses, limit, and response type.
 - Dependencies point one way: `pages` → Api → Controller → `application/`
-  → `domain/`. The domain stands alone; the application layer reads the
-  domain only, and the controller plus Api stay thin inbound adapters.
+  → `domain/`, plus Controller → `infrastructure/` → `domain/`. The domain
+  stands alone; the application layer reads the domain only, and the
+  controller plus Api stay thin inbound adapters.
 
 ## UI
 
@@ -39,12 +40,13 @@ owns layering, naming, and how each side is tested.
 ### Layout
 
 - `src/services/engine/` holds framework-free TypeScript in four parts:
-  `domain/`, `application/`, `controller/`, `infrastructure/` (placeholder
-  for a later spec).
+  `domain/`, `application/`, `controller/`, `infrastructure/`.
 - `domain/`: pure rules, one kebab-case folder per world (e.g.
   `kanji-input/`); Uppercase files for value objects and vocabulary,
   lowercase for domain services. Tunable rules live in their own policy
-  module next to the vocabulary.
+  module next to the vocabulary. The ports the outbound adapters implement
+  live here too (`PascalCase` type file), so the application layer and the
+  adapters both read the domain only.
 - `application/<feature>/`: one folder per feature, holding the use cases
   that orchestrate it (decisions, sequencing). A use case reads the domain
   only, takes its collaborators by injection with the real defaults, and
@@ -54,6 +56,14 @@ owns layering, naming, and how each side is tested.
   `parseXController.ts` carries the factory plus the `mapToResponse`
   presenter, delegating to its use case with the injected defaults
   unchanged. It stays thin: no rule, no SDK import.
+- `infrastructure/<provider>/`: one folder per outbound provider, holding
+  the adapter implementing a domain port plus the error it throws. It is the
+  only place importing a vendor SDK or reading `import.meta.env`. An adapter
+  reads its key from `import.meta.env` at call time, identifies the app to
+  the provider, sets an explicit timeout on the request, keeps the SDK retry
+  policy off, and owns the error posture: the full provider error is logged
+  once here in dev only (`import.meta.env.DEV`), and a sanitized error
+  carrying a safe cause (status or code) travels up.
 
 ### Naming
 
@@ -72,6 +82,8 @@ owns layering, naming, and how each side is tested.
   mapper is pinned here.
 - Integration (`parseXApi.test.ts`): one flat wiring proof through the
   singleton.
+- Unit, provider (`infrastructure/<provider>/<adapter>.test.ts`): the
+  request the adapter sends plus its failure shape, driven through MSW.
 - `describe` names carry `unit` / `integration`, with `nominal` / `errors`
   sub-contexts where a matrix exists.
 - Only the Api integration suite calls the real singleton, offline; every
