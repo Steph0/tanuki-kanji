@@ -23,9 +23,10 @@ lesson feels alive before richer content arrives.
 - References to standing rules (`DESIGN.md`, `AGENTS.md`, memory conventions).
 - Granted bypasses: install the OpenRouter SDK plus `msw` for this spec; no
   other new prod dep unless the SDK contract needs it and the task names it.
-- This spec retires the `014` no-use-case rule: with two features plus an
-  outbound provider, orchestration moves into an application layer. Task 1
-  updates the architecture doc alongside the code.
+- This spec retired the `014` no-use-case rule in Task 1, and Task 7 brings
+  it back: with two features but no orchestration left in the use cases, the
+  application layer is dropped and the controller names the adapter it
+  calls. Task 1 updates the architecture doc alongside the code.
 - Key posture is local-only for now, user-supplied later: the dev key lives
   in an untracked local env file only and is never baked into a shared or
   shipped build; the repo carries a placeholder example plus setup docs;
@@ -34,13 +35,16 @@ lesson feels alive before richer content arrives.
   not make it secret. Long term the learner provides their own key at
   runtime instead of any bundled key.
 - The provider is a fixed free-router choice locked in Tasks, with its exact
-  values living next to the code that sends them, never here.
+  values living next to the code that sends them, never here; Task 8
+  overrides the Task 4 provider contract and its proof.
 - Error posture is full detail in dev, sanitized in prod: the log keeps the
   full stack locally while prod surfaces a minimal provider error with no
   secret, header, or prompt content.
-- Hexagonal direction: domain never imports outward; use cases plus ports
-  read domain only; infrastructure holds the only provider import;
-  controller plus API stay thin inbound.
+- Hexagonal direction: domain never imports outward; the controller reads
+  the domain plus the provider adapter; infrastructure holds the only provider
+  import; a controller naming an adapter is a lateral dependency between two
+  outer-ring parts, never an outward one; controller plus API stay thin
+  inbound.
 - Test layer defaults to mock engine with one shared helper as the gate:
   UI suites render through it and never touch the real singleton by
   accident; adding a new engine API means extending the helper or types
@@ -98,13 +102,13 @@ lesson feels alive before richer content arrives.
 
 - [x] Task 4 — Kanji story provider lives in infrastructure
   - [x] The engine can ask for one funny history story about a proven word
-        through a small port the tests can fake. Technical: new port plus new
-        OpenRouter adapter under `src/services/engine/`; the port is
-        `getTanukiKanjiLesson` taking the proven word as a plain string
-        and answering the provider story as a named `TanukiKanjiLesson`
-        value, held as the `GetTanukiKanjiLesson` type in
-        `src/services/engine/domain/tanuki-kanji-lesson/` so the application
-        layer and the adapter both read the domain only; the adapter lives in
+        through a small adapter the tests can fake. Technical: new OpenRouter
+        adapter under `src/services/engine/`; the adapter is
+        `getTanukiKanjiLesson` taking the proven word as the domain
+        `KanjiInput` value, never a plain string, so no unchecked word can
+        reach the provider call, and answering the provider story as a named
+        `TanukiKanjiLesson`
+        value; the adapter lives in
         `src/services/engine/infrastructure/openrouter/`;
         the adapter builds its client from
         the local `VITE_OPENROUTER_API_KEY`, sends one non-stream text-only
@@ -121,7 +125,8 @@ lesson feels alive before richer content arrives.
         these characters in English as plain text.`; the adapter interpolates
         only the proven word (already allowlisted to kanji plus kana, max
         `21`) between the tags, hands the provider text to the domain
-        `TanukiKanjiLesson` value, which trims it and holds it, with no
+        `TanukiKanjiLesson` value, which trims it and holds it as its
+        `content`, with no
         content policing: no retry, no markup stripping, no sentence counting,
         empty stays empty, since quality is out of scope here; a provider
         answer carrying no text at all is an abnormal answer and rejects with
@@ -157,24 +162,23 @@ lesson feels alive before richer content arrives.
   - [x] Gate: build plus lint plus format plus the adapter suite file, then
         full test.
 
-- [ ] Task 5 — Lesson use case calls the provider
-  - [ ] A valid lesson run returns its story through the provider port.
+- [x] Task 5 — Lesson use case calls the provider
+  - [x] A valid lesson run returns its story through the provider adapter.
         Technical: extend the Task 1 `src/services/engine/application/lesson/` use case
-        taking the proven word as a plain string plus the provider port
-        (`GetTanukiKanjiLesson` from the domain) and
-        answering the domain `TanukiKanjiLesson`; it carries no SDK import
+        taking the proven word as the domain `KanjiInput` plus the provider
+        and answering the domain `TanukiKanjiLesson`; it carries no SDK import
         and no env read;
         provider rejection passes through untouched so the Task 4 sanitized
         error reaches the logger intact.
-  - [ ] Prove the call with the code. Technical: colocated unit `*.test.ts`
+  - [x] Prove the call with the code. Technical: colocated unit `*.test.ts`
         with a fake provider asserting delegation with the proven string
         untouched plus one provider-failure path asserting the same error
         instance passes through; no SDK import in the suite.
-  - [ ] Gate: build plus lint plus format plus the use-case suite file, then
+  - [x] Gate: build plus lint plus format plus the use-case suite file, then
         full test.
 
-- [ ] Task 6 — Lesson API serves the use case
-  - [ ] The lesson singleton resolves the story for valid input and keeps its
+- [x] Task 6 — Lesson API serves the use case
+  - [x] The lesson singleton resolves the story for valid input and keeps its
         invalid-input rejection, with the placeholder gone. Technical: rewire
         `src/services/engine/controller/lesson/runTanukiKanjiLessonController.ts`
         factory to validate through `KanjiInput.create` then run the Task 5
@@ -185,7 +189,7 @@ lesson feels alive before richer content arrives.
         `InvalidKanjiInput` boundary error; the Api singleton in
         `src/services/engine/controller/lesson/runTanukiKanjiLessonApi.ts`
         stays the only UI entry.
-  - [ ] Prove the wiring with the code. Technical: update colocated unit
+  - [x] Prove the wiring with the code. Technical: update colocated unit
         `runTanukiKanjiLessonController.test.ts` with a fake provider and no
         sleeper or fake timers, covering story text verbatim plus each
         invalid status plus the untouched raw-text creator call plus no
@@ -193,7 +197,71 @@ lesson feels alive before richer content arrives.
         `runTanukiKanjiLessonApi.test.ts` with a fake provider seam so it
         never hits network and needs no timer advance, covering end to end
         text plus one invalid shape; UI suites stay on the Task 2 helper.
-  - [ ] Gate: build plus lint plus format plus both lesson suite files, then
+  - [x] Gate: build plus lint plus format plus both lesson suite files, then
+        full test.
+
+- [x] Task 7 — The application layer is dropped
+  - [x] The engine keeps three parts and every call is followable from the
+        controller. Technical: delete
+        `src/services/engine/application/` (both use cases plus their
+        suites), since both had become one-line forwarders — the parse
+        controller calls `KanjiInput.create` and the lesson controller calls
+        the provider adapter — so the layer held no orchestration left to
+        own. The parse controller becomes the plain `parseKanjiInput`
+        function, and its contract suite drives the real domain, pinning the
+        handoff with `vi.spyOn(KanjiInput, "create")`. The lesson controller
+        becomes the plain `runTanukiKanjiLesson` function, naming the
+        OpenRouter adapter directly so the whole path is ctrl+clickable
+        from the controller; the Api file goes back to a pure public surface
+        exposing the singleton. No dependency arrow points outward:
+        `pages` → Api → Controller → `domain/`, plus Controller →
+        `infrastructure/` → `domain/`, where the controller and the adapter
+        are both outer ring, so that dependency is lateral. The port type
+        `GetTanukiKanjiLesson` is deleted with it: with a single adapter and
+        no injection point left, the adapter's own signature is the
+        contract.
+  - [x] Gate: build plus lint plus format plus full test.
+
+- [x] Task 8 — The provider answers with the story, not with its scratchpad
+  - [x] A lesson run shows the provider's answer, not the provider's
+        thinking. This task overrides the Task 4 provider contract and the
+        proof of it: the reasoning control, the answer shape, the prompt
+        text, the token budget, the redraw policy and the dev-log count
+        decided here replace the ones Task 4 pinned. The exact values live
+        next to the code that sends them, in
+        `src/services/engine/infrastructure/openrouter/getTanukiKanjiLesson.ts`.
+        Technical: the Task 4 request came back with the model's reasoning
+        instead of its answer, for three compounding reasons measured against
+        the live API. `openrouter/free` routes at random across the whole
+        free pool, so the prompt reached content-safety classifiers and code
+        models as well as chat models. The free pool is now mostly reasoning
+        models, and reasoning tokens are billed against the request's token
+        budget, so the Task 4 budget was consumed entirely by reasoning and
+        the answer came back empty with `finish_reason` `length`. And some
+        models emit their scratchpad straight into `content`, which is what
+        the lesson was showing. The request now keeps the provider's
+        thinking at the smallest effort the free pool accepts — disabling it
+        outright is exactly what the reasoning-mandatory endpoints reject with
+        HTTP 400 — and asks for a JSON object, the one answer shape the free
+        pool honours, a JSON schema being ignored by some of them; the
+        adapter reads the story out of that object, so a provider answering
+        outside the agreed shape is an abnormal answer rather than a lesson,
+        and an answer the budget cut off is an abnormal answer rather than a
+        half story. The adapter draws the provider twice, the first attempt
+        and one redraw, because the free-models router picks another model on
+        every request: a request failure a redraw could fix, and an answer
+        that is not the agreed object or was cut off, are drawn again, while
+        a refused key, a spend limit, a permission denial and a missing key
+        are not redrawn, and the last failure is what rejects. Each failed
+        draw logs the full error at the adapter in dev only, and the last
+        failure rejects with the Task 4 sanitized error.
+  - [x] Prove the seam with the code. Technical: the Task 4 adapter suite
+        now asserts the request this task defines, plus the paths this task
+        adds: an answer outside the agreed object shape, an answer cut off by
+        the token budget, a redraw after each of those, a redraw after a
+        refused request, a redraw that gives up after the second draw, and no
+        redraw at all when the key is refused.
+  - [x] Gate: build plus lint plus format plus the adapter suite file, then
         full test.
 
 # Acceptance
@@ -208,5 +276,8 @@ lesson feels alive before richer content arrives.
   loading screen shows its static error text, the dev log keeps the full
   stack at the adapter only, and prod surfaces a minimal error with no
   secret, header, or prompt content.
+- When the provider answers outside the agreed object shape, or the token
+  budget cut the answer off, the lesson rejects rather than showing the
+  provider's scratchpad or a half story.
 - Final full loop: `npm run build` + `npm run lint` + `npm run format` +
   `npm run test`; axe at App level stays clean.

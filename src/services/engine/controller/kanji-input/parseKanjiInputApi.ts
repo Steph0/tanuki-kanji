@@ -1,7 +1,7 @@
 import { KANJI_INPUT_MAX_LENGTH } from "../../domain/kanji-input/validation/KanjiInputValidationPolicy.ts";
 import type { KanjiInputValidationStatus as DomainKanjiInputValidationStatusType } from "../../domain/kanji-input/validation/KanjiInputValidationStatus.ts";
 import { KanjiInputValidationStatus as DomainKanjiInputValidationStatus } from "../../domain/kanji-input/validation/KanjiInputValidationStatus.ts";
-import { type ParseKanjiInputResponse, parseKanjiInputControllerFactory } from "./parseKanjiInputController.ts";
+import { type ParseKanjiInputResponse, parseKanjiInput } from "./parseKanjiInputController.ts";
 
 export const KANJI_INPUT_VALIDATION_STATUS = DomainKanjiInputValidationStatus;
 
@@ -10,4 +10,4 @@ export type KanjiInputValidationStatus = DomainKanjiInputValidationStatusType;
 export type { ParseKanjiInputResponse };
 export { KANJI_INPUT_MAX_LENGTH };
 
-export const parseKanjiInputAPI: (raw: string) => ParseKanjiInputResponse = parseKanjiInputControllerFactory();
+export const parseKanjiInputAPI: (raw: string) => ParseKanjiInputResponse = parseKanjiInput;

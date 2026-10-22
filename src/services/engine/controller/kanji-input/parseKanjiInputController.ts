@@ -1,5 +1,5 @@
-import { parseKanjiInput } from "../../application/kanji-input/parseKanjiInput.ts";
 import type { KanjiInputResult } from "../../domain/kanji-input/KanjiInput.ts";
+import { KanjiInput } from "../../domain/kanji-input/KanjiInput.ts";
 import type { KanjiInputValidationStatus as KanjiInputValidationStatusType } from "../../domain/kanji-input/validation/KanjiInputValidationStatus.ts";
 import { KanjiInputValidationStatus } from "../../domain/kanji-input/validation/KanjiInputValidationStatus.ts";
 
@@ -9,13 +9,9 @@ export type ParseKanjiInputResponse =
       status: Exclude<KanjiInputValidationStatusType, typeof KanjiInputValidationStatus.VALID>;
     };
 
-export function parseKanjiInputControllerFactory(
-  parse: (raw: string) => KanjiInputResult = (raw) => parseKanjiInput(raw),
-): (raw: string) => ParseKanjiInputResponse {
-  return (raw: string) => {
-    const result = parse(raw);
-    return mapToResponse(result);
-  };
+export function parseKanjiInput(raw: string): ParseKanjiInputResponse {
+  const kanji = KanjiInput.create(raw);
+  return mapToResponse(kanji);
 }
 
 function mapToResponse(result: KanjiInputResult): ParseKanjiInputResponse {

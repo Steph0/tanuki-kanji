@@ -1,11 +1,11 @@
 export class TanukiKanjiLesson {
-  readonly text: string;
+  readonly content: string;
 
-  private constructor(text: string) {
-    this.text = text;
+  private constructor(content: string) {
+    this.content = content;
   }
 
-  static create(rawText: string): TanukiKanjiLesson {
-    return new TanukiKanjiLesson(rawText.trim());
+  static create(rawContent: string): TanukiKanjiLesson {
+    return new TanukiKanjiLesson(rawContent.trim());
   }
 }

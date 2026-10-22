@@ -11,10 +11,12 @@ owns layering, naming, and how each side is tested.
   data the UI renders.
 - UI calls the engine through one public file per API (`parseXApi.ts`),
   exposing a singleton plus statuses, limit, and response type.
-- Dependencies point one way: `pages` → Api → Controller → `application/`
-  → `domain/`, plus Controller → `infrastructure/` → `domain/`. The domain
-  stands alone; the application layer reads the domain only, and the
-  controller plus Api stay thin inbound adapters.
+- Dependencies point one way: `pages` → Api → Controller → `domain/`, plus
+  Controller → `infrastructure/` → `domain/`. The domain stands alone. A
+  controller and an adapter are both outer ring, so a controller naming an
+  adapter is a lateral dependency, never an outward one. The controller plus
+  Api stay thin inbound adapters (the lesson controller excepted: it
+  validates and raises its boundary error).
 
 ## UI
 
@@ -39,35 +41,41 @@ owns layering, naming, and how each side is tested.
 
 ### Layout
 
-- `src/services/engine/` holds framework-free TypeScript in four parts:
-  `domain/`, `application/`, `controller/`, `infrastructure/`.
+- `src/services/engine/` holds framework-free TypeScript in three parts:
+  `domain/`, `controller/`, `infrastructure/`.
 - `domain/`: pure rules, one kebab-case folder per world (e.g.
   `kanji-input/`); Uppercase files for value objects and vocabulary,
   lowercase for domain services. Tunable rules live in their own policy
-  module next to the vocabulary. The ports the outbound adapters implement
-  live here too (`PascalCase` type file), so the application layer and the
-  adapters both read the domain only.
-- `application/<feature>/`: one folder per feature, holding the use cases
-  that orchestrate it (decisions, sequencing). A use case reads the domain
-  only, takes its collaborators by injection with the real defaults, and
-  answers the domain result or rejects; SDK plus env access never reach it.
+  module next to the vocabulary. A domain value crosses into a provider
+  call as that domain value, never as a raw string, so an unvalidated word
+  cannot cross the boundary.
 - `controller/<feature>/`: one folder per API mirroring the world.
-  `parseXApi.ts` carries the public surface and the ready singleton;
-  `parseXController.ts` carries the factory plus the `mapToResponse`
-  presenter, delegating to its use case with the injected defaults
-  unchanged. It stays thin: no rule, no SDK import.
+  `parseXApi.ts` carries the public surface plus the ready singleton, and
+  stays a pure public surface: no wiring, no collaborator.
+  `parseXController.ts` carries the engine entry plus the `mapToResponse`
+  presenter. The engine entry is named after what it does
+  (`parseKanjiInput`, `runTanukiKanjiLesson`) and is a plain function. A
+  controller needing an outbound adapter names it directly, so the whole
+  path is ctrl+clickable from the controller. It stays thin: no rule (the
+  lesson controller excepted), no SDK import. The lesson controller applies
+  the input validation through `KanjiInput.create`, owns the
+  `InvalidKanjiInput` boundary error, calls the provider adapter, and maps
+  the lesson to its text with no `mapToResponse` presenter.
 - `infrastructure/<provider>/`: one folder per outbound provider, holding
-  the adapter implementing a domain port plus the error it throws. It is the
+  the adapter plus the error it throws. It is the
   only place importing a vendor SDK or reading `import.meta.env`. An adapter
   reads its key from `import.meta.env` at call time, identifies the app to
   the provider, sets an explicit timeout on the request, keeps the SDK retry
-  policy off, and owns the error posture: the full provider error is logged
-  once here in dev only (`import.meta.env.DEV`), and a sanitized error
+  policy off, owns the draw policy (a failure a redraw could fix is asked
+  again, because a free-model router picks another model each time), and
+  owns the error posture: each failed attempt logs the full provider error
+  here in dev only (`import.meta.env.DEV`), and a sanitized error
   carrying a safe cause (status or code) travels up.
 
 ### Naming
 
-- Consumer singleton `*API`, factory `*ControllerFactory`, mapper
+- Consumer singleton `*API`, controller entry named after what it does
+  (`parseKanjiInput`, `runTanukiKanjiLesson`), mapper
   `mapToResponse` in the controller. Response types are defined where they
   are produced and re-exported outward.
 - Runtime constants read `UPPER_SNAKE`, types read `PascalCase`.
@@ -75,13 +83,16 @@ owns layering, naming, and how each side is tested.
 ### Testing
 
 - `*.test.ts` suites, no DOM.
-- Unit, behavior (`application/<feature>/<use-case>.test.ts`): the domain
-  handoff plus orchestration, fed with real inputs.
 - Unit, contract (`controller/<feature>/parseXController.test.ts`): the
-  response contract plus interaction with the use case, through stubs; the
-  mapper is pinned here.
+  response contract fed with real inputs, plus the handoff to the domain
+  pinned with `vi.spyOn` on the domain static; the mapper is pinned here
+  where the API defines one. The lesson controller suite mocks the provider
+  adapter module with `vi.mock` and drives a `vi.fn` fake, so it asserts
+  what the provider received and that it is never called for an invalid
+  word.
 - Integration (`parseXApi.test.ts`): one flat wiring proof through the
-  singleton.
+  singleton. The lesson Api suite mocks the provider adapter module for a
+  fake provider, so the real singleton stays offline.
 - Unit, provider (`infrastructure/<provider>/<adapter>.test.ts`): the
   request the adapter sends plus its failure shape, driven through MSW.
 - `describe` names carry `unit` / `integration`, with `nominal` / `errors`
