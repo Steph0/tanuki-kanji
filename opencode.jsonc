@@ -1,0 +1,12 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permissions": [
+    // Hard no: the provider credential is not readable by any tool.
+    { "action": "read", "resource": "*.env*", "effect": "deny" },
+    { "action": "read", "resource": "*.env.example", "effect": "allow" },
+    { "action": "shell", "resource": "*.env*", "effect": "deny" },
+
+    // No agent-side call to the provider API through webfetch.
+    { "action": "webfetch", "resource": "*openrouter.ai/api*", "effect": "deny" }
+  ]
+}

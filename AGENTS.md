@@ -12,6 +12,15 @@ This document outlines the architectural rules, security constraints, and coding
 - Reference code as `path:line` when pointing at source
 - Ground claims in executed evidence, not speculation
 
+### CREDENTIALS MANAGEMENT AND METERED CALLS
+
+- **Never call an external or metered API with a credential from this repo
+  without the user's explicit approval in the conversation.**
+- When a live provider check is genuinely needed, keep it to the smallest
+  number of requests that answers the question, and never batch-probe. Ask first, say
+  how many requests the check will make, and wait for the answer.
+- `.ignore` only hides secrets from *search* tools; it is not a boundary.
+
 ### PHASE 1 — SPECIFICATION / PLAN
 
 - Ask clarifying questions
