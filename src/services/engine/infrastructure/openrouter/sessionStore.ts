@@ -10,6 +10,10 @@ export function readSession(): OpenRouterSession | null {
   return storedSession;
 }
 
+export function hasSession(): boolean {
+  return readSession() !== null;
+}
+
 export function deleteSession(): void {
   storedSession = null;
 }

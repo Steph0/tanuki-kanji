@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from "vitest";
 import { OpenRouterSession } from "../../domain/openrouter-session/OpenRouterSession.ts";
-import { deleteSession, readSession, saveSession } from "./sessionStore.ts";
+import { deleteSession, hasSession, readSession, saveSession } from "./sessionStore.ts";
 
 describe("sessionStore unit", () => {
   beforeEach(() => {
@@ -17,6 +17,24 @@ describe("sessionStore unit", () => {
     saveSession(session);
 
     expect(readSession()).toBe(session);
+  });
+
+  test("reports no session while empty", () => {
+    expect(hasSession()).toBe(false);
+  });
+
+  test("reports a session once one is saved", () => {
+    saveSession(OpenRouterSession.create("sk-or-v1-memory-only"));
+
+    expect(hasSession()).toBe(true);
+  });
+
+  test("reports no session after a delete", () => {
+    saveSession(OpenRouterSession.create("sk-or-v1-memory-only"));
+
+    deleteSession();
+
+    expect(hasSession()).toBe(false);
   });
 
   test("keeps only the latest saved session", () => {

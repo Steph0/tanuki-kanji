@@ -165,8 +165,8 @@ learner's OpenRouter account.
   - [x] Gate: build plus lint plus format plus the adapter suite file, then
         full test.
 
-- [ ] Task 3 - One engine surface reports and clears the session
-  - [ ] The app can ask whether a session exists and disconnect without ever
+- [x] Task 3 - One engine surface reports and clears the session
+  - [x] The app can ask whether a session exists and disconnect without ever
         reading a key. Technical: new controller folder
         `src/services/engine/controller/openrouter-session/` with
         `openRouterSessionController.ts`. It exports `hasOpenRouterSession`,
@@ -178,7 +178,7 @@ learner's OpenRouter account.
         the `OpenRouterSessionAPI` type used by the UI prop; the sign-in entries
         arrive in Task 4, and the surface never exposes a key or a session
         value.
-  - [ ] Prove the wiring. Technical: colocated unit controller suite pinning
+  - [x] Prove the wiring. Technical: colocated unit controller suite pinning
         `hasOpenRouterSession` false before a save, true after, and false after
         a disconnect, plus a second disconnect that stays safe. Colocated
         integration API suite `openRouterSessionApi.test.ts` driving the real
@@ -186,7 +186,7 @@ learner's OpenRouter account.
         cleared store after `disconnect`,
         and that the public surface exposes no key and no session read. Clear
         the store between tests.
-  - [ ] Gate: build plus lint plus format plus both suite files, then full
+  - [x] Gate: build plus lint plus format plus both suite files, then full
         test.
 
 - [ ] Task 4 - The engine runs the PKCE protocol and prepares the redirect
