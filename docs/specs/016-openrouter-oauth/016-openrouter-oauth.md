@@ -98,8 +98,8 @@ learner's OpenRouter account.
 
 # Tasks
 
-- [ ] Task 1 - A session value and an in-memory store
-  - [ ] The engine can represent an OpenRouter session and keep it for the
+- [x] Task 1 - A session value and an in-memory store
+  - [x] The engine can represent an OpenRouter session and keep it for the
         current tab. Technical: new domain folder
         `src/services/engine/domain/openrouter-session/` with
         `OpenRouterSession.ts`; the key lives in a `#apiKey` private field and
@@ -114,11 +114,11 @@ learner's OpenRouter account.
         `saveSession`, `readSession`, and
         `deleteSession`; the store stays internal to the engine, and no public
         engine API re-exports it.
-  - [ ] Prove the value and the store. Technical: colocated unit `*.test.ts`
+  - [x] Prove the value and the store. Technical: colocated unit `*.test.ts`
         beside each file. Pin non-enumerability, empty rejection, and
         save/read/clear with a `deleteSession` reset between tests;
         never assert the key through a snapshot or a serialized object.
-  - [ ] Gate: build plus lint plus format plus both suite files, then full
+  - [x] Gate: build plus lint plus format plus both suite files, then full
         test.
 
 - [ ] Task 2 - The engine trades the code for a key
