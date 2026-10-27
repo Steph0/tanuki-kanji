@@ -1,0 +1,1 @@
+export const CODE_CHALLENGE_METHOD = "S256";

@@ -121,8 +121,8 @@ learner's OpenRouter account.
   - [x] Gate: build plus lint plus format plus both suite files, then full
         test.
 
-- [ ] Task 2 - The engine trades the code for a key
-  - [ ] The engine can turn the one-time code into a key without leaking
+- [x] Task 2 - The engine trades the code for a key
+  - [x] The engine can turn the one-time code into a key without leaking
         anything to the UI. Technical: new adapter
         `src/services/engine/infrastructure/openrouter/exchangeCode.ts`
         sending one `POST` to
@@ -151,7 +151,7 @@ learner's OpenRouter account.
         the safe local cause, and never logs the failure body, provider message,
         code, verifier, key, request body, or headers; the sanitized error
         travels up.
-  - [ ] Prove the request and the failure shape. Technical: colocated unit
+  - [x] Prove the request and the failure shape. Technical: colocated unit
         `exchangeCode.test.ts` on the shared browser runner with `msw/browser`
         `setupWorker`. Assert method, URL, JSON and accept content types, absent
         authorization header, omitted credentials, refused redirects, CORS mode,
@@ -162,7 +162,7 @@ learner's OpenRouter account.
         shape plus one per non-success status, including a thrown request, an
         aborted timeout with fake timers, a non-JSON success body, and an empty
         key. Assert no secret appears in the sanitized error or the dev log.
-  - [ ] Gate: build plus lint plus format plus the adapter suite file, then
+  - [x] Gate: build plus lint plus format plus the adapter suite file, then
         full test.
 
 - [ ] Task 3 - One engine surface reports and clears the session
