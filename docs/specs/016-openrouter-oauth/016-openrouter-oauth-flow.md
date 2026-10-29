@@ -60,8 +60,8 @@ sequenceDiagram
       NAV->>OR: Same-tab location.replace
       L->>OR: Approve the app
       OR-->>BR: Redirect to callback_url with code and state
-      Note over BR,API: main.tsx calls consumeReturn() before render<br>engine captures code, state, and error in memory<br>history.replaceState strips the query and preserves path, hash, and unrelated parameters.
-      UI->>API: consumeReturn() on mount returns true
+      Note over BR,API: main.tsx calls captureAuthorizationReturn() before render<br>engine captures code, state, and error in memory<br>history.replaceState strips the query and preserves path, hash, and unrelated parameters.
+      UI->>API: captureAuthorizationReturn() on mount returns true
       UI->>UI: Open modal in connecting state
       UI->>API: completeAuthorization()
       API->>APP: Take captured return synchronously
@@ -118,8 +118,9 @@ sequenceDiagram
 - The engine prepares the one-shot authorization URL. The UI performs a
   same-tab `location.replace` through an injected `navigate` capability, and
   never parses the URL, reads `state`, stores, renders, or logs the URL.
-- `consumeReturn` is synchronous and idempotent. It runs before the first
-  render, and a cleanup failure never starts an exchange.
+- `captureAuthorizationReturn` is synchronous and idempotent. It runs after
+  the browser returns and before the first render, and its answer feeds
+  `completeAuthorization`; a cleanup failure never starts an exchange.
 - Only the verifier, state, and creation time touch `sessionStorage`. The
   record is removed before the exchange and expires after ten minutes.
 - `beginAuthorization` answers `ready` or `refused`; `completeAuthorization`

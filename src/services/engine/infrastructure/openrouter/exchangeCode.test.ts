@@ -1,7 +1,6 @@
 import { HttpResponse, http } from "msw";
 import { setupWorker } from "msw/browser";
 import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from "vitest";
-import { CODE_CHALLENGE_METHOD } from "../browser/pkce.ts";
 import { exchangeCode } from "./exchangeCode.ts";
 import { OpenRouterCodeExchangeError } from "./OpenRouterCodeExchangeError.ts";
 
@@ -47,7 +46,7 @@ afterEach(() => {
 
 describe("exchangeCode unit", () => {
   describe("key exchange request", () => {
-    test("sends one POST carrying only the code, the verifier, and the shared S256 method", async () => {
+    test("sends one POST carrying only the code, the verifier, and the S256 method", async () => {
       mockExchange(() => successfulAnswer(PROVIDER_KEY));
 
       await exchangeCode(CODE, CODE_VERIFIER);
@@ -58,7 +57,7 @@ describe("exchangeCode unit", () => {
       expect(request.body).toEqual({
         code: CODE,
         code_verifier: CODE_VERIFIER,
-        code_challenge_method: CODE_CHALLENGE_METHOD,
+        code_challenge_method: "S256",
       });
       expect(exchangeCallCount).toBe(1);
     });

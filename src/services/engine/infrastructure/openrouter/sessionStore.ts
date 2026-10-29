@@ -6,12 +6,8 @@ export function saveSession(session: OpenRouterSession): void {
   storedSession = session;
 }
 
-export function readSession(): OpenRouterSession | null {
-  return storedSession;
-}
-
 export function hasSession(): boolean {
-  return readSession() !== null;
+  return storedSession !== null;
 }
 
 export function deleteSession(): void {

@@ -111,12 +111,13 @@ learner's OpenRouter account.
         New infrastructure file
         `src/services/engine/infrastructure/openrouter/sessionStore.ts`
         with module-level state starting at `null` plus
-        `saveSession`, `readSession`, and
+        `saveSession`, `hasSession`, and
         `deleteSession`; the store stays internal to the engine, and no public
-        engine API re-exports it.
+        engine API re-exports it. The read stays private to the store until a
+        production caller needs it.
   - [x] Prove the value and the store. Technical: colocated unit `*.test.ts`
         beside each file. Pin non-enumerability, empty rejection, and
-        save/read/clear with a `deleteSession` reset between tests;
+        save/presence/clear with a `deleteSession` reset between tests;
         never assert the key through a snapshot or a serialized object.
   - [x] Gate: build plus lint plus format plus both suite files, then full
         test.
@@ -138,8 +139,8 @@ learner's OpenRouter account.
         `Access-Control-Allow-Origin: *`, `POST`, and `content-type` in
         `Access-Control-Allow-Headers`, verified once on 2026-10-24, so the
         exchange can run in the browser. Body is
-        `{ code, code_verifier, code_challenge_method: CODE_CHALLENGE_METHOD }`
-        with the method imported from the one shared `S256` constant; the code
+        `{ code, code_verifier, code_challenge_method: "S256" }` with the method
+        read from the shared PKCE method object; the code
         and verifier are the only interpolated values. A successful answer must
         carry a `key` string with non-whitespace content; any other answer is an
         abnormal answer. The adapter returns that string unchanged, and the
@@ -155,8 +156,8 @@ learner's OpenRouter account.
         `exchangeCode.test.ts` on the shared browser runner with `msw/browser`
         `setupWorker`. Assert method, URL, JSON and accept content types, absent
         authorization header, omitted credentials, refused redirects, CORS mode,
-        no-referrer policy, no-store cache, exact body with the shared `S256`
-        constant, the provider key passing through unchanged, the empty code and
+        no-referrer policy, no-store cache, exact body with the `S256` method,
+        the provider key passing through unchanged, the empty code and
         verifier refusal before any request, a failure status checked before
         parsing and its body never read, and one rejection per abnormal answer
         shape plus one per non-success status, including a thrown request, an
@@ -189,8 +190,8 @@ learner's OpenRouter account.
   - [x] Gate: build plus lint plus format plus both suite files, then full
         test.
 
-- [ ] Task 4 - The engine runs the PKCE protocol and prepares the redirect
-  - [ ] The learner can leave for OpenRouter, approve the app, and come back,
+- [x] Task 4 - The engine runs the PKCE protocol and prepares the redirect
+  - [x] The learner can leave for OpenRouter, approve the app, and come back,
         with the engine finishing the handshake and the UI only performing the
         page transition.
         Technical: new domain files
@@ -207,13 +208,15 @@ learner's OpenRouter account.
         policy module carries the ten-minute pending lifetime.
         `pkce.ts` generates a 32-byte verifier and a 32-byte state from
         `crypto.getRandomValues`, encodes both as unpadded base64url, derives
-        the `S256` challenge with `crypto.subtle.digest`, and exports one
-        shared `CODE_CHALLENGE_METHOD` constant. It builds
+        the `S256` challenge with `crypto.subtle.digest`, keeping the PKCE id
+        and its digest algorithm together in one object. It builds
         `https://openrouter.ai/auth` through `URLSearchParams`, with
         `callback_url` set to the app root supplied by the browser location
-        adapter, `code_challenge`, `code_challenge_method` from the shared
-        constant, `state`, and `key_label` `Tanuki Kanji`.
-        `browserLocation.ts` owns the secure-origin predicate: it requires
+        adapter, `code_challenge`, `code_challenge_method` from the PKCE method
+        object, `state`, and `key_label` `Tanuki Kanji`.
+        `authorizationOrigin.ts` owns the secure-origin predicate;
+        `browserLocation.ts` feeds it `window.location`, `window.isSecureContext`,
+        and `crypto.subtle`. It requires
         `window.isSecureContext` and a present
         `crypto.subtle`, plus an HTTPS origin or a loopback host (`localhost`,
         the `127.0.0.0/8` literal range, `[::1]`). It refuses plain HTTP on any
@@ -222,73 +225,81 @@ learner's OpenRouter account.
         `pendingStore.ts` keeps `{ verifier, state, createdAt }` as JSON under
         `tanuki-kanji.openrouter.pkce` in `sessionStorage` with save, read, and
         clear. A malformed or expired record reads as absent and is cleared. A
-        storage read or write failure is a refusal, never a silent pass; a
-        clear failure after the verifier is read is ignored, because the next
-        start overwrites the record and it dies with the tab.
+        storage refusal is never swallowed: it propagates to the use case, which
+        answers `refused` or `failed`, so the boundary keeps one guard instead of
+        a quiet catch per storage call.
         `browserLocation.ts` supplies the app root from
         `new URL(import.meta.env.BASE_URL, window.location.origin)`, is the
         only engine file that reads the callback query, and removes `code`,
         `state`, and
         `error` synchronously with `history.replaceState` while preserving the
         path, hash, and unrelated parameters. It does not navigate.
-        The begin use case refuses an unsafe origin, generates the pair, saves
-        the pending record, builds the link, and answers `ready` with the
-        authorization URL or `refused`. It never rejects, and clears the pending
-        record and answers refused if pair generation, storage, or link building
-        throws.
+        The begin use case refuses an unsafe origin, generates the pair, builds
+        the link, saves the pending record, and answers `ready` with the
+        authorization URL or `refused`. It builds the link before saving, so a
+        failure cannot leave a pending record behind, and one guard turns a
+        pair-generation, link-building, or storage throw into `refused`. It
+        never rejects.
         The complete use case answers `none` when no captured return exists;
         otherwise it reads a provider `error` before the state check, because
         OpenRouter does not echo `state` on denial, then clears the pending
         record before the exchange. It answers `failed` for a provider error, a
         missing code, a missing or expired record, a state mismatch, an unsafe
-        origin, a storage read refusal, a query cleanup failure, an exchange
+        origin, a storage refusal, a query cleanup failure, an exchange
         failure, or a session save failure; it otherwise saves the Task 1
-        session and answers `connected`. It never rejects.
-        The controller captures the callback once: `consumeReturn()` reads
-        `code`, `state`, and `error` synchronously, strips them from the URL,
-        stores them in engine memory, and answers whether a return was found.
-        It is idempotent; a cleanup failure marks a failed return and never
-        starts an exchange. `completeAuthorization` takes the captured return
-        synchronously at its start, so a second call answers `none` while the
-        first exchange is in flight. `main.tsx` calls `consumeReturn` before the
-        first render, and the Settings mount calls it again.
-        `openRouterSessionAPI` gains `beginAuthorization`,
-        `completeAuthorization`, and `consumeReturn`; its surface never exposes
-        the key, code, verifier, or session directly. The only protocol value it
-        returns is the one-shot authorization URL from `beginAuthorization` in a
-        `ready` result, for immediate UI navigation. The UI must not parse or
-        persist that URL.
-  - [ ] Prove the handshake. Technical: colocated unit `pkce.test.ts` pinning
+        session and answers `connected`. One guard covers the body, so it never
+        rejects and no failure is swallowed.
+        The controller captures the callback once:
+        `captureAuthorizationReturn()` reads `code`, `state`, and `error`
+        synchronously, strips them from the URL, stores them in engine memory,
+        and answers whether a return was found. It is idempotent; a cleanup
+        failure marks a failed return and never starts an exchange.
+        `completeAuthorization` takes the captured return synchronously at its
+        start, so a second call answers `none` while the first exchange is in
+        flight. `main.tsx` calls `captureAuthorizationReturn` before the first
+        render, and the Settings mount calls it again. `openRouterSessionAPI`
+        gains `beginAuthorization`, `captureAuthorizationReturn`, and
+        `completeAuthorization`; its surface never exposes the key, code,
+        verifier, or session directly. The only protocol value it returns is
+        the one-shot authorization URL from `beginAuthorization` in a `ready`
+        result, for immediate UI navigation. The UI must not parse or persist
+        that URL.
+  - [x] Prove the handshake. Technical: colocated unit `pkce.test.ts` pinning
         the RFC 7636 verifier `dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk` to
-        challenge `E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM`, 43-character
-        unpadded verifier and state, every authorization parameter with its
-        encoded value, the callback URL from a base path, and the shared `S256`
-        constant. Colocated unit `pendingStore.test.ts` pinning save, read,
+        challenge `E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM` through
+        `createPkcePair` with a stubbed `getRandomValues`, 43-character
+        unpadded verifier, state, and challenge, every authorization parameter
+        with its encoded value, the callback URL from a base path, and the
+        `S256` method. Colocated unit `pendingStore.test.ts` pinning save, read,
         clear, malformed-record absence, expired-record absence with fake
-        timers, a write refusal, a read refusal, and an ignored clear refusal.
+        timers, a write refusal, a read refusal, and a clear refusal, each
+        surfacing unchanged.
+        Colocated unit `authorizationOrigin.test.ts` pinning the
+        HTTPS, loopback, and unsafe-origin predicate cases.
         Colocated unit `browserLocation.test.ts` pinning the app root with a
-        stubbed `BASE_URL` subpath, the HTTPS, loopback, and unsafe-origin
-        predicate cases, the callback capture, synchronous removal preserving
-        path, hash, and unrelated parameters, and a `replaceState` failure that
-        answers a failed return. Colocated application suites
+        stubbed `BASE_URL` subpath, the callback capture, synchronous removal
+        preserving path, hash, and unrelated parameters, and a `replaceState`
+        failure that answers a failed return. Colocated application suites
         `beginOpenRouterAuthorization.test.ts` and
         `completeOpenRouterAuthorization.test.ts` pin the start and completion
         status matrix, including a ready result with the URL, unsafe origin,
-        storage write failure, link building failure, provider denial with no
+        storage write failure, link building failure without a saved record,
+        provider denial with no
         state, missing
         code, missing and expired record, state mismatch, storage read failure,
-        exchange failure, save failure, no save on failure, and no rejection.
+        clear refusal before the exchange, exchange failure, save failure, no
+        save on failure, and no rejection.
         Colocated controller and integration API suites
         `openRouterSessionController.test.ts` and
         `openRouterSessionApi.test.ts` drive the real singleton offline with a
-        seeded pending record and a pushed callback URL: assert `consumeReturn`
+        seeded pending record and a pushed callback URL: assert `captureAuthorizationReturn`
         true before `complete` and false after, the query stripped before the
         exchange, `completeAuthorization` answering `none` on a second call
         while the first is in flight and after the captured return is spent,
         the store, and the remaining query. Mock the Task 2 adapter; no browser
         navigation happens in engine tests. Clear the pending record, the store,
         the captured return, and the URL between tests.
-  - [ ] Gate: build plus lint plus format plus the helper, store, location,
+  - [x] Gate: build plus lint plus format plus the helper, store, location,
         application, controller, and API suite files, then full test.
 
 - [ ] Task 5 - A settings control with a state-aware modal
@@ -394,7 +405,7 @@ learner's OpenRouter account.
         the connecting `aria-busy`, and a closed dialog that stays in the DOM
         but out of the accessibility tree on mount. Pass a fake
         `OpenRouterSessionAPI` from a small `fakeOpenRouterSessionAPI` builder
-        in `src/test-utils.tsx`, with `hasSession` false and `consumeReturn`
+        in `src/test-utils.tsx`, with `hasSession` false and `captureAuthorizationReturn`
         false for the disconnected suite and `hasSession` true for the
         connected suite, plus a fake `navigate` function; no module mock, no
         singleton, no real navigation, and the suites stay offline. Render
@@ -424,15 +435,16 @@ learner's OpenRouter account.
         leaves the modal open; the content flips to the disconnected view with
         no error path, and focus moves to the new Connect action because the
         Disconnect button unmounts. On mount, the component calls
-        `openRouterSessionAPI.consumeReturn()`: a true answer opens the modal in
-        the connecting view, then calls `completeAuthorization()` once per
-        consumed return. `connected` reads `hasSession()`, closes the modal, and
-        flips the trigger, or shows the failed content if no session was saved.
+        `openRouterSessionAPI.captureAuthorizationReturn()`: a true answer opens
+        the modal in the connecting view, then calls `completeAuthorization()`
+        once per captured return. `connected` reads `hasSession()`, closes the
+        modal, and flips the trigger, or shows the failed content if no session
+        was saved.
         `failed` reads `hasSession()` too: with a session it shows the connected
         content with the error replacing the informational note; without one it
         shows the disconnected content with the error copy. `none` closes the
         modal with no error. When
-        `consumeReturn()` answers false, `completeAuthorization()` is not
+        `captureAuthorizationReturn()` answers false, `completeAuthorization()` is not
         called. A close during the connecting state does not cancel the
         exchange: success still flips the trigger, and a later failure is kept
         for the next open. The error paragraph sits directly under the main
@@ -445,7 +457,7 @@ learner's OpenRouter account.
         `isConnected` true, and flips the trigger to the connected icon and
         name. On a valid return, the pending record and callback query are
         already gone before the exchange starts, so a remount cannot replay
-        them. `useSettings` owns the begin, complete, consume, disconnect, and
+        them. `useSettings` owns the begin, capture, complete, disconnect, and
         one-shot navigate calls and the open-with-error decision, so the
         component only renders its state. No UI component reads
         `window.location` directly or parses the authorization URL; the injected
@@ -460,7 +472,7 @@ learner's OpenRouter account.
         the console methods and assert the URL never appears. Make `navigate`
         throw and assert the action re-enables, the generic error appears, and no
         session is stored.
-        For the return, set `consumeReturn` true and a pending
+        For the return, set `captureAuthorizationReturn` true and a pending
         `completeAuthorization`: assert the connecting title, body,
         `role="status"`, `aria-busy`, the decorative lock mark, the compact
         artwork, and no action. Resolve `completeAuthorization` as `connected`
@@ -476,7 +488,7 @@ learner's OpenRouter account.
         the error replacing the note. Close the modal during connecting, then
         resolve `failed`: assert the next open shows the error; resolve
         `connected` instead: assert the trigger flips with no error. With
-        `consumeReturn` false, assert `completeAuthorization` is not called.
+        `captureAuthorizationReturn` false, assert `completeAuthorization` is not called.
         Assert that closing the modal removes the error, that reopening shows
         none, that starting a retry clears it before the engine call, and that
         a successful retry after an error shows no error. For disconnect, start
@@ -485,7 +497,7 @@ learner's OpenRouter account.
         footnote, focus on the Connect action, the disconnected trigger name,
         and no error. Keep `App.test.tsx` green with a fake `navigate` and no
         modal on an ordinary load. `main.tsx` calls
-        `openRouterSessionAPI.consumeReturn()` before `render()`, so the callback
+        `openRouterSessionAPI.captureAuthorizationReturn()` before `render()`, so the callback
         query is gone before the first frame.
   - [ ] Gate: build plus lint plus format plus `Settings.test.tsx` and
         `App.test.tsx`, then full test.
@@ -510,7 +522,7 @@ learner's OpenRouter account.
         controller to application to domain and controller to infrastructure to
         domain; document the domain status sets and the ten-minute policy; the
         `controller/openrouter-session/` surface with `beginAuthorization`,
-        `completeAuthorization`, `consumeReturn`, `hasSession`, and
+        `completeAuthorization`, `captureAuthorizationReturn`, `hasSession`, and
         `disconnect`; the engine-prepared authorization URL and the UI-owned
         same-tab replace through the required `navigate` prop;
         `infrastructure/browser/` for Web Crypto PKCE, the sessionStorage pending
@@ -520,7 +532,7 @@ learner's OpenRouter account.
         the state-aware Settings trigger; the required `openRouterSession` and
         `navigate` props from `main.tsx` through `App` and `Navbar` with no
         rendered component importing the singleton or reading `window.location`;
-        the `consumeReturn` call before the first render; and the testing split
+        the `captureAuthorizationReturn` call before the first render; and the testing split
         for the PKCE vector, the secure-origin and callback matrix, the pending
         expiry, the start `ready`/`refused` matrix, the UI navigation throw, the
         completion status matrix, the mocked exchange, the fake session API
@@ -533,15 +545,15 @@ learner's OpenRouter account.
         viewport. Technical: extend `src/App.axe.test.tsx` with four describes,
         each passing a fake `OpenRouterSessionAPI` and a fake `navigate` into
         `App` alongside the lesson engine. The disconnected fake answers
-        `hasSession` false and `consumeReturn` false; open the trigger named
+        `hasSession` false and `captureAuthorizationReturn` false; open the trigger named
         `Settings, OpenRouter not connected`, wait for the dialog, and run axe.
-        The connected fake answers `hasSession` true and `consumeReturn` false;
+        The connected fake answers `hasSession` true and `captureAuthorizationReturn` false;
         open the trigger named `Settings, OpenRouter connected`, wait for the
-        dialog, and run axe. The connecting fake answers `consumeReturn` true,
+        dialog, and run axe. The connecting fake answers `captureAuthorizationReturn` true,
         `hasSession` false, and `completeAuthorization` with a promise that
         never settles; render `App`, wait for the dialog named `Connecting to
         OpenRouter`, and run axe. The failed-return fake answers
-        `consumeReturn` true, `hasSession` false, and `completeAuthorization`
+        `captureAuthorizationReturn` true, `hasSession` false, and `completeAuthorization`
         with `failed`; render `App`, wait for the error text, and run axe. No
         test spies on a singleton. All four run at mobile `390x844`, rotated
         `844x390`, and desktop `1280x800`, and no network call happens on any
@@ -553,7 +565,8 @@ learner's OpenRouter account.
   - [ ] The lesson path replaces its direct environment read with the
         connected session and a development fallback. Technical: new
         `src/services/engine/infrastructure/openrouter/resolveSession.ts`.
-        It calls `readSession()`; a stored session returns as is. With no
+        It calls the store's `readSession()`, which this task adds back to
+        `sessionStore.ts` beside the resolver; a stored session returns as is. With no
         session, and only when `import.meta.env.DEV`, it reads
         `VITE_OPENROUTER_API_KEY` and returns
         `OpenRouterSession.create(value)` when the trimmed value is non-empty,

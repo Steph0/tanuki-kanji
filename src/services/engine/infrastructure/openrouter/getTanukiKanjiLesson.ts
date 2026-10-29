@@ -5,6 +5,7 @@ import type { ChatResult } from "@openrouter/sdk/models/chatresult.js";
 import { OpenRouterError } from "@openrouter/sdk/models/errors/openroutererror.js";
 import type { KanjiInput } from "../../domain/kanji-input/KanjiInput.ts";
 import { TanukiKanjiLesson } from "../../domain/tanuki-kanji-lesson/TanukiKanjiLesson.ts";
+import { logEngineFailure } from "../logging/logEngineFailure.ts";
 import {
   createMissingApiKeyError,
   createTruncatedAnswerError,
@@ -25,7 +26,7 @@ const UNTRUSTED_WORD_CLOSE_TAG = "</kanji-word>";
 const LESSON_USER_INSTRUCTION =
   " Tell one short funny story about the history of these characters in English as plain text.";
 const LESSON_RESPONSE_FORMAT: ResponseFormat = { type: "json_object" };
-const LESSON_FAILURE_LOG = "tanuki kanji lesson provider request failed";
+const LESSON_FAILURE_LOG = "Tanuki Kanji lesson provider request failed";
 const NON_RETRYABLE_STATUS_CODES = [401, 402, 403];
 
 export const getTanukiKanjiLesson = async (provenKanjiWord: KanjiInput): Promise<TanukiKanjiLesson> => {
@@ -52,7 +53,7 @@ async function requestLesson(client: OpenRouterCore, provenKanjiWord: KanjiInput
     );
 
     if (!result.ok) {
-      logProviderFailure(result.error);
+      logEngineFailure(LESSON_FAILURE_LOG, result.error);
       failure = sanitizeProviderError(result.error);
       if (isRetryableProviderError(result.error)) {
         continue;
@@ -63,7 +64,7 @@ async function requestLesson(client: OpenRouterCore, provenKanjiWord: KanjiInput
     try {
       return mapToLesson(result.value as ChatResult);
     } catch (error) {
-      logProviderFailure(error);
+      logEngineFailure(LESSON_FAILURE_LOG, error);
       failure = error instanceof TanukiKanjiLessonProviderError ? error : createUnexpectedAnswerError();
     }
   }
@@ -116,7 +117,7 @@ function parseStory(content: string): string | undefined {
   try {
     parsed = JSON.parse(content);
   } catch (error) {
-    logProviderFailure(error);
+    logEngineFailure(LESSON_FAILURE_LOG, error);
     return undefined;
   }
   if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
@@ -135,12 +136,6 @@ function isRetryableProviderError(providerError: Error): boolean {
     return !NON_RETRYABLE_STATUS_CODES.includes(providerError.statusCode);
   }
   return true;
-}
-
-function logProviderFailure(providerError: unknown): void {
-  if (import.meta.env.DEV) {
-    console.error(LESSON_FAILURE_LOG, providerError);
-  }
 }
 
 function sanitizeProviderError(providerError: Error): TanukiKanjiLessonProviderError {

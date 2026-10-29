@@ -51,7 +51,7 @@ This document outlines the architectural rules, security constraints, and coding
   - `npm run format` : for formatting the codebase
 - When a task is done and stable, check project builds
   - Run `npm run build` if other testing commands are green
-- CRITICAL: If possible, run testing command in the background
+- CRITICAL: If possible, run testing command using `testing` subagent
   - Do not dump the full stdout log into the primary session chat context
   - If test are green: only report a clean pass summary
   - If a test or lint run fails: immediately re-run the specific failing command without truncation

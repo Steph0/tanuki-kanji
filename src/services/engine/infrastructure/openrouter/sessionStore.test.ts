@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from "vitest";
 import { OpenRouterSession } from "../../domain/openrouter-session/OpenRouterSession.ts";
-import { deleteSession, hasSession, readSession, saveSession } from "./sessionStore.ts";
+import { deleteSession, hasSession, saveSession } from "./sessionStore.ts";
 
 describe("sessionStore unit", () => {
   beforeEach(() => {
@@ -8,18 +8,6 @@ describe("sessionStore unit", () => {
   });
 
   test("starts with no session for the tab", () => {
-    expect(readSession()).toBeNull();
-  });
-
-  test("reads back the session it saved", () => {
-    const session = OpenRouterSession.create("sk-or-v1-memory-only");
-
-    saveSession(session);
-
-    expect(readSession()).toBe(session);
-  });
-
-  test("reports no session while empty", () => {
     expect(hasSession()).toBe(false);
   });
 
@@ -37,21 +25,12 @@ describe("sessionStore unit", () => {
     expect(hasSession()).toBe(false);
   });
 
-  test("keeps only the latest saved session", () => {
+  test("keeps a session when a newer one replaces it", () => {
     saveSession(OpenRouterSession.create("sk-or-v1-first"));
-    const latestSession = OpenRouterSession.create("sk-or-v1-latest");
 
-    saveSession(latestSession);
+    saveSession(OpenRouterSession.create("sk-or-v1-latest"));
 
-    expect(readSession()).toBe(latestSession);
-  });
-
-  test("forgets the saved session on delete", () => {
-    saveSession(OpenRouterSession.create("sk-or-v1-memory-only"));
-
-    deleteSession();
-
-    expect(readSession()).toBeNull();
+    expect(hasSession()).toBe(true);
   });
 
   test("deleting with nothing saved stays safe", () => {
@@ -59,6 +38,6 @@ describe("sessionStore unit", () => {
 
     deleteSession();
 
-    expect(readSession()).toBeNull();
+    expect(hasSession()).toBe(false);
   });
 });

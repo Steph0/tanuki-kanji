@@ -71,6 +71,10 @@ owns layering, naming, and how each side is tested.
   owns the error posture: each failed attempt logs the full provider error
   here in dev only (`import.meta.env.DEV`), and a sanitized error
   carrying a safe cause (status or code) travels up.
+- `infrastructure/logging/logEngineFailure.ts`: the one dev-only logger.
+  Every engine `catch` binds its failure and reports it through this
+  function, so no failure disappears without at least a dev console line.
+  A caught failure stays out of production output.
 
 ### Naming
 

@@ -1,4 +1,5 @@
-import { CODE_CHALLENGE_METHOD } from "../browser/pkce.ts";
+import { DIGEST_ALGORITHM_BY_METHOD } from "../browser/pkce.ts";
+import { logEngineFailure } from "../logging/logEngineFailure.ts";
 import {
   createEmptyCodeError,
   createEmptyVerifierError,
@@ -11,6 +12,7 @@ import {
 
 const EXCHANGE_URL = "https://openrouter.ai/api/v1/auth/keys";
 const EXCHANGE_TIMEOUT_MS = 15_000;
+const EXCHANGE_FAILURE_LOG = "OpenRouter code exchange failed";
 
 /**
  * Finishes the PKCE handshake. PKCE ties the callback to the app that started
@@ -46,7 +48,7 @@ export async function exchangeCode(code: string, codeVerifier: string): Promise<
       body: JSON.stringify({
         code,
         code_verifier: codeVerifier,
-        code_challenge_method: CODE_CHALLENGE_METHOD,
+        code_challenge_method: DIGEST_ALGORITHM_BY_METHOD.pkceId,
       }),
       credentials: "omit",
       redirect: "error",
@@ -63,7 +65,7 @@ export async function exchangeCode(code: string, codeVerifier: string): Promise<
     return parseKey(await response.text());
   } catch (failure) {
     const exchangeError = toExchangeError(failure, controller.signal.aborted);
-    logExchangeFailure(exchangeError);
+    logEngineFailure(EXCHANGE_FAILURE_LOG, exchangeError.exchangeCause);
     throw exchangeError;
   } finally {
     if (timeoutId !== undefined) {
@@ -73,12 +75,7 @@ export async function exchangeCode(code: string, codeVerifier: string): Promise<
 }
 
 function parseKey(rawAnswer: string): string {
-  let answer: unknown;
-  try {
-    answer = JSON.parse(rawAnswer);
-  } catch {
-    throw createUnexpectedAnswerError();
-  }
+  const answer: unknown = JSON.parse(rawAnswer);
 
   if (typeof answer !== "object" || answer === null) {
     throw createUnexpectedAnswerError();
@@ -99,11 +96,8 @@ function toExchangeError(failure: unknown, aborted: boolean): OpenRouterCodeExch
   if (aborted) {
     return createTimeoutError();
   }
-  return createRequestFailedError();
-}
-
-function logExchangeFailure(exchangeError: OpenRouterCodeExchangeError): void {
-  if (import.meta.env.DEV) {
-    console.error("OpenRouter code exchange failed:", exchangeError.exchangeCause);
+  if (failure instanceof SyntaxError) {
+    return createUnexpectedAnswerError();
   }
+  return createRequestFailedError();
 }
