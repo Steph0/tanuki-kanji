@@ -65,9 +65,11 @@ describe("Navbar", () => {
     render(<Navbar />);
     const navigation = screen.getByRole("navigation", { name: "Primary" });
     const badge = screen.getByRole("button", { name: /Development folder/ });
+    const homeWrapper = screen.getByRole("button", { name: "Back to homepage" }).parentElement;
     expect(badge).toBeVisible();
     expect(navigation.children[1]).toBe(badge);
-    expect(badge.nextElementSibling).toBe(navigation.lastElementChild);
+    expect(badge.nextElementSibling).toBe(homeWrapper);
+    expect(homeWrapper).toBe(navigation.lastElementChild);
   });
 
   describe("home button", () => {
@@ -104,8 +106,8 @@ describe("Navbar", () => {
       expect(home.matches(":hover")).toBe(false);
       await vi.waitFor(() => expect(tooltip).toBeVisible());
 
-      // The DESIGN.md focus ring arrives via the global :focus-visible rule
-      const ring = getComputedStyle(home);
+      expect(getComputedStyle(home).outlineStyle).toBe("none");
+      const ring = getComputedStyle(home.querySelector("img") as Element);
       expect(ring.outlineStyle).toBe("solid");
       expect(ring.outlineWidth).toBe("2px");
       expect(ring.outlineColor).toBe("rgb(45, 90, 67)");

@@ -11,6 +11,26 @@ type ChromeDevToolsProtocolSession = {
   ): Promise<void>;
 };
 
+async function getChromeSession(
+  provider: { getCDPSession?: (sessionId: string) => Promise<unknown> },
+  sessionId: string,
+): Promise<ChromeDevToolsProtocolSession> {
+  if (!provider.getCDPSession) {
+    throw new Error("Browser provider has no Chrome DevTools Protocol session");
+  }
+  return (await provider.getCDPSession(sessionId)) as unknown as ChromeDevToolsProtocolSession;
+}
+
+async function pressKey(session: ChromeDevToolsProtocolSession, key: KeyDefinition): Promise<void> {
+  await session.send("Input.dispatchKeyEvent", { type: "rawKeyDown", ...key });
+  await session.send("Input.dispatchKeyEvent", { type: "keyUp", ...key });
+}
+
+type KeyDefinition = { windowsVirtualKeyCode: number; code: string; key: string };
+
+const TAB_KEY: KeyDefinition = { windowsVirtualKeyCode: 9, code: "Tab", key: "Tab" };
+const ESCAPE_KEY: KeyDefinition = { windowsVirtualKeyCode: 27, code: "Escape", key: "Escape" };
+
 /**
  * Node-side browser command: flips the real `prefers-reduced-motion` media
  * query in headless Chromium via the Chrome DevTools Protocol. Unlike the
@@ -20,11 +40,7 @@ type ChromeDevToolsProtocolSession = {
  * `commands.emulateReducedMotion(reduce)`.
  */
 export const emulateReducedMotion: BrowserCommand<[boolean]> = async ({ provider, sessionId }, reduce) => {
-  const getSession = provider.getCDPSession;
-  if (!getSession) {
-    throw new Error("Browser provider has no Chrome DevTools Protocol session");
-  }
-  const session = (await getSession.call(provider, sessionId)) as unknown as ChromeDevToolsProtocolSession;
+  const session = await getChromeSession(provider, sessionId);
   await session.send("Emulation.setEmulatedMedia", {
     features: [{ name: "prefers-reduced-motion", value: reduce ? "reduce" : "no-preference" }],
   });
@@ -39,12 +55,14 @@ export const emulateReducedMotion: BrowserCommand<[boolean]> = async ({ provider
  * test via `commands.pressTab()`.
  */
 export const pressTab: BrowserCommand<[]> = async ({ provider, sessionId }) => {
-  const getSession = provider.getCDPSession;
-  if (!getSession) {
-    throw new Error("Browser provider has no Chrome DevTools Protocol session");
-  }
-  const session = (await getSession.call(provider, sessionId)) as unknown as ChromeDevToolsProtocolSession;
-  const tabKey = { windowsVirtualKeyCode: 9, code: "Tab", key: "Tab" };
-  await session.send("Input.dispatchKeyEvent", { type: "rawKeyDown", ...tabKey });
-  await session.send("Input.dispatchKeyEvent", { type: "keyUp", ...tabKey });
+  await pressKey(await getChromeSession(provider, sessionId), TAB_KEY);
+};
+
+/**
+ * Node-side browser command: presses Escape with trusted keyboard input via
+ * the Chrome DevTools Protocol, so native `<dialog>` cancellation runs through
+ * the browser instead of a synthetic event.
+ */
+export const pressEscape: BrowserCommand<[]> = async ({ provider, sessionId }) => {
+  await pressKey(await getChromeSession(provider, sessionId), ESCAPE_KEY);
 };

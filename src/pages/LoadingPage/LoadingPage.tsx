@@ -2,7 +2,7 @@ import artwork400 from "../../assets/loading/loading_page-400.png";
 import artwork400Webp from "../../assets/loading/loading_page-400.webp";
 import artwork800 from "../../assets/loading/loading_page-800.png";
 import artwork800Webp from "../../assets/loading/loading_page-800.webp";
-import { AnimatedArtwork } from "./AnimatedArtwork.tsx";
+import { AnimatedArtwork } from "../../components/AnimatedArtwork/AnimatedArtwork.tsx";
 import styles from "./LoadingPage.module.css";
 import { useLoadingPage } from "./useLoadingPage.ts";
 import { useRotatingCaption } from "./useRotatingCaption.ts";
@@ -24,9 +24,10 @@ export function LoadingPage({ kanjiUserInput, onDone }: LoadingPageProps) {
   return (
     <div className={styles.page}>
       <AnimatedArtwork>
-        <picture>
+        <picture className={styles.picture}>
           <source type="image/webp" srcSet={`${artwork400Webp} 400w, ${artwork800Webp} 800w`} sizes={ARTWORK_SIZES} />
           <img
+            className={styles.artwork}
             src={artwork400}
             srcSet={`${artwork400} 400w, ${artwork800} 800w`}
             sizes={ARTWORK_SIZES}

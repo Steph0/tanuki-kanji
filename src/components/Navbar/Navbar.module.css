@@ -49,7 +49,6 @@
 }
 
 .homeMark {
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -64,39 +63,19 @@
   cursor: pointer;
 }
 
+.homeMark:focus-visible {
+  outline: none;
+}
+
 .homeIcon {
   width: var(--icon-md);
   height: var(--icon-md);
 }
 
-.tooltip {
-  position: absolute;
-  top: calc(100% + var(--space-xs));
-  left: 50%;
-  transform: translateX(-50%);
-  padding: var(--space-xs) var(--space-sm);
+.homeMark:focus-visible .homeIcon {
   border-radius: var(--radius-full);
-  background-color: var(--color-ink);
-  color: var(--color-canvas);
-  font-family: var(--font-body);
-  font-weight: var(--text-label-sm-weight);
-  font-size: var(--text-label-sm-size);
-  line-height: var(--text-label-sm-leading);
-  letter-spacing: var(--text-label-sm-spacing);
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 150ms ease,
-    visibility 0s linear 150ms;
-  pointer-events: none;
-}
-
-.homeMark:hover .tooltip,
-.homeMark:focus-visible .tooltip {
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 150ms ease;
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 /* Wide screens */

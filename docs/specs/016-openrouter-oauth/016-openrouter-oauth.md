@@ -302,8 +302,8 @@ learner's OpenRouter account.
   - [x] Gate: build plus lint plus format plus the helper, store, location,
         application, controller, and API suite files, then full test.
 
-- [ ] Task 5 - A settings control with a state-aware modal
-  - [ ] The loading illustration becomes a shared piece so the same rings frame
+- [x] Task 5 - A settings control with a state-aware modal
+  - [x] The loading illustration becomes a shared piece so the same rings frame
         the sign-in. Technical: move `AnimatedArtwork.tsx`,
         `AnimatedArtwork.module.css`, `LoadingRings.tsx`, and
         `LoadingRings.module.css` from `src/pages/LoadingPage/` to
@@ -315,7 +315,7 @@ learner's OpenRouter account.
         with the slot at `6.5rem` and `7.5rem`) and its own short-viewport step
         (`8rem` visual with a `5.5rem` slot) so the rotated screen fits. The
         hero sizes and the loading page stay unchanged.
-  - [ ] A learner can open and close an OpenRouter offer from the navbar, and
+  - [x] A learner can open and close an OpenRouter offer from the navbar, and
         the control reflects the connection. Technical: new
         `src/components/Navbar/Settings/Settings.tsx` plus
         `Settings.module.css` and `useSettings.ts`. The trigger is a button with
@@ -341,12 +341,12 @@ learner's OpenRouter account.
         `min(28rem, calc(100vw - 2rem))` wide and
         `calc(100svh - 2rem)` tall, and the panel scrolls inside it.
         The disconnected view reads title `Connect to OpenRouter`, body
-        `Connect your OpenRouter account to use your own credits for lessons.`,
+        `This app uses OpenRouter free models to generate the lessons.`,
         main action `Connect to OpenRouter`, and footnote `Your key stays in
-        memory for this tab and is never saved. Reloading disconnects it.`.
+        memory for this tab and is never saved. Closing the app auto-disconnect by default.`.
         The connected view reads title `OpenRouter connected`, body `Your
         OpenRouter account is connected. Your key stays in memory for this tab
-        and is never saved. Reloading disconnects it.`, main action
+        and is never saved. Closing the app auto-disconnect by default.`, main action
         `Disconnect`, and an informational note in the same slot the
         disconnected view uses for its error: `Disconnecting forgets the key in
         this tab. The key stays in your OpenRouter account until you revoke
@@ -391,7 +391,7 @@ learner's OpenRouter account.
         owns the dialog ref, the open and error state, and the `isConnected`
         state seeded synchronously from `openRouterSession.hasSession()`, plus
         the three close paths, so the component stays declarative.
-  - [ ] Prove the shared artwork and the shell. Technical: new colocated
+  - [x] Prove the shared artwork and the shell. Technical: new colocated
         `src/components/AnimatedArtwork/AnimatedArtwork.test.tsx` pinning the
         two decorative rings, the reduced-motion freeze, and the compact size,
         while the `LoadingPage` suite keeps covering the picture. Colocated
@@ -411,7 +411,7 @@ learner's OpenRouter account.
         singleton, no real navigation, and the suites stay offline. Render
         `Settings` directly with both fakes; the `App` and `Navbar` wiring is
         covered in Task 7.
-  - [ ] Gate: build plus lint plus format plus the artwork and settings suite
+  - [x] Gate: build plus lint plus format plus the artwork and settings suite
         files, then full test.
 
 - [ ] Task 6 - The offer runs the handshake, reports failure, and flips state
@@ -537,8 +537,16 @@ learner's OpenRouter account.
         expiry, the start `ready`/`refused` matrix, the UI navigation throw, the
         completion status matrix, the mocked exchange, the fake session API
         builder and fake `navigate`, and the App axe suites using both fakes.
+  - [ ] The throwaway preview harness retires once the real wiring lands.
+        Technical: `settings-preview.html` and `src/settings-preview.tsx` stay in
+        the tree through Tasks 5 and 6 so the Settings views can be inspected in
+        a browser against a fake session API; Task 7 deletes both files after the
+        real `App`/`Navbar` wiring renders the same views, leaving one entry
+        point and no second copy of the session fake. Deleting them is part of
+        the task, not a follow-up.
   - [ ] Gate: build plus lint plus format plus `App.test.tsx` and
-        `Navbar.test.tsx`, then full test.
+        `Navbar.test.tsx`, then full test, and confirm `settings-preview` is
+        gone from the tree.
 
 - [ ] Task 8 - Accessibility proof at the app level
   - [ ] The open offer is accessible in every state at every supported

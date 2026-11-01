@@ -4,11 +4,12 @@ import { InnerLoadingRing, OuterLoadingRing } from "./LoadingRings.tsx";
 
 type AnimatedArtworkProps = {
   children: ComponentChild;
+  compact?: boolean;
 };
 
-export function AnimatedArtwork({ children }: AnimatedArtworkProps) {
+export function AnimatedArtwork({ children, compact = false }: AnimatedArtworkProps) {
   return (
-    <div className={styles.visual}>
+    <div className={compact ? `${styles.visual} ${styles.compact}` : styles.visual}>
       <div aria-hidden="true" className={styles.halo} />
       <div aria-hidden="true" className={styles.ripple} />
       <OuterLoadingRing />

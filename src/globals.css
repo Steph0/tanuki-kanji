@@ -97,7 +97,7 @@
 
   /* Shared icon sizes (mirror src/constants/globals.ts PX consts) */
   --icon-sm: 1rem;
-  --icon-md: 1.25rem;
+  --icon-md: 1.5rem;
   --icon-xl: 2.25rem;
 }
 

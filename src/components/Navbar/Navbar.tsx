@@ -4,6 +4,7 @@ import logo72Webp from "../../assets/navbar/app_logo-72.webp";
 import logo144 from "../../assets/navbar/app_logo-144.png";
 import logo144Webp from "../../assets/navbar/app_logo-144.webp";
 import { ICON_MD_PX, ICON_XL_PX } from "../../constants/globals";
+import { Tooltip } from "../Tooltip/Tooltip.tsx";
 import { DevModeBadge } from "./DevModeBadge/DevModeBadge.tsx";
 import styles from "./Navbar.module.css";
 import { useNavbar } from "./useNavbar.ts";
@@ -33,19 +34,18 @@ export function Navbar() {
           <span className={styles.title}>Tanuki Kanji</span>
         </div>
         <DevModeBadge />
-        <button type="button" className={styles.homeMark} aria-label="Back to homepage" onClick={handleHomeClick}>
-          <img
-            className={styles.homeIcon}
-            src={syncIcon}
-            alt=""
-            aria-hidden="true"
-            width={ICON_MD_PX}
-            height={ICON_MD_PX}
-          />
-          <span className={styles.tooltip} aria-hidden="true">
-            Back to homepage
-          </span>
-        </button>
+        <Tooltip label="Back to homepage" align="end">
+          <button type="button" className={styles.homeMark} aria-label="Back to homepage" onClick={handleHomeClick}>
+            <img
+              className={styles.homeIcon}
+              src={syncIcon}
+              alt=""
+              aria-hidden="true"
+              width={ICON_MD_PX}
+              height={ICON_MD_PX}
+            />
+          </button>
+        </Tooltip>
       </nav>
     </header>
   );

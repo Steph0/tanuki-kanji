@@ -109,7 +109,7 @@ components:
   icon-sm:
     size: 1rem
   icon-md:
-    size: 1.25rem
+    size: 1.5rem
   icon-xl:
     size: 2.25rem
 ---
@@ -193,10 +193,10 @@ The shape system employs consistent **16px–20px (`rounded-lg` / `rounded-xl`) 
 
 All icons are Material Symbols (outlined) rendered as square glyphs in three sizes. Each size is a `components` token (`icon-sm` / `icon-md` / `icon-xl`) carrying a single `size` property — deliberately kept out of the `spacing` scale, which is reserved for layout rhythm (margins, gutters, padding). Iconography is a component concern, not a layout one.
 
-The three values step with the `0.5rem` (8px) base unit: `1rem` is two units, `1.25rem` two and a half, `2.25rem` four and a half. In pixels at the default root size that is 16 / 20 / 36 — the same numbers that feed intrinsic `width` / `height` attrs via `src/constants/globals.ts` (`ICON_SM_PX` / `ICON_MD_PX` / `ICON_XL_PX`), while CSS consumes `var(--icon-*)`. The full chain for any icon is therefore `components.icon-*.size` → `--icon-*` → `ICON_*_PX`, so attr and rendered size always agree and pre-CSS layout stays stable.
+The three values step on the `0.5rem` (8px) base unit by half steps of it, then by a full geometric step: `1rem` is two units, `1.5rem` three units, `2.25rem` four and a half, giving a clean ×1.5 progression. In pixels at the default root size that is 16 / 24 / 36 — the same numbers that feed intrinsic `width` / `height` attrs via `src/constants/globals.ts` (`ICON_SM_PX` / `ICON_MD_PX` / `ICON_XL_PX`), while CSS consumes `var(--icon-*)`. The full chain for any icon is therefore `components.icon-*.size` → `--icon-*` → `ICON_*_PX`, so attr and rendered size always agree and pre-CSS layout stays stable.
 
 - **Small (`icon-sm`, `1rem` / 16px):** Inline label glyphs and list item badges — SearchBar label, Explanation items, Banner badge.
-- **Medium (`icon-md`, `1.25rem` / 20px):** Action and header badges — SearchBar submit, Explanation header, Navbar home mark.
+- **Medium (`icon-md`, `1.5rem` / 24px):** Action and header badges — SearchBar submit, Explanation header, Navbar actions, Settings trigger and close. This is Material Symbols' native drawing size, so glyphs keep their designed stroke weight and optical padding; containers that frame it inset it by `0.25rem` per side (for example the `2rem` Explanation head badge).
 - **Extra large (`icon-xl`, `2.25rem` / 36px):** Brand logo only.
 
 Never introduce a new icon size without a design decision; when in doubt, reuse the nearest existing size rather than adding a fourth.
@@ -233,7 +233,7 @@ Never introduce a new icon size without a design decision; when in doubt, reuse 
 Checkable rules — "Maximum WCAG compliance" made operational. Every rule below binds code today, not aspiration.
 
 - **Contrast floors:** Reading copy targets AAA. Large text takes AA as its minimum. `muted` never carries body copy and never sits on `sunk`; it serves placeholders, counters, disabled states, and decorative marks only. Caption white (`surface`) appears only over the banner dark gradient.
-- **Focus is always visible:** `:focus-visible` draws a 2px `primary` outline with 2px offset. Glow may augment the ring, never replace it. Borderless inputs keep `outline: none` in globals; every input wrapper adds the shared `.field` class, which carries the single ring via `:has(input:focus-visible)` — never outline the input box itself, never two green lines.
+- **Focus is always visible:** `:focus-visible` draws a 2px `primary` outline with 2px offset. Glow may augment the ring, never replace it. Borderless inputs keep `outline: none` in globals; every input wrapper adds the shared `.field` class, which carries the single ring via `:has(input:focus-visible)` — never outline the input box itself, never two green lines. Icon-only buttons keep their 44px target while drawing the ring on the glyph, so the ring reads at icon scale instead of circling empty space.
 - **Targets:** Every interactive target measures at least 44×44px.
 - **Motion:** `prefers-reduced-motion` disables translation and animation — including the hover translations described under `## Components` once built. The codebase currently ships no motion, so the rule binds future work.
 - **Structure:** Heading order runs `h1 → h2 → h3` with no skips. `label-sm` never carries essential copy. Uppercase small labels keep their letter-spacing token for legibility and never carry meaning alone. Japanese spans and blocks require `lang="ja"` so the `:lang(ja)` reset applies.
