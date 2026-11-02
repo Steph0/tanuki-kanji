@@ -1,8 +1,8 @@
 import { useId } from "preact/hooks";
-import type { OpenRouterSessionAPI } from "../../../services/engine/controller/openrouter-session/openRouterSessionApi.ts";
+import { useBrowserNavigate, useOpenRouterSession } from "../../../hooks/useTanukiKanjiServices.tsx";
 import { SettingsDialog } from "./SettingsDialog.tsx";
 import { SettingsTrigger } from "./SettingsTrigger.tsx";
-import type { SettingsStatus } from "./settingsState.ts";
+import { isSettingsConnected, type SettingsStatus } from "./settingsState.ts";
 import { useSettings } from "./useSettings.ts";
 import { SettingsContent } from "./views/SettingsContent.tsx";
 
@@ -19,12 +19,9 @@ const SETTINGS_TITLES = {
   failed: CONNECT_TITLE,
 } as const satisfies Record<SettingsStatus, string>;
 
-type SettingsProps = {
-  openRouterSession: OpenRouterSessionAPI;
-  navigate: (url: string) => void;
-};
-
-export function Settings({ openRouterSession, navigate }: SettingsProps) {
+export function Settings() {
+  const openRouterSession = useOpenRouterSession();
+  const navigate = useBrowserNavigate();
   const settings = useSettings(openRouterSession, navigate);
   const titleId = useId();
   const bodyId = useId();
@@ -32,7 +29,7 @@ export function Settings({ openRouterSession, navigate }: SettingsProps) {
   return (
     <>
       <SettingsTrigger
-        isConnected={settings.state.status === "connected"}
+        isConnected={isSettingsConnected(settings.state)}
         triggerRef={settings.triggerRef}
         onOpen={settings.open}
       />
@@ -49,6 +46,7 @@ export function Settings({ openRouterSession, navigate }: SettingsProps) {
         <SettingsContent
           state={settings.state}
           bodyId={bodyId}
+          connectActionRef={settings.connectActionRef}
           onConnect={settings.connect}
           onDisconnect={settings.disconnect}
         />

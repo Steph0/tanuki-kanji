@@ -1,13 +1,13 @@
 import { act, screen } from "@testing-library/preact";
 import { describe, expect, test, vi } from "vitest";
 import { commands } from "vitest/browser";
-import { noop, renderWithEngine } from "../../test-utils.tsx";
+import { noop, renderWithLesson } from "../../test-utils.tsx";
 import { LoadingPage } from "./LoadingPage.tsx";
 
 const ARTWORK_ALT = "Tanuki calligraphing by lamplight while your lesson loads";
 
 function renderLoadingPage() {
-  return renderWithEngine(
+  return renderWithLesson(
     <LoadingPage kanjiUserInput="狸" onDone={noop} />,
     vi.fn(async () => "kanji lesson"),
   );

@@ -82,9 +82,10 @@ learner's OpenRouter account.
   production. No production build is made with the environment key set. The
   build-time key risk is accepted; no build-time guard is added.
 - Connection is per-tab memory, so a reload returns to the disconnected state.
-- The settings control receives its engine API and the `navigate` capability as
-  required props from the composition root, so no rendered UI component imports
-  the engine singleton directly or reads `window.location`.
+- The app provider is the only seam with the services: it defaults to the real
+  lesson and OpenRouter APIs plus the browser replace capability, accepts test
+  overrides, and leaf components read commands through hooks. No leaf UI
+  component imports an engine singleton directly or reads `window.location`.
 - The callback query is removed synchronously before the first render, and a
   failed removal never starts an exchange.
 - The engine start and finish entries never reject; they answer statuses.
@@ -383,11 +384,11 @@ learner's OpenRouter account.
         transparent)`, and the same radius, height, focus, and reduced-motion
         rules as the connect action. The close button is at least 44 by 44 px
         and uses `@material-symbols/svg-400/outlined/close.svg` at
-        `var(--icon-md)`. `Settings` receives a required `openRouterSession`
-        prop of type `OpenRouterSessionAPI` and a required `navigate` prop of
-        type `(url: string) => void`, so the component imports no engine
-        singleton and does not read `window.location`. The `Navbar` and `App`
-        wiring arrives in Task 7. `useSettings(openRouterSession, navigate)`
+        `var(--icon-md)`. `Settings` reads `openRouterSession` and `navigate`
+        from the app provider through `useOpenRouterSession()` and
+        `useBrowserNavigate()`, so the component imports no engine singleton
+        and does not read `window.location`. The `Navbar` and `App` wiring
+        arrives in Task 7. `useSettings(openRouterSession, navigate)`
         owns the dialog ref, the open and error state, and the `isConnected`
         state seeded synchronously from `openRouterSession.hasSession()`, plus
         the three close paths, so the component stays declarative.
@@ -409,13 +410,13 @@ learner's OpenRouter account.
         false for the disconnected suite and `hasSession` true for the
         connected suite, plus a fake `navigate` function; no module mock, no
         singleton, no real navigation, and the suites stay offline. Render
-        `Settings` directly with both fakes; the `App` and `Navbar` wiring is
-        covered in Task 7.
+        `Settings` through the app provider (`renderWithServices`) with both
+        fakes; the `App` and `Navbar` wiring is covered in Task 7.
   - [x] Gate: build plus lint plus format plus the artwork and settings suite
         files, then full test.
 
-- [ ] Task 6 - The offer runs the handshake, reports failure, and flips state
-  - [ ] A learner can approve the app, land back connected, and disconnect with
+- [x] Task 6 - The offer runs the handshake, reports failure, and flips state
+  - [x] A learner can approve the app, land back connected, and disconnect with
         a clear failure story. Technical: the main action always clears the
         error state first; in the disconnected view it sets a busy state,
         disables the action, and calls
@@ -440,9 +441,8 @@ learner's OpenRouter account.
         once per captured return. `connected` reads `hasSession()`, closes the
         modal, and flips the trigger, or shows the failed content if no session
         was saved.
-        `failed` reads `hasSession()` too: with a session it shows the connected
-        content with the error replacing the informational note; without one it
-        shows the disconnected content with the error copy. `none` closes the
+        `failed` always shows the disconnected content with the error copy,
+        because a failed exchange leaves no session behind. `none` closes the
         modal with no error. When
         `captureAuthorizationReturn()` answers false, `completeAuthorization()` is not
         called. A close during the connecting state does not cancel the
@@ -462,7 +462,7 @@ learner's OpenRouter account.
         component only renders its state. No UI component reads
         `window.location` directly or parses the authorization URL; the injected
         navigate capability is the only browser transition.
-  - [ ] Prove the flow. Technical: extend `Settings.test.tsx` with the fake
+  - [x] Prove the flow. Technical: extend `Settings.test.tsx` with the fake
         `OpenRouterSessionAPI` builder and a fake `navigate`. Assert the action
         clears the error, disables while `beginAuthorization` is pending, calls
         it once, and a refused start re-enables it with the error. Resolve
@@ -483,9 +483,8 @@ learner's OpenRouter account.
         informational note, revocation link, and `Disconnect` action. Resolve
         `completeAuthorization` as `failed` with `hasSession` false and assert
         the same open modal flipped to the disconnected content with the
-        `role="alert"` copy directly after the action in DOM order. Repeat
-        `failed` with `hasSession` true and assert the connected content with
-        the error replacing the note. Close the modal during connecting, then
+        `role="alert"` copy directly after the action in DOM order. Close the
+        modal during connecting, then
         resolve `failed`: assert the next open shows the error; resolve
         `connected` instead: assert the trigger flips with no error. With
         `captureAuthorizationReturn` false, assert `completeAuthorization` is not called.
@@ -499,23 +498,26 @@ learner's OpenRouter account.
         modal on an ordinary load. `main.tsx` calls
         `openRouterSessionAPI.captureAuthorizationReturn()` before `render()`, so the callback
         query is gone before the first frame.
-  - [ ] Gate: build plus lint plus format plus `Settings.test.tsx` and
+  - [x] Gate: build plus lint plus format plus `Settings.test.tsx` and
         `App.test.tsx`, then full test.
 
-- [ ] Task 7 - The navbar gains an actions group and the architecture names it
-  - [ ] The settings control sits beside the home action without disturbing the
+- [x] Task 7 - The navbar gains an actions group and the architecture names it
+  - [x] The settings control sits beside the home action without disturbing the
         brand or the dev badge. Technical: wrap `Settings` plus the existing
         home mark in a `div` with class `actions` in `Navbar.tsx`, and add
         `display: flex`, `align-items: center`, and `gap: var(--space-sm)` to
         that class in `Navbar.module.css`. Settings comes first, home second,
-        in natural DOM order. `App` takes required `openRouterSession` and
-        `navigate` props and passes them to `Navbar`, which forwards both to
-        `Settings`; `main.tsx` passes the singleton and
-        `(url) => window.location.replace(url)`. Update `App.test.tsx` and
-        `Navbar.test.tsx` to pass a fake `OpenRouterSessionAPI` and a fake
-        `navigate`, keep the dev badge as the second child and the actions group
-        as the last child, assert both actions are inside it, and follow natural
-        tab order: the first Tab reaches Settings and the second reaches home.
+        in natural DOM order. `TanukiKanjiProvider` defaults to the lesson
+        API, the OpenRouter session API, and `window.location.replace` for
+        `navigate`, and accepts partial overrides; `App` takes only that
+        optional override and provides it around the navbar and routed pages,
+        while `Navbar` plus `Settings` read narrow hooks. `main.tsx` only
+        captures the callback and renders `<App />`. Update `App.test.tsx`
+        and `Navbar.test.tsx`: App tests pass a fake services override, and
+        Navbar tests render through the provider (`renderWithServices`). Keep
+        the dev badge as the second child and the actions group as the last
+        child, assert both actions are inside it, and follow natural tab
+        order: the first Tab reaches Settings and the second reaches home.
         Update `docs/ARCHITECTURE.md`: add
         `application/openrouter-session/` as the layer holding the OAuth
         orchestration for this API only, with the dependency chain Api to
@@ -530,30 +532,33 @@ learner's OpenRouter account.
         `infrastructure/openrouter/` for the exchange adapter plus error, the
         in-memory session store, and the resolver; the non-enumerable domain key;
         the state-aware Settings trigger; the required `openRouterSession` and
-        `navigate` props from `main.tsx` through `App` and `Navbar` with no
-        rendered component importing the singleton or reading `window.location`;
+        `navigate` values from `main.tsx` through `App` into
+        `TanukiKanjiProvider`, with Navbar and Settings reading narrow hooks and
+        no rendered component importing the singleton or reading
+        `window.location`;
         the `captureAuthorizationReturn` call before the first render; and the testing split
         for the PKCE vector, the secure-origin and callback matrix, the pending
         expiry, the start `ready`/`refused` matrix, the UI navigation throw, the
         completion status matrix, the mocked exchange, the fake session API
         builder and fake `navigate`, and the App axe suites using both fakes.
-  - [ ] The throwaway preview harness retires once the real wiring lands.
+  - [x] The throwaway preview harness retires once the real wiring lands.
         Technical: `settings-preview.html` and `src/settings-preview.tsx` stay in
         the tree through Tasks 5 and 6 so the Settings views can be inspected in
         a browser against a fake session API; Task 7 deletes both files after the
         real `App`/`Navbar` wiring renders the same views, leaving one entry
         point and no second copy of the session fake. Deleting them is part of
         the task, not a follow-up.
-  - [ ] Gate: build plus lint plus format plus `App.test.tsx` and
+  - [x] Gate: build plus lint plus format plus `App.test.tsx` and
         `Navbar.test.tsx`, then full test, and confirm `settings-preview` is
         gone from the tree.
 
-- [ ] Task 8 - Accessibility proof at the app level
-  - [ ] The open offer is accessible in every state at every supported
+- [x] Task 8 - Accessibility proof at the app level
+  - [x] The open offer is accessible in every state at every supported
         viewport. Technical: extend `src/App.axe.test.tsx` with four describes,
-        each passing a fake `OpenRouterSessionAPI` and a fake `navigate` into
-        `App` alongside the lesson engine. The disconnected fake answers
-        `hasSession` false and `captureAuthorizationReturn` false; open the trigger named
+        each passing a fake services override to `App` with a fake
+        `OpenRouterSessionAPI`, a fake `navigate`, and the lesson API. The
+        disconnected fake answers `hasSession` false and
+        `captureAuthorizationReturn` false; open the trigger named
         `Settings, OpenRouter not connected`, wait for the dialog, and run axe.
         The connected fake answers `hasSession` true and `captureAuthorizationReturn` false;
         open the trigger named `Settings, OpenRouter connected`, wait for the
@@ -566,7 +571,7 @@ learner's OpenRouter account.
         test spies on a singleton. All four run at mobile `390x844`, rotated
         `844x390`, and desktop `1280x800`, and no network call happens on any
         path.
-  - [ ] Gate: build plus lint plus format plus `App.axe.test.tsx`, then full
+  - [x] Gate: build plus lint plus format plus `App.axe.test.tsx`, then full
         test.
 
 - [ ] Task 9 - Lessons read the connected session with a development fallback

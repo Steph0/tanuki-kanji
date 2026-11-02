@@ -1,5 +1,5 @@
-import { runTanukiKanjiLesson, type TanukiKanjiEngine } from "./runTanukiKanjiLessonController.ts";
+import { runTanukiKanjiLesson } from "./runTanukiKanjiLessonController.ts";
 
-export type { TanukiKanjiEngine };
+export type TanukiKanjiLessonAPI = (kanjiUserInput: string) => Promise<string>;
 
-export const runTanukiKanjiLessonAPI: TanukiKanjiEngine = runTanukiKanjiLesson;
+export const tanukiKanjiLessonAPI: TanukiKanjiLessonAPI = runTanukiKanjiLesson;

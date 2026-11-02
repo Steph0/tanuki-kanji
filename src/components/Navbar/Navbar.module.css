@@ -48,6 +48,12 @@
   text-overflow: ellipsis;
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
 .homeMark {
   display: inline-flex;
   align-items: center;

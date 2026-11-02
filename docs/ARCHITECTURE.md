@@ -11,44 +11,83 @@ owns layering, naming, and how each side is tested.
   data the UI renders.
 - UI calls the engine through one public file per API (`parseXApi.ts`),
   exposing a singleton plus statuses, limit, and response type.
-- Dependencies point one way: `pages` → Api → Controller → `domain/`, plus
-  Controller → `infrastructure/` → `domain/`. The domain stands alone. A
-  controller and an adapter are both outer ring, so a controller naming an
-  adapter is a lateral dependency, never an outward one. The controller plus
-  Api stay thin inbound adapters (the lesson controller excepted: it
-  validates and raises its boundary error).
+- Dependencies point one way: `pages` → Api → controller → `application/` →
+  `domain/`, plus controller → `infrastructure/` → `domain/`. The domain
+  stands alone. A controller and an adapter are both outer ring, so a
+  controller naming an adapter is a lateral dependency, never an outward
+  one. The controller plus Api stay thin inbound adapters (the lesson
+  controller excepted: it validates and raises its boundary error).
+  `application/` exists for the OpenRouter OAuth API only, because its start
+  and finish entries orchestrate domain policy plus browser infrastructure.
+- `TanukiKanjiProvider` is the app's single service seam, in the spirit of
+  `LocationProvider`: it defaults to the lesson API (`TanukiKanjiLessonAPI`),
+  the OpenRouter session API, and `window.location.replace` for `navigate`,
+  and accepts partial overrides for tests. `App` takes only that optional
+  override, so `src/main.tsx` renders `<App />` with no service props after
+  the pre-render callback capture. Children read narrow commands through
+  `useTanukiKanjiLesson`, `useOpenRouterSession`, and `useBrowserNavigate`;
+  the provider module is the only UI module importing the real singletons,
+  and no leaf component reads `window.location`.
+- `src/main.tsx` calls `openRouterSessionAPI.captureAuthorizationReturn()`
+  before the first render, so the callback query is gone before the first
+  frame.
 
 ## UI
 
 ### Layout
 
 - `src/pages/` plus `src/components/` (Preact).
+- `src/hooks/useTanukiKanjiServices.tsx` holds `TanukiKanjiProvider` and the
+  narrow service hooks. The provider value is memoized on its three inputs so
+  consumers do not re-render on unrelated parent renders.
+- `src/components/Navbar/Settings/` holds the state-aware settings control and
+  its modal. `Settings` reads `useOpenRouterSession()` and
+  `useBrowserNavigate()` and hands both to `useSettings`, which owns the
+  dialog refs, the reducer-driven status, the begin/capture/complete/
+  disconnect calls, and the one-shot `navigate` call; the views render only
+  the status they are given.
 
 ### Testing
 
 - `*.test.tsx` suites colocated with components, running in browser mode
   with real CSS.
-- Mock engine is a plain `vi.fn`; assert calls with
-  `expect(engine).toHaveBeenCalledWith(...)`.
-- `pendingEngine()` from `src/test-utils.tsx` covers the never-settles case.
-- Sub-app suites render through `renderWithEngine(ui, engine)`. Hook suites
-  declare the provider as a local `renderHook` wrapper.
-- `App` takes a required `engine` prop, picked in `src/main.tsx` beside the
-  global stylesheet import. App suites render `<App engine={engine} />`.
-- A new engine API extends the helper, or types fail.
+- A mock lesson is a plain `vi.fn`; assert calls with
+  `expect(lesson).toHaveBeenCalledWith(...)`.
+- `pendingLesson()` from `src/test-utils.tsx` covers the never-settles case.
+- Sub-app suites render through `renderWithLesson(ui, lesson)`; UI that does
+  not call the lesson API uses `renderWithServices(ui, services)`. Both
+  mount the real `TanukiKanjiProvider`, default to a fake
+  `fakeOpenRouterSessionAPI()` and a fake `navigate`, and accept overrides, so
+  no suite wires a component by hand. Hook suites declare the provider as a
+  local `renderHook` wrapper.
+- `App` takes only optional `services` overrides; production relies on the
+  provider defaults. App suites render `<App services={{
+  tanukiKanjiLesson: lesson, openRouterSession: fakeOpenRouterSessionAPI(),
+  navigate: vi.fn() }} />`; repeated suites use the same fakes from
+  `src/test-utils.tsx`, never a module mock or the real singleton. The App
+  axe suites use the same override, including the modal states.
+- `src/hooks/useTanukiKanjiServices.test.tsx` pins the real service
+  defaults, the partial override merge, and the outside-provider error.
+- A new engine service extends the provider and helper, or types fail.
 
 ## Engine
 
 ### Layout
 
-- `src/services/engine/` holds framework-free TypeScript in three parts:
-  `domain/`, `controller/`, `infrastructure/`.
+- `src/services/engine/` holds framework-free TypeScript in four parts:
+  `domain/`, `application/`, `controller/`, and `infrastructure/`;
+  `application/` holds only the OpenRouter OAuth orchestration.
 - `domain/`: pure rules, one kebab-case folder per world (e.g.
   `kanji-input/`); Uppercase files for value objects and vocabulary,
   lowercase for domain services. Tunable rules live in their own policy
   module next to the vocabulary. A domain value crosses into a provider
   call as that domain value, never as a raw string, so an unvalidated word
   cannot cross the boundary.
+- `application/openrouter-session/`: orchestration for the OAuth API only.
+  `beginOpenRouterAuthorization` answers `ready` with the one-shot
+  authorization URL or `refused`; `completeOpenRouterAuthorization` answers
+  `none`, `failed`, or `connected`. `domain/openrouter-session/` carries both
+  status sets and the ten-minute pending policy.
 - `controller/<feature>/`: one folder per API mirroring the world.
   `parseXApi.ts` carries the public surface plus the ready singleton, and
   stays a pure public surface: no wiring, no collaborator.
@@ -61,6 +100,28 @@ owns layering, naming, and how each side is tested.
   the input validation through `KanjiInput.create`, owns the
   `InvalidKanjiInput` boundary error, calls the provider adapter, and maps
   the lesson to its text with no `mapToResponse` presenter.
+- `controller/openrouter-session/`: `openRouterSessionApi.ts` exposes
+  `beginAuthorization`, `completeAuthorization`, `captureAuthorizationReturn`,
+  `hasSession`, and `disconnect`. `captureAuthorizationReturn` strips the
+  callback query once and keeps the return in engine memory;
+  `completeAuthorization` spends it, so a second call answers `none`. The
+  surface never exposes the key, code, verifier, or session. Its only
+  protocol value is the one-shot authorization URL, which the UI hands
+  straight to `navigate` for a same-tab `location.replace` and never parses,
+  stores, renders, or logs.
+- `infrastructure/browser/`: `pkce.ts` builds the verifier, state, `S256`
+  challenge, and authorization link with Web Crypto; `pendingStore.ts` keeps
+  the one-time verifier, state, and creation time in `sessionStorage`;
+  `authorizationOrigin.ts` owns the secure-origin predicate; and
+  `browserLocation.ts` is the only engine file that reads the callback query,
+  removing `code`, `state`, and `error` synchronously without navigating.
+- `infrastructure/openrouter/` (OpenRouter OAuth): `exchangeCode.ts` plus
+  `OpenRouterCodeExchangeError.ts` trade the code for a key with browser
+  `fetch`; `sessionStore.ts` keeps the session in module memory; and
+  `resolveSession.ts` reads the connected session first for lessons. The
+  domain key sits behind a `#apiKey` private field with a prototype
+  accessor, so it is non-enumerable and absent from `Object.keys` and
+  `JSON.stringify`.
 - `infrastructure/<provider>/`: one folder per outbound provider, holding
   the adapter plus the error it throws. It is the
   only place importing a vendor SDK or reading `import.meta.env`. An adapter
@@ -112,3 +173,13 @@ owns layering, naming, and how each side is tested.
 - `vite.config.ts` registers `msw/vite` in `worker-only` mode, gated on
   `process.env.VITEST`. Ungated, the plugin writes `mockServiceWorker.js`
   into every build; never commit it under `public/`.
+- OpenRouter OAuth splits by responsibility: `pkce.test.ts` pins the RFC 7636
+  verifier-to-challenge vector and every authorization parameter;
+  `authorizationOrigin.test.ts` and `browserLocation.test.ts` pin the
+  secure-origin and callback-cleanup matrices; `pendingStore.test.ts` pins
+  the ten-minute expiry; the two application suites pin the start
+  `ready`/`refused` and completion `none`/`failed`/`connected` matrices; the
+  controller and Api suites drive the real singleton offline with the
+  exchange adapter mocked and the callback in memory, so no navigation
+  happens. UI suites drive the session through `fakeOpenRouterSessionAPI()`
+  plus a fake `navigate`; that fake also covers the UI navigation throw.

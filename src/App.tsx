@@ -2,24 +2,23 @@ import { LocationProvider } from "preact-iso";
 import styles from "./App.module.css";
 import { AppRouter } from "./AppRouter.tsx";
 import { Navbar } from "./components/Navbar/Navbar.tsx";
-import { TanukiKanjiProvider } from "./hooks/useTanukiKanjiEngine.tsx";
-import type { TanukiKanjiEngine } from "./services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
+import { TanukiKanjiProvider, type TanukiKanjiServices } from "./hooks/useTanukiKanjiServices.tsx";
 
 type AppProps = {
-  engine: TanukiKanjiEngine;
+  services?: Partial<TanukiKanjiServices>;
 };
 
-export function App({ engine }: AppProps) {
+export function App({ services }: AppProps) {
   return (
     <LocationProvider>
-      <div className={styles.appContainer}>
-        <Navbar />
-        <main className={styles.pageContent} tabIndex={-1}>
-          <TanukiKanjiProvider engine={engine}>
+      <TanukiKanjiProvider services={services}>
+        <div className={styles.appContainer}>
+          <Navbar />
+          <main className={styles.pageContent} tabIndex={-1}>
             <AppRouter />
-          </TanukiKanjiProvider>
-        </main>
-      </div>
+          </main>
+        </div>
+      </TanukiKanjiProvider>
     </LocationProvider>
   );
 }

@@ -1,27 +1,39 @@
 import { renderHook } from "@testing-library/preact";
 import type { ComponentChildren } from "preact";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { TanukiKanjiProvider } from "../../hooks/useTanukiKanjiEngine.tsx";
-import type { TanukiKanjiEngine } from "../../services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
+import { TanukiKanjiProvider } from "../../hooks/useTanukiKanjiServices.tsx";
+import type { TanukiKanjiLessonAPI } from "../../services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
+import { fakeOpenRouterSessionAPI } from "../../test-utils.tsx";
 import { useLoadingPage } from "./useLoadingPage.ts";
 
 function renderLoadingPageHook({
   kanjiUserInput = "狸",
-  engine,
+  lesson,
   onDone,
 }: {
   kanjiUserInput?: string;
-  engine: TanukiKanjiEngine;
+  lesson: TanukiKanjiLessonAPI;
   onDone: (tanukiKanjiLessonOutput: string) => void;
 }) {
-  function EngineProvider({ children }: { children?: ComponentChildren }) {
-    return <TanukiKanjiProvider engine={engine}>{children}</TanukiKanjiProvider>;
+  const navigate = vi.fn();
+  function LessonProvider({ children }: { children?: ComponentChildren }) {
+    return (
+      <TanukiKanjiProvider
+        services={{
+          tanukiKanjiLesson: lesson,
+          openRouterSession: fakeOpenRouterSessionAPI(),
+          navigate,
+        }}
+      >
+        {children}
+      </TanukiKanjiProvider>
+    );
   }
   return renderHook(
     () => {
       useLoadingPage(kanjiUserInput, onDone);
     },
-    { wrapper: EngineProvider },
+    { wrapper: LessonProvider },
   );
 }
 
@@ -30,24 +42,24 @@ describe("useLoadingPage", () => {
     vi.restoreAllMocks();
   });
 
-  test("runs the engine once with the kanji user input and forwards the lesson text", async () => {
-    const engine = vi.fn(async () => "kanji lesson");
+  test("runs the lesson once with the kanji user input and forwards the lesson text", async () => {
+    const lesson = vi.fn(async () => "kanji lesson");
     const onDone = vi.fn();
-    renderLoadingPageHook({ engine, onDone });
+    renderLoadingPageHook({ lesson, onDone });
 
     await vi.waitFor(() => {
       expect(onDone).toHaveBeenCalledWith("kanji lesson");
     });
-    expect(engine).toHaveBeenCalledTimes(1);
-    expect(engine).toHaveBeenCalledWith("狸");
+    expect(lesson).toHaveBeenCalledTimes(1);
+    expect(lesson).toHaveBeenCalledWith("狸");
   });
 
-  test("forwards a static error text when the engine rejects", async () => {
+  test("forwards a static error text when the lesson rejects", async () => {
     const error = vi.spyOn(console, "error").mockImplementation(() => {});
-    const failure = new Error("engine exploded");
+    const failure = new Error("lesson failed");
     const onDone = vi.fn();
     renderLoadingPageHook({
-      engine: () => Promise.reject(failure),
+      lesson: () => Promise.reject(failure),
       onDone,
     });
 
@@ -58,24 +70,24 @@ describe("useLoadingPage", () => {
     expect(error).toHaveBeenCalledWith(failure);
   });
 
-  test("does not run the engine again on rerender", async () => {
-    const engine = vi.fn(async () => "kanji lesson");
+  test("does not run the lesson again on rerender", async () => {
+    const lesson = vi.fn(async () => "kanji lesson");
     const onDone = vi.fn();
-    const { rerender } = renderLoadingPageHook({ engine, onDone });
+    const { rerender } = renderLoadingPageHook({ lesson, onDone });
 
     rerender();
     rerender();
     await vi.waitFor(() => {
       expect(onDone).toHaveBeenCalledWith("kanji lesson");
     });
-    expect(engine).toHaveBeenCalledTimes(1);
+    expect(lesson).toHaveBeenCalledTimes(1);
   });
 
   test("ignores a late resolve after unmount", async () => {
     const gate: { resolve?: (value: string) => void } = {};
     const onDone = vi.fn();
     const { unmount } = renderLoadingPageHook({
-      engine: () =>
+      lesson: () =>
         new Promise<string>((resolve) => {
           gate.resolve = resolve;
         }),

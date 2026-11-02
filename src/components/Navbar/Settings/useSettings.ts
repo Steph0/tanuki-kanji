@@ -8,6 +8,8 @@ export function useSettings(openRouterSession: OpenRouterSessionAPI, navigate: (
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const connectActionRef = useRef<HTMLButtonElement>(null);
+  const shouldFocusConnectAction = useRef(false);
   const [state, dispatch] = useReducer(settingsReducer, undefined, () =>
     initialSettingsState(openRouterSession.hasSession()),
   );
@@ -19,6 +21,13 @@ export function useSettings(openRouterSession: OpenRouterSessionAPI, navigate: (
       void finishAuthorization();
     }
   }, []);
+
+  useEffect(() => {
+    if (shouldFocusConnectAction.current) {
+      shouldFocusConnectAction.current = false;
+      connectActionRef.current?.focus();
+    }
+  }, [state]);
 
   function open() {
     const dialog = dialogRef.current;
@@ -33,7 +42,7 @@ export function useSettings(openRouterSession: OpenRouterSessionAPI, navigate: (
     if (dialog?.open) {
       dialog.close();
     }
-    dispatch({ type: "errorDismissed", connected: openRouterSession.hasSession() });
+    dispatch({ type: "errorDismissed" });
     triggerRef.current?.focus();
   }
 
@@ -42,10 +51,18 @@ export function useSettings(openRouterSession: OpenRouterSessionAPI, navigate: (
     close();
   }
 
+  function failConnection() {
+    dispatch({ type: "failed", message: CONNECTION_ERROR });
+  }
+
   async function finishAuthorization() {
     const result = await openRouterSession.completeAuthorization();
     if (result.status === "failed") {
-      dispatch({ type: "failed", message: CONNECTION_ERROR });
+      failConnection();
+      return;
+    }
+    if (result.status === "connected" && !openRouterSession.hasSession()) {
+      failConnection();
       return;
     }
     dispatch({ type: "completed", connected: openRouterSession.hasSession() });
@@ -55,14 +72,15 @@ export function useSettings(openRouterSession: OpenRouterSessionAPI, navigate: (
   async function startAuthorization() {
     const result = await openRouterSession.beginAuthorization();
     if (result.status !== "ready") {
-      dispatch({ type: "failed", message: CONNECTION_ERROR });
+      failConnection();
       return;
     }
+    const authorizationUrl = result.authorizationUrl;
     try {
-      navigate(result.authorizationUrl);
+      navigate(authorizationUrl);
     } catch (failure) {
       console.error(failure);
-      dispatch({ type: "failed", message: CONNECTION_ERROR });
+      failConnection();
       return;
     }
     dispatch({ type: "navigationStarted" });
@@ -75,6 +93,7 @@ export function useSettings(openRouterSession: OpenRouterSessionAPI, navigate: (
 
   function disconnect() {
     openRouterSession.disconnect();
+    shouldFocusConnectAction.current = true;
     dispatch({ type: "disconnected" });
   }
 
@@ -82,6 +101,7 @@ export function useSettings(openRouterSession: OpenRouterSessionAPI, navigate: (
     dialogRef,
     triggerRef,
     closeButtonRef,
+    connectActionRef,
     state,
     open,
     close,

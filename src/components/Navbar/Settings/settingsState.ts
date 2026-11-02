@@ -15,10 +15,14 @@ export type SettingsEvent =
   | { type: "completed"; connected: boolean }
   | { type: "failed"; message: string }
   | { type: "disconnected" }
-  | { type: "errorDismissed"; connected: boolean };
+  | { type: "errorDismissed" };
 
 export function initialSettingsState(hasSession: boolean): SettingsState {
   return hasSession ? { status: "connected" } : { status: "disconnected" };
+}
+
+export function isSettingsConnected(state: SettingsState): boolean {
+  return state.status === "connected";
 }
 
 export function settingsReducer(state: SettingsState, event: SettingsEvent): SettingsState {
@@ -36,9 +40,6 @@ export function settingsReducer(state: SettingsState, event: SettingsEvent): Set
     case "disconnected":
       return { status: "disconnected" };
     case "errorDismissed":
-      if (state.status !== "failed") {
-        return state;
-      }
-      return event.connected ? { status: "connected" } : { status: "disconnected" };
+      return state.status === "failed" ? { status: "disconnected" } : state;
   }
 }

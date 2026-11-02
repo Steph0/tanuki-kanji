@@ -2,26 +2,26 @@ import { screen } from "@testing-library/preact";
 import { LocationProvider } from "preact-iso";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { AppRouter } from "./AppRouter.tsx";
-import type { TanukiKanjiEngine } from "./services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
-import { pendingEngine, renderWithEngine } from "./test-utils.tsx";
+import type { TanukiKanjiLessonAPI } from "./services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
+import { pendingLesson, renderWithLesson } from "./test-utils.tsx";
 
 function renderAppRouter({
   initialKanjiUserInput = null,
   initialTanukiKanjiLessonOutput = null,
-  engine,
+  lesson,
 }: {
   initialKanjiUserInput?: string | null;
   initialTanukiKanjiLessonOutput?: string | null;
-  engine: TanukiKanjiEngine;
+  lesson: TanukiKanjiLessonAPI;
 }) {
-  return renderWithEngine(
+  return renderWithLesson(
     <LocationProvider>
       <AppRouter
         initialKanjiUserInput={initialKanjiUserInput}
         initialTanukiKanjiLessonOutput={initialTanukiKanjiLessonOutput}
       />
     </LocationProvider>,
-    engine,
+    lesson,
   );
 }
 
@@ -32,23 +32,23 @@ describe("AppRouter", () => {
 
   test("shows the loading view when kanji user input is stored", async () => {
     window.history.pushState({}, "", "/loading");
-    renderAppRouter({ initialKanjiUserInput: "some kanji user input", engine: pendingEngine() });
+    renderAppRouter({ initialKanjiUserInput: "some kanji user input", lesson: pendingLesson() });
     expect(await screen.findByRole("status")).toBeVisible();
     expect(window.location.pathname).toBe("/loading");
   });
 
   test("stores the resolved lesson output and lands on /result", async () => {
     window.history.pushState({}, "", "/loading");
-    renderAppRouter({ initialKanjiUserInput: "狸", engine: vi.fn(async () => "kanji lesson") });
+    renderAppRouter({ initialKanjiUserInput: "狸", lesson: vi.fn(async () => "kanji lesson") });
     expect(await screen.findByText("kanji lesson")).toBeVisible();
     expect(window.location.pathname).toBe("/result");
   });
 
-  test("shows a static error on /result when the engine rejects", async () => {
+  test("shows a static error on /result when the lesson rejects", async () => {
     window.history.pushState({}, "", "/loading");
     renderAppRouter({
       initialKanjiUserInput: "狸",
-      engine: () => Promise.reject(new Error("engine exploded")),
+      lesson: () => Promise.reject(new Error("lesson exploded")),
     });
     expect(await screen.findByText("error")).toBeVisible();
     expect(window.location.pathname).toBe("/result");
@@ -58,7 +58,7 @@ describe("AppRouter", () => {
     window.history.pushState({}, "", "/result");
     renderAppRouter({
       initialTanukiKanjiLessonOutput: "kanji lesson",
-      engine: vi.fn(async () => "kanji lesson"),
+      lesson: vi.fn(async () => "kanji lesson"),
     });
     expect(await screen.findByText("kanji lesson")).toBeVisible();
     expect(window.location.pathname).toBe("/result");

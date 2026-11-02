@@ -7,6 +7,7 @@ import { ICON_MD_PX, ICON_XL_PX } from "../../constants/globals";
 import { Tooltip } from "../Tooltip/Tooltip.tsx";
 import { DevModeBadge } from "./DevModeBadge/DevModeBadge.tsx";
 import styles from "./Navbar.module.css";
+import { Settings } from "./Settings/Settings.tsx";
 import { useNavbar } from "./useNavbar.ts";
 
 const LOGO_SIZES = `${ICON_XL_PX}px`;
@@ -34,18 +35,21 @@ export function Navbar() {
           <span className={styles.title}>Tanuki Kanji</span>
         </div>
         <DevModeBadge />
-        <Tooltip label="Back to homepage" align="end">
-          <button type="button" className={styles.homeMark} aria-label="Back to homepage" onClick={handleHomeClick}>
-            <img
-              className={styles.homeIcon}
-              src={syncIcon}
-              alt=""
-              aria-hidden="true"
-              width={ICON_MD_PX}
-              height={ICON_MD_PX}
-            />
-          </button>
-        </Tooltip>
+        <div className={styles.actions}>
+          <Settings />
+          <Tooltip label="Back to homepage" align="end">
+            <button type="button" className={styles.homeMark} aria-label="Back to homepage" onClick={handleHomeClick}>
+              <img
+                className={styles.homeIcon}
+                src={syncIcon}
+                alt=""
+                aria-hidden="true"
+                width={ICON_MD_PX}
+                height={ICON_MD_PX}
+              />
+            </button>
+          </Tooltip>
+        </div>
       </nav>
     </header>
   );

@@ -3,11 +3,18 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import styles from "./App.module.css";
 import { App } from "./App.tsx";
-import type { TanukiKanjiEngine } from "./services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
-import { pendingEngine } from "./test-utils.tsx";
+import type { TanukiKanjiLessonAPI } from "./services/engine/controller/lesson/runTanukiKanjiLessonApi.ts";
+import type { OpenRouterSessionAPI } from "./services/engine/controller/openrouter-session/openRouterSessionApi.ts";
+import { fakeOpenRouterSessionAPI, pendingLesson } from "./test-utils.tsx";
 
-function renderApp(engine: TanukiKanjiEngine = vi.fn(async () => "kanji lesson")) {
-  render(<App engine={engine} />);
+const navigate = vi.fn();
+
+function renderApp(
+  lesson: TanukiKanjiLessonAPI = vi.fn(async () => "kanji lesson"),
+  openRouterSession: OpenRouterSessionAPI = fakeOpenRouterSessionAPI(),
+) {
+  render(<App services={{ tanukiKanjiLesson: lesson, openRouterSession, navigate }} />);
+  return openRouterSession;
 }
 
 describe("App", () => {
@@ -20,6 +27,15 @@ describe("App", () => {
       expect(screen.getByRole("banner")).toBeVisible();
       expect(screen.getByRole("main")).toBeVisible();
       expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    });
+
+    test("mounts the settings offer in the navigation without opening it on load", async () => {
+      const openRouterSession = renderApp();
+
+      expect(screen.getByRole("button", { name: "Settings, OpenRouter not connected" })).toBeVisible();
+      expect(screen.queryByRole("dialog")).toBeNull();
+      await vi.waitFor(() => expect(openRouterSession.captureAuthorizationReturn).toHaveBeenCalledTimes(1));
+      expect(openRouterSession.completeAuthorization).not.toHaveBeenCalled();
     });
 
     test("keeps discovery order: navigation, illustration, search, explanation", () => {
@@ -61,7 +77,7 @@ describe("App", () => {
     });
 
     test("typing and submitting takes the user to the loading screen", async () => {
-      renderApp(pendingEngine());
+      renderApp(pendingLesson());
       await page.getByRole("textbox", { name: "Enter your kanji" }).fill("狸");
       await page.getByRole("button", { name: "Submit search" }).click();
       expect(await screen.findByRole("status")).toBeVisible();

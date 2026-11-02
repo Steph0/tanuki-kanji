@@ -1,3 +1,4 @@
+import type { RefObject } from "preact";
 import styles from "../Settings.module.css";
 import { SettingsAction } from "../SettingsAction.tsx";
 import type { SettingsStatus } from "../settingsState.ts";
@@ -12,16 +13,22 @@ type DisconnectedStatus = Extract<SettingsStatus, "disconnected" | "starting" | 
 type DisconnectedSettingsProps = {
   bodyId: string;
   status: DisconnectedStatus;
+  connectActionRef: RefObject<HTMLButtonElement>;
   onConnect: () => void;
 };
 
-export function DisconnectedSettings({ bodyId, status, onConnect }: DisconnectedSettingsProps) {
+export function DisconnectedSettings({ bodyId, status, connectActionRef, onConnect }: DisconnectedSettingsProps) {
   return (
     <>
       <p id={bodyId} className={styles.body}>
         {CONNECT_BODY}
       </p>
-      <SettingsAction variant="primary" disabled={status !== "disconnected"} onClick={onConnect}>
+      <SettingsAction
+        variant="primary"
+        disabled={status !== "disconnected"}
+        actionRef={connectActionRef}
+        onClick={onConnect}
+      >
         {CONNECT_ACTION_LABEL}
       </SettingsAction>
       <p className={styles.note}>{CONNECT_FOOTNOTE}</p>

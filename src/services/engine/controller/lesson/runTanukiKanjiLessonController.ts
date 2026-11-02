@@ -3,8 +3,6 @@ import type { KanjiInputValidationStatus as KanjiInputValidationStatusType } fro
 import { KanjiInputValidationStatus } from "../../domain/kanji-input/validation/KanjiInputValidationStatus.ts";
 import { getTanukiKanjiLesson } from "../../infrastructure/openrouter/getTanukiKanjiLesson.ts";
 
-export type TanukiKanjiEngine = (kanjiUserInput: string) => Promise<string>;
-
 export class InvalidKanjiInput extends Error {
   readonly status: Exclude<KanjiInputValidationStatusType, typeof KanjiInputValidationStatus.VALID>;
 

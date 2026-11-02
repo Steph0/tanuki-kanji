@@ -1,14 +1,14 @@
 import { useEffect } from "preact/hooks";
-import { useTanukiKanjiEngine } from "../../hooks/useTanukiKanjiEngine.tsx";
+import { useTanukiKanjiLesson } from "../../hooks/useTanukiKanjiServices.tsx";
 
 export function useLoadingPage(kanjiUserInput: string, onDone: (tanukiKanjiLessonOutput: string) => void) {
-  const engine = useTanukiKanjiEngine();
+  const lesson = useTanukiKanjiLesson();
 
   useEffect(() => {
     let cancelled = false;
     async function run() {
       try {
-        const tanukiKanjiLessonOutput = await engine(kanjiUserInput);
+        const tanukiKanjiLessonOutput = await lesson(kanjiUserInput);
         if (cancelled) {
           console.warn("Kanji research got cancelled. Result will not be displayed.");
           return;
@@ -27,5 +27,5 @@ export function useLoadingPage(kanjiUserInput: string, onDone: (tanukiKanjiLesso
     return () => {
       cancelled = true;
     };
-  }, [engine, kanjiUserInput, onDone]);
+  }, [lesson, kanjiUserInput, onDone]);
 }

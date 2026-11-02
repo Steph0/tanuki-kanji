@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/preact";
+import { screen } from "@testing-library/preact";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { commands, page } from "vitest/browser";
 import { ICON_XL_PX } from "../../constants/globals.ts";
+import { renderWithServices } from "../../test-utils.tsx";
 import { Navbar } from "./Navbar.tsx";
 
 const { mockRoute } = vi.hoisted(() => ({ mockRoute: vi.fn() }));
@@ -12,6 +13,10 @@ vi.mock("preact-iso", () => ({
 
 const originalDev = import.meta.env.DEV;
 const originalMode = import.meta.env.MODE;
+
+function renderNavbar() {
+  renderWithServices(<Navbar />);
+}
 
 beforeEach(() => {
   mockRoute.mockClear();
@@ -24,17 +29,17 @@ afterEach(() => {
 
 describe("Navbar", () => {
   test("identifies as the webapp top-level header, not as content", () => {
-    render(<Navbar />);
+    renderNavbar();
     expect(screen.getByRole("banner")).toBeVisible();
   });
 
   test("identifies as the webapp primary navigation system", () => {
-    render(<Navbar />);
+    renderNavbar();
     expect(screen.getByRole("navigation", { name: "Primary" })).toBeVisible();
   });
 
   test("shows the brand logo", () => {
-    render(<Navbar />);
+    renderNavbar();
     const logo = screen.getByRole("img", { name: "Tanuki Kanji logo" });
     expect(logo).toBeVisible();
     expect(logo).toHaveAttribute("width", String(ICON_XL_PX));
@@ -55,26 +60,49 @@ describe("Navbar", () => {
   });
 
   test("shows no dev badge in the test environment", () => {
-    render(<Navbar />);
+    renderNavbar();
     expect(screen.queryByRole("button", { name: /Development folder/ })).toBeNull();
   });
 
-  test("sits next to the brand, ahead of the home mark, when dev mode is on", () => {
+  test("groups the settings control ahead of the home action as the last navigation child", () => {
+    renderNavbar();
+    const navigation = screen.getByRole("navigation", { name: "Primary" });
+    const settings = screen.getByRole("button", { name: "Settings, OpenRouter not connected" });
+    const home = screen.getByRole("button", { name: "Back to homepage" });
+    const actions = navigation.lastElementChild;
+
+    expect(actions).not.toBeNull();
+    expect(actions?.contains(settings)).toBe(true);
+    expect(actions?.contains(home)).toBe(true);
+    expect(settings.compareDocumentPosition(home) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  test("sits next to the brand, ahead of the actions group, when dev mode is on", () => {
     import.meta.env.DEV = true;
     import.meta.env.MODE = "development";
-    render(<Navbar />);
+    renderNavbar();
     const navigation = screen.getByRole("navigation", { name: "Primary" });
     const badge = screen.getByRole("button", { name: /Development folder/ });
-    const homeWrapper = screen.getByRole("button", { name: "Back to homepage" }).parentElement;
+    const actions = navigation.lastElementChild;
     expect(badge).toBeVisible();
     expect(navigation.children[1]).toBe(badge);
-    expect(badge.nextElementSibling).toBe(homeWrapper);
-    expect(homeWrapper).toBe(navigation.lastElementChild);
+    expect(badge.nextElementSibling).toBe(actions);
+    expect(actions).toBe(navigation.lastElementChild);
+  });
+
+  test("tabs into settings first and the home action second", async () => {
+    renderNavbar();
+
+    await commands.pressTab();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Settings, OpenRouter not connected" }));
+
+    await commands.pressTab();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Back to homepage" }));
   });
 
   describe("home button", () => {
     test("returns the user to the homepage when activated", async () => {
-      render(<Navbar />);
+      renderNavbar();
       const home = screen.getByRole("button", { name: "Back to homepage" });
       expect(home).toBeVisible();
       expect(home).toHaveAttribute("type", "button");
@@ -84,7 +112,7 @@ describe("Navbar", () => {
     });
 
     test("reveals its tooltip on hover", async () => {
-      render(<Navbar />);
+      renderNavbar();
       const tooltip = screen.getByText("Back to homepage");
       // Park the real mouse away first: earlier tests may have left it over the button.
       await page.getByRole("img", { name: "Tanuki Kanji logo" }).hover();
@@ -97,10 +125,11 @@ describe("Navbar", () => {
     });
 
     test("reveals its tooltip and the focus ring on keyboard focus, never hover-only", async () => {
-      render(<Navbar />);
+      renderNavbar();
       const home = screen.getByRole("button", { name: "Back to homepage" });
       const tooltip = screen.getByText("Back to homepage");
       expect(tooltip).not.toBeVisible();
+      await commands.pressTab();
       await commands.pressTab();
       // The parked mouse is on the logo, so only keyboard focus can reveal this.
       expect(home.matches(":hover")).toBe(false);

@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/preact";
+import { createRef } from "preact";
 import { describe, expect, test, vi } from "vitest";
 import { page } from "vitest/browser";
 import { DisconnectedSettings } from "./DisconnectedSettings.tsx";
@@ -8,9 +9,17 @@ const CONNECT_FOOTNOTE =
   "Your key is never saved and only works in this tab. Closing the app auto-disconnect by default.";
 
 function renderDisconnected(status: "disconnected" | "starting" | "navigating") {
+  const connectActionRef = createRef<HTMLButtonElement>();
   const onConnect = vi.fn();
-  render(<DisconnectedSettings bodyId="settings-body" status={status} onConnect={onConnect} />);
-  return onConnect;
+  render(
+    <DisconnectedSettings
+      bodyId="settings-body"
+      status={status}
+      connectActionRef={connectActionRef}
+      onConnect={onConnect}
+    />,
+  );
+  return { connectActionRef, onConnect };
 }
 
 describe("DisconnectedSettings", () => {
@@ -23,7 +32,7 @@ describe("DisconnectedSettings", () => {
   });
 
   test("starts the sign-in when the learner connects", async () => {
-    const onConnect = renderDisconnected("disconnected");
+    const { onConnect } = renderDisconnected("disconnected");
 
     await page.getByRole("button", { name: "Connect to OpenRouter" }).click();
 
@@ -40,5 +49,11 @@ describe("DisconnectedSettings", () => {
     renderDisconnected("navigating");
 
     expect(screen.getByRole("button", { name: "Connect to OpenRouter" })).toBeDisabled();
+  });
+
+  test("exposes the connect action to its owner through the ref", () => {
+    const { connectActionRef } = renderDisconnected("disconnected");
+
+    expect(connectActionRef.current).toBe(screen.getByRole("button", { name: "Connect to OpenRouter" }));
   });
 });

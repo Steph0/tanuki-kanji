@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { initialSettingsState, type SettingsState, settingsReducer } from "./settingsState.ts";
+import { initialSettingsState, isSettingsConnected, type SettingsState, settingsReducer } from "./settingsState.ts";
 
 const MESSAGE = "Could not connect to OpenRouter. Please try again.";
 
@@ -47,11 +47,10 @@ describe("settingsState", () => {
     expect(settingsReducer({ status: "connected" }, { type: "disconnected" })).toEqual({ status: "disconnected" });
   });
 
-  test("dismissing a failure falls back to the session the engine still holds", () => {
+  test("dismissing a failure returns to the offer", () => {
     const failed: SettingsState = { status: "failed", message: MESSAGE };
 
-    expect(settingsReducer(failed, { type: "errorDismissed", connected: true })).toEqual({ status: "connected" });
-    expect(settingsReducer(failed, { type: "errorDismissed", connected: false })).toEqual({ status: "disconnected" });
+    expect(settingsReducer(failed, { type: "errorDismissed" })).toEqual({ status: "disconnected" });
   });
 
   test("dismissing an error leaves every other state untouched", () => {
@@ -64,7 +63,27 @@ describe("settingsState", () => {
     ];
 
     for (const state of states) {
-      expect(settingsReducer(state, { type: "errorDismissed", connected: false })).toBe(state);
+      expect(settingsReducer(state, { type: "errorDismissed" })).toBe(state);
+    }
+  });
+});
+
+describe("isSettingsConnected", () => {
+  test("reads a live connection from the connected state", () => {
+    expect(isSettingsConnected({ status: "connected" })).toBe(true);
+  });
+
+  test("reports the offer in every other state", () => {
+    const states: SettingsState[] = [
+      { status: "disconnected" },
+      { status: "starting" },
+      { status: "navigating" },
+      { status: "connecting" },
+      { status: "failed", message: MESSAGE },
+    ];
+
+    for (const state of states) {
+      expect(isSettingsConnected(state)).toBe(false);
     }
   });
 });
