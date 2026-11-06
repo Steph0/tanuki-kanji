@@ -251,15 +251,17 @@ learner's OpenRouter account.
         failure, or a session save failure; it otherwise saves the Task 1
         session and answers `connected`. One guard covers the body, so it never
         rejects and no failure is swallowed.
-        The controller captures the callback once:
-        `captureAuthorizationReturn()` reads `code`, `state`, and `error`
-        synchronously, strips them from the URL, stores them in engine memory,
-        and answers whether a return was found. It is idempotent; a cleanup
-        failure marks a failed return and never starts an exchange.
-        `completeAuthorization` takes the captured return synchronously at its
-        start, so a second call answers `none` while the first exchange is in
-        flight. `main.tsx` calls `captureAuthorizationReturn` before the first
-        render, and the Settings mount calls it again. `openRouterSessionAPI`
+        The capture use case captures the callback once:
+        `captureOpenRouterAuthorizationReturn()` reads `code`, `state`, and
+        `error` synchronously, strips them from the URL, saves them in
+        `capturedReturnStore`, and answers whether a return was found. It is
+        idempotent; a cleanup failure marks a failed return and never starts an
+        exchange.
+        `completeOpenRouterAuthorization` takes the stored return synchronously
+        at its start, so a second call answers `none` while the first exchange is
+        in flight. The controller only delegates to those use cases.
+        `main.tsx` calls `captureAuthorizationReturn` before the first render,
+        and the Settings mount calls it again. `openRouterSessionAPI`
         gains `beginAuthorization`, `captureAuthorizationReturn`, and
         `completeAuthorization`; its surface never exposes the key, code,
         verifier, or session directly. The only protocol value it returns is
@@ -290,7 +292,10 @@ learner's OpenRouter account.
         state, missing
         code, missing and expired record, state mismatch, storage read failure,
         clear refusal before the exchange, exchange failure, save failure, no
-        save on failure, and no rejection.
+        save on failure, and no rejection. Colocated unit
+        `captureOpenRouterAuthorizationReturn.test.ts` pins no-callback
+        absence, the stored code, state, error, and cleanup flag, and
+        first-return idempotence.
         Colocated controller and integration API suites
         `openRouterSessionController.test.ts` and
         `openRouterSessionApi.test.ts` drive the real singleton offline with a

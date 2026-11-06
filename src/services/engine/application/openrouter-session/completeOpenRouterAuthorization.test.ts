@@ -2,10 +2,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { OpenRouterAuthorizationCompletionStatus } from "../../domain/openrouter-session/OpenRouterAuthorizationStatus.ts";
 import { OpenRouterSession } from "../../domain/openrouter-session/OpenRouterSession.ts";
 import type { PendingAuthorization } from "../../infrastructure/browser/pendingStore.ts";
-import {
-  completeOpenRouterAuthorization,
-  type OpenRouterAuthorizationReturn,
-} from "./completeOpenRouterAuthorization.ts";
+import { type OpenRouterAuthorizationReturn, saveCapturedReturn, takeCapturedReturn } from "./capturedReturnStore.ts";
+import { completeOpenRouterAuthorization } from "./completeOpenRouterAuthorization.ts";
 
 const mocks = vi.hoisted(() => ({
   canStartAuthorization: vi.fn(),
@@ -46,17 +44,22 @@ const CAPTURED: OpenRouterAuthorizationReturn = {
 
 describe("completeOpenRouterAuthorization unit", () => {
   beforeEach(() => {
+    takeCapturedReturn();
+    saveCapturedReturn(CAPTURED);
     mocks.canStartAuthorization.mockReturnValue(true);
     mocks.readPendingAuthorization.mockReturnValue(PENDING);
     mocks.exchangeCode.mockResolvedValue("sk-or-v1-from-exchange");
   });
 
   afterEach(() => {
+    takeCapturedReturn();
     vi.resetAllMocks();
   });
 
   test("answers none when no return was captured", async () => {
-    await expect(completeOpenRouterAuthorization(null)).resolves.toEqual({
+    takeCapturedReturn();
+
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.NONE,
     });
     expect(mocks.readPendingAuthorization).not.toHaveBeenCalled();
@@ -64,7 +67,7 @@ describe("completeOpenRouterAuthorization unit", () => {
   });
 
   test("connects and saves the session after a state-matched exchange", async () => {
-    const result = await completeOpenRouterAuthorization(CAPTURED);
+    const result = await completeOpenRouterAuthorization();
 
     expect(result).toEqual({ status: OpenRouterAuthorizationCompletionStatus.CONNECTED });
     expect(mocks.exchangeCode).toHaveBeenCalledWith(CAPTURED.code, PENDING.verifier);
@@ -73,39 +76,49 @@ describe("completeOpenRouterAuthorization unit", () => {
     expect(mocks.clearPendingAuthorization.mock.invocationCallOrder[0]).toBeLessThan(
       mocks.exchangeCode.mock.invocationCallOrder[0],
     );
+    expect(takeCapturedReturn()).toBeNull();
   });
 
   test("fails a failed return before reading the pending record", async () => {
-    await expect(completeOpenRouterAuthorization({ ...CAPTURED, captureFailed: true })).resolves.toEqual({
+    saveCapturedReturn({ ...CAPTURED, captureFailed: true });
+
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.FAILED,
     });
     expect(mocks.readPendingAuthorization).not.toHaveBeenCalled();
     expect(mocks.exchangeCode).not.toHaveBeenCalled();
+    expect(takeCapturedReturn()).toBeNull();
   });
 
   test("fails a provider denial before the state check, without echoing state", async () => {
-    await expect(
-      completeOpenRouterAuthorization({
-        code: null,
-        state: null,
-        error: "access_denied",
-        captureFailed: false,
-      }),
-    ).resolves.toEqual({ status: OpenRouterAuthorizationCompletionStatus.FAILED });
+    saveCapturedReturn({
+      code: null,
+      state: null,
+      error: "access_denied",
+      captureFailed: false,
+    });
+
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
+      status: OpenRouterAuthorizationCompletionStatus.FAILED,
+    });
     expect(mocks.readPendingAuthorization).not.toHaveBeenCalled();
     expect(mocks.clearPendingAuthorization).toHaveBeenCalledOnce();
     expect(mocks.exchangeCode).not.toHaveBeenCalled();
   });
 
   test("fails a missing code", async () => {
-    await expect(completeOpenRouterAuthorization({ ...CAPTURED, code: null })).resolves.toEqual({
+    saveCapturedReturn({ ...CAPTURED, code: null });
+
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.FAILED,
     });
     expect(mocks.exchangeCode).not.toHaveBeenCalled();
   });
 
   test("fails a whitespace-only code", async () => {
-    await expect(completeOpenRouterAuthorization({ ...CAPTURED, code: "   " })).resolves.toEqual({
+    saveCapturedReturn({ ...CAPTURED, code: "   " });
+
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.FAILED,
     });
     expect(mocks.exchangeCode).not.toHaveBeenCalled();
@@ -114,7 +127,7 @@ describe("completeOpenRouterAuthorization unit", () => {
   test("fails a missing pending record", async () => {
     mocks.readPendingAuthorization.mockReturnValue(null);
 
-    await expect(completeOpenRouterAuthorization(CAPTURED)).resolves.toEqual({
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.FAILED,
     });
     expect(mocks.exchangeCode).not.toHaveBeenCalled();
@@ -123,7 +136,7 @@ describe("completeOpenRouterAuthorization unit", () => {
   test("fails an expired pending record", async () => {
     mocks.readPendingAuthorization.mockReturnValue(null);
 
-    await expect(completeOpenRouterAuthorization(CAPTURED)).resolves.toEqual({
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.FAILED,
     });
     expect(mocks.clearPendingAuthorization).not.toHaveBeenCalled();
@@ -131,7 +144,9 @@ describe("completeOpenRouterAuthorization unit", () => {
   });
 
   test("fails a state mismatch", async () => {
-    await expect(completeOpenRouterAuthorization({ ...CAPTURED, state: "another-state" })).resolves.toEqual({
+    saveCapturedReturn({ ...CAPTURED, state: "another-state" });
+
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.FAILED,
     });
     expect(mocks.clearPendingAuthorization).toHaveBeenCalledOnce();
@@ -143,7 +158,7 @@ describe("completeOpenRouterAuthorization unit", () => {
       throw new Error("storage is blocked");
     });
 
-    await expect(completeOpenRouterAuthorization(CAPTURED)).resolves.toEqual({
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.FAILED,
     });
     expect(mocks.exchangeCode).not.toHaveBeenCalled();
@@ -152,7 +167,7 @@ describe("completeOpenRouterAuthorization unit", () => {
   test("fails an unsafe origin", async () => {
     mocks.canStartAuthorization.mockReturnValue(false);
 
-    await expect(completeOpenRouterAuthorization(CAPTURED)).resolves.toEqual({
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.FAILED,
     });
     expect(mocks.exchangeCode).not.toHaveBeenCalled();
@@ -161,7 +176,7 @@ describe("completeOpenRouterAuthorization unit", () => {
   test("fails an exchange failure without saving a session", async () => {
     mocks.exchangeCode.mockRejectedValue(new Error("exchange failed"));
 
-    await expect(completeOpenRouterAuthorization(CAPTURED)).resolves.toEqual({
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.FAILED,
     });
     expect(mocks.saveSession).not.toHaveBeenCalled();
@@ -172,7 +187,7 @@ describe("completeOpenRouterAuthorization unit", () => {
       throw new Error("save failed");
     });
 
-    await expect(completeOpenRouterAuthorization(CAPTURED)).resolves.toEqual({
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.FAILED,
     });
   });
@@ -182,7 +197,7 @@ describe("completeOpenRouterAuthorization unit", () => {
       throw new Error("storage is blocked");
     });
 
-    await expect(completeOpenRouterAuthorization(CAPTURED)).resolves.toEqual({
+    await expect(completeOpenRouterAuthorization()).resolves.toEqual({
       status: OpenRouterAuthorizationCompletionStatus.FAILED,
     });
     expect(mocks.exchangeCode).not.toHaveBeenCalled();

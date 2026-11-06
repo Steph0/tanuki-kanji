@@ -9,22 +9,15 @@ import {
 import { logEngineFailure } from "../../infrastructure/logging/logEngineFailure.ts";
 import { exchangeCode } from "../../infrastructure/openrouter/exchangeCode.ts";
 import { saveSession } from "../../infrastructure/openrouter/sessionStore.ts";
-
-export type OpenRouterAuthorizationReturn = {
-  code: string | null;
-  state: string | null;
-  error: string | null;
-  captureFailed: boolean;
-};
+import { type OpenRouterAuthorizationReturn, takeCapturedReturn } from "./capturedReturnStore.ts";
 
 export type CompleteOpenRouterAuthorizationResult =
   | { status: typeof OpenRouterAuthorizationCompletionStatus.NONE }
   | { status: typeof OpenRouterAuthorizationCompletionStatus.FAILED }
   | { status: typeof OpenRouterAuthorizationCompletionStatus.CONNECTED };
 
-export async function completeOpenRouterAuthorization(
-  captured: OpenRouterAuthorizationReturn | null,
-): Promise<CompleteOpenRouterAuthorizationResult> {
+export async function completeOpenRouterAuthorization(): Promise<CompleteOpenRouterAuthorizationResult> {
+  const captured = takeCapturedReturn();
   if (captured === null) {
     return { status: OpenRouterAuthorizationCompletionStatus.NONE };
   }

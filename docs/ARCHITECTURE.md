@@ -86,8 +86,11 @@ owns layering, naming, and how each side is tested.
   cannot cross the boundary.
 - `application/openrouter-session/`: orchestration for the OAuth API only.
   `beginOpenRouterAuthorization` answers `ready` with the one-shot
-  authorization URL or `refused`; `completeOpenRouterAuthorization` answers
-  `none`, `failed`, or `connected`. `domain/openrouter-session/` carries both
+  authorization URL or `refused`; `captureOpenRouterAuthorizationReturn`
+  captures the callback once into `capturedReturnStore`, which owns that
+  application state; `completeOpenRouterAuthorization` takes the stored return
+  so it is spent once and answers `none`, `failed`, or `connected`.
+  `domain/openrouter-session/` carries both
   status sets and the ten-minute pending policy.
 - `controller/<feature>/`: one folder per API mirroring the world.
   `parseXApi.ts` carries the public surface plus the ready singleton, and
@@ -104,8 +107,8 @@ owns layering, naming, and how each side is tested.
 - `controller/openrouter-session/`: `openRouterSessionApi.ts` exposes
   `beginAuthorization`, `completeAuthorization`, `captureAuthorizationReturn`,
   `connectDevelopmentSession`, `hasSession`, and `disconnect`.
-  `captureAuthorizationReturn` strips the
-  callback query once and keeps the return in engine memory;
+  `captureAuthorizationReturn` delegates to the application capture use case,
+  which strips the callback query once and stores the return;
   `completeAuthorization` spends it, so a second call answers `none`. The
   surface never exposes the key, code, verifier, or session. Its only
   protocol value is the one-shot authorization URL, which the UI hands
