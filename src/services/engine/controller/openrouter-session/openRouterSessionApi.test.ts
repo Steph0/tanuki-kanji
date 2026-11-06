@@ -25,12 +25,22 @@ describe("openRouterSessionApi integration", () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
   });
 
   test("answers whether the real store holds a session", () => {
     expect(api.hasSession()).toBe(false);
 
     sessionStore.saveSession(OpenRouterSession.create(API_KEY));
+
+    expect(api.hasSession()).toBe(true);
+  });
+
+  test("connects the development key through the real store", () => {
+    vi.stubEnv("DEV", true);
+    vi.stubEnv("VITE_OPENROUTER_API_KEY", API_KEY);
+
+    api.connectDevelopmentSession();
 
     expect(api.hasSession()).toBe(true);
   });
@@ -50,6 +60,7 @@ describe("openRouterSessionApi integration", () => {
       "beginAuthorization",
       "captureAuthorizationReturn",
       "completeAuthorization",
+      "connectDevelopmentSession",
       "disconnect",
       "hasSession",
     ]);

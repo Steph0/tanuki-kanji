@@ -135,7 +135,7 @@ sequenceDiagram
 - The UI has one connection error:
   `Could not connect to OpenRouter. Please try again.`
 - The key is memory-only. Reload disconnects the tab.
-- The development environment key is a fallback only under
-  `import.meta.env.DEV`. Production never uses it. No build-time guard is added.
+- In development, app start connects `VITE_OPENROUTER_API_KEY` as the session
+  when it is set. Production never reads that key. No build-time guard is added.
 - The connected view links to `https://openrouter.ai/keys` for revocation.
 - Tests stay offline and never call OpenRouter.

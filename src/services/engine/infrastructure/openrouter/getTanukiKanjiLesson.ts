@@ -4,8 +4,10 @@ import type { ChatRequest, Modality, ResponseFormat } from "@openrouter/sdk/mode
 import type { ChatResult } from "@openrouter/sdk/models/chatresult.js";
 import { OpenRouterError } from "@openrouter/sdk/models/errors/openroutererror.js";
 import type { KanjiInput } from "../../domain/kanji-input/KanjiInput.ts";
+import type { OpenRouterSession } from "../../domain/openrouter-session/OpenRouterSession.ts";
 import { TanukiKanjiLesson } from "../../domain/tanuki-kanji-lesson/TanukiKanjiLesson.ts";
 import { logEngineFailure } from "../logging/logEngineFailure.ts";
+import { readSession } from "./sessionStore.ts";
 import {
   createMissingApiKeyError,
   createTruncatedAnswerError,
@@ -30,15 +32,19 @@ const LESSON_FAILURE_LOG = "Tanuki Kanji lesson provider request failed";
 const NON_RETRYABLE_STATUS_CODES = [401, 402, 403];
 
 export const getTanukiKanjiLesson = async (provenKanjiWord: KanjiInput): Promise<TanukiKanjiLesson> => {
-  const client = createOpenRouterClient(import.meta.env.VITE_OPENROUTER_API_KEY);
-  return requestLesson(client, provenKanjiWord);
-};
-
-function createOpenRouterClient(apiKey: string | undefined): OpenRouterCore {
-  if (!apiKey) {
+  const session = readSession();
+  if (session === null) {
     throw createMissingApiKeyError();
   }
-  return new OpenRouterCore({ apiKey, httpReferer: window.location.origin, appTitle: APP_TITLE });
+  return requestLesson(createOpenRouterClient(session), provenKanjiWord);
+};
+
+function createOpenRouterClient(session: OpenRouterSession): OpenRouterCore {
+  return new OpenRouterCore({
+    apiKey: session.apiKey,
+    httpReferer: window.location.origin,
+    appTitle: APP_TITLE,
+  });
 }
 
 async function requestLesson(client: OpenRouterCore, provenKanjiWord: KanjiInput): Promise<TanukiKanjiLesson> {

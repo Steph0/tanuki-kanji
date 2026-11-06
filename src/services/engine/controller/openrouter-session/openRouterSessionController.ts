@@ -8,7 +8,12 @@ import {
   type OpenRouterAuthorizationReturn,
 } from "../../application/openrouter-session/completeOpenRouterAuthorization.ts";
 import { captureCallbackReturn } from "../../infrastructure/browser/browserLocation.ts";
+import { connectDevelopmentSessionFromEnvironment } from "../../infrastructure/openrouter/developmentSession.ts";
 import { deleteSession, hasSession } from "../../infrastructure/openrouter/sessionStore.ts";
+
+export function connectDevelopmentSession(): void {
+  connectDevelopmentSessionFromEnvironment();
+}
 
 let capturedReturn: OpenRouterAuthorizationReturn | null = null;
 

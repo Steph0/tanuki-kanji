@@ -5,11 +5,14 @@ import { setupWorker } from "msw/browser";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { KanjiInput } from "../../domain/kanji-input/KanjiInput.ts";
 import { KanjiInputValidationStatus } from "../../domain/kanji-input/validation/KanjiInputValidationStatus.ts";
+import { OpenRouterSession } from "../../domain/openrouter-session/OpenRouterSession.ts";
 import { getTanukiKanjiLesson } from "./getTanukiKanjiLesson.ts";
+import { deleteSession, saveSession } from "./sessionStore.ts";
 import { TanukiKanjiLessonProviderError } from "./TanukiKanjiLessonProviderError.ts";
 
 const CHAT_COMPLETIONS_URL = "https://openrouter.ai/api/v1/chat/completions";
 const TEST_API_KEY = "sk-or-v1-test-key";
+const SESSION_API_KEY = "sk-or-v1-connected-session-key";
 const KEY_REFUSED_BY_PROVIDER = "sk-or-v1-key-refused-by-provider";
 const MODEL_REFUSES_THE_REQUEST = "Reasoning is mandatory for this endpoint and cannot be disabled.";
 const PROVEN_WORD_TEXT = "森林";
@@ -55,12 +58,14 @@ afterAll(async () => {
 });
 
 beforeEach(() => {
-  vi.stubEnv("VITE_OPENROUTER_API_KEY", TEST_API_KEY);
+  deleteSession();
+  saveSession(OpenRouterSession.create(TEST_API_KEY));
 });
 
 afterEach(() => {
   worker.resetHandlers();
   vi.restoreAllMocks();
+  deleteSession();
   sentChatRequest = undefined;
   sentChatHeaders = undefined;
   chatCallCount = 0;
@@ -124,6 +129,15 @@ describe("getTanukiKanjiLesson unit", () => {
       const headers = capturedChatHeaders();
       expect(headers.get("HTTP-Referer")).toBe(window.location.origin);
       expect(headers.get("X-OpenRouter-Title")).toBe("Tanuki Kanji");
+    });
+
+    test("authenticates with the connected session key", async () => {
+      saveSession(OpenRouterSession.create(SESSION_API_KEY));
+      mockProviderLesson(LESSON_CONTENT);
+
+      await getTanukiKanjiLesson(PROVEN_WORD);
+
+      expect(capturedChatHeaders().get("Authorization")).toBe(`Bearer ${SESSION_API_KEY}`);
     });
   });
 
@@ -223,15 +237,15 @@ describe("getTanukiKanjiLesson unit", () => {
   });
 
   describe("provider errors", () => {
-    test("rejects with the provider error when the local key is missing", async () => {
-      vi.stubEnv("VITE_OPENROUTER_API_KEY", undefined);
+    test("rejects with the provider error when no session holds a key", async () => {
+      deleteSession();
 
       try {
         await getTanukiKanjiLesson(PROVEN_WORD);
         expect.unreachable();
       } catch (error) {
         expect(error).toBeInstanceOf(TanukiKanjiLessonProviderError);
-        expect((error as TanukiKanjiLessonProviderError).providerCause).toBe("missing VITE_OPENROUTER_API_KEY");
+        expect((error as TanukiKanjiLessonProviderError).providerCause).toBe("missing OpenRouter API key");
       }
       expect(sentChatRequest).toBeUndefined();
     });

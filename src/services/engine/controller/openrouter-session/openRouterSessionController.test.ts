@@ -20,6 +20,7 @@ describe("openRouterSessionController unit", () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
   });
 
   test("reports no session before the store holds one", () => {
@@ -28,6 +29,15 @@ describe("openRouterSessionController unit", () => {
 
   test("reports a session once the store holds one", () => {
     sessionStore.saveSession(OpenRouterSession.create("sk-or-v1-controller"));
+
+    expect(controller.hasOpenRouterSession()).toBe(true);
+  });
+
+  test("connects the development session through the environment", () => {
+    vi.stubEnv("DEV", true);
+    vi.stubEnv("VITE_OPENROUTER_API_KEY", "sk-or-v1-controller");
+
+    controller.connectDevelopmentSession();
 
     expect(controller.hasOpenRouterSession()).toBe(true);
   });

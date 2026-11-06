@@ -1,4 +1,4 @@
-const MISSING_API_KEY_CAUSE = "missing VITE_OPENROUTER_API_KEY";
+const MISSING_API_KEY_CAUSE = "missing OpenRouter API key";
 const UNEXPECTED_ANSWER_CAUSE = "unexpected provider answer";
 const TRUNCATED_ANSWER_CAUSE = "truncated provider answer";
 

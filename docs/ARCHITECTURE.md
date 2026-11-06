@@ -30,7 +30,8 @@ owns layering, naming, and how each side is tested.
   and no leaf component reads `window.location`.
 - `src/main.tsx` calls `openRouterSessionAPI.captureAuthorizationReturn()`
   before the first render, so the callback query is gone before the first
-  frame.
+  frame, then `openRouterSessionAPI.connectDevelopmentSession()`, so a local
+  development key starts the app connected.
 
 ## UI
 
@@ -102,7 +103,8 @@ owns layering, naming, and how each side is tested.
   the lesson to its text with no `mapToResponse` presenter.
 - `controller/openrouter-session/`: `openRouterSessionApi.ts` exposes
   `beginAuthorization`, `completeAuthorization`, `captureAuthorizationReturn`,
-  `hasSession`, and `disconnect`. `captureAuthorizationReturn` strips the
+  `connectDevelopmentSession`, `hasSession`, and `disconnect`.
+  `captureAuthorizationReturn` strips the
   callback query once and keeps the return in engine memory;
   `completeAuthorization` spends it, so a second call answers `none`. The
   surface never exposes the key, code, verifier, or session. Its only
@@ -117,16 +119,21 @@ owns layering, naming, and how each side is tested.
   removing `code`, `state`, and `error` synchronously without navigating.
 - `infrastructure/openrouter/` (OpenRouter OAuth): `exchangeCode.ts` plus
   `OpenRouterCodeExchangeError.ts` trade the code for a key with browser
-  `fetch`; `sessionStore.ts` keeps the session in module memory; and
-  `resolveSession.ts` reads the connected session first for lessons. The
+  `fetch`; `sessionStore.ts` keeps the session in module memory and exposes
+  `readSession` only inside the engine; and `developmentSession.ts` connects
+  `VITE_OPENROUTER_API_KEY` as the session at app start, only when
+  `import.meta.env.DEV`, so local development skips the handshake. The
+  controller exposes it as `connectDevelopmentSession`. A production build
+  never reads that key. The
   domain key sits behind a `#apiKey` private field with a prototype
   accessor, so it is non-enumerable and absent from `Object.keys` and
   `JSON.stringify`.
 - `infrastructure/<provider>/`: one folder per outbound provider, holding
   the adapter plus the error it throws. It is the
-  only place importing a vendor SDK or reading `import.meta.env`. An adapter
-  reads its key from `import.meta.env` at call time, identifies the app to
-  the provider, sets an explicit timeout on the request, keeps the SDK retry
+  only place importing a vendor SDK. The adapter reads the connected domain
+  session and its `apiKey` at the boundary, so no raw key crosses
+  into the application. It identifies the app to the provider, sets an
+  explicit timeout on the request, keeps the SDK retry
   policy off, owns the draw policy (a failure a redraw could fix is asked
   again, because a free-model router picks another model each time), and
   owns the error posture: each failed attempt logs the full provider error

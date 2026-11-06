@@ -4,6 +4,7 @@ import {
   beginAuthorization,
   captureAuthorizationReturn,
   completeAuthorization,
+  connectDevelopmentSession,
   disconnectOpenRouterSession,
   hasOpenRouterSession,
 } from "./openRouterSessionController.ts";
@@ -14,6 +15,7 @@ export type OpenRouterSessionAPI = {
   beginAuthorization: () => Promise<BeginOpenRouterAuthorizationResult>;
   captureAuthorizationReturn: () => boolean;
   completeAuthorization: () => Promise<CompleteOpenRouterAuthorizationResult>;
+  connectDevelopmentSession: () => void;
   hasSession: () => boolean;
   disconnect: () => void;
 };
@@ -22,6 +24,7 @@ export const openRouterSessionAPI: OpenRouterSessionAPI = {
   beginAuthorization,
   captureAuthorizationReturn,
   completeAuthorization,
+  connectDevelopmentSession,
   hasSession: hasOpenRouterSession,
   disconnect: disconnectOpenRouterSession,
 };

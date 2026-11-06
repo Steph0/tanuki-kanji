@@ -21,6 +21,7 @@ export function fakeOpenRouterSessionAPI(overrides: Partial<OpenRouterSessionAPI
     beginAuthorization: vi.fn(async () => ({ status: "refused" as const })),
     captureAuthorizationReturn: vi.fn(() => false),
     completeAuthorization: vi.fn(async () => ({ status: "none" as const })),
+    connectDevelopmentSession: vi.fn(),
     hasSession: vi.fn(() => false),
     disconnect: vi.fn(),
     ...overrides,

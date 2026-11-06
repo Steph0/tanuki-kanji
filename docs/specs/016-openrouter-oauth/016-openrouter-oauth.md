@@ -76,12 +76,13 @@ learner's OpenRouter account.
   `location.replace` through a required `navigate` capability. The UI never
   parses the URL, reads `state`, uses `location.assign`, opens a new tab, or
   stores, renders, or logs the URL.
-- Key precedence is connected session first, development fallback second, no key
-  last. A connected session is never bypassed for the environment key.
-- The development fallback is active only in development and never in
-  production. No production build is made with the environment key set. The
-  build-time key risk is accepted; no build-time guard is added.
-- Connection is per-tab memory, so a reload returns to the disconnected state.
+- Lessons use the connected session. In development, app start connects
+  `VITE_OPENROUTER_API_KEY` as the session when it is set, so the app starts
+  connected; production never reads that environment key. No production build
+  is made with the environment key set. The build-time key risk is accepted; no
+  build-time guard is added.
+- Connection is per-tab memory, so a reload disconnects a connected account,
+  though a development key is connected again at start.
 - The app provider is the only seam with the services: it defaults to the real
   lesson and OpenRouter APIs plus the browser replace capability, accepts test
   overrides, and leaf components read commands through hooks. No leaf UI
@@ -574,47 +575,47 @@ learner's OpenRouter account.
   - [x] Gate: build plus lint plus format plus `App.axe.test.tsx`, then full
         test.
 
-- [ ] Task 9 - Lessons read the connected session with a development fallback
-  - [ ] The lesson path replaces its direct environment read with the
-        connected session and a development fallback. Technical: new
-        `src/services/engine/infrastructure/openrouter/resolveSession.ts`.
-        It calls the store's `readSession()`, which this task adds back to
-        `sessionStore.ts` beside the resolver; a stored session returns as is. With no
-        session, and only when `import.meta.env.DEV`, it reads
-        `VITE_OPENROUTER_API_KEY` and returns
-        `OpenRouterSession.create(value)` when the trimmed value is non-empty,
-        without saving it. Otherwise it returns `undefined`. It logs nothing and
-        names no source in an error. `getTanukiKanjiLesson` calls the resolver
-        once at the start and hands the session, the domain value, to the
-        existing private `createOpenRouterClient(session)`, which reads
-        `session.apiKey` inside the adapter; client creation stays in that file
-        and no raw key crosses the domain boundary. Change the missing-key cause
-        from `missing VITE_OPENROUTER_API_KEY` to `missing OpenRouter API key`,
-        because either source can be absent. The resolver is the only
-        lesson-path caller of `readSession`; it hands the value to the lesson
-        adapter, which reads `apiKey` at the boundary. The store stays internal
-        and the public session API gains nothing. Update `README.md`,
-        `.env.example`, and `docs/ARCHITECTURE.md`: connected key first, the
-        environment key is a development fallback, production never uses it, the
-        infrastructure bullet moves the environment read from the lesson adapter
-        to the resolver, `Disconnect` forgets the key locally while it stays in
-        the learner's OpenRouter account until revoked, the connected view links
-        to `https://openrouter.ai/keys`, and a failed exchange after OpenRouter
+- [x] Task 9 - Lessons read the connected session and development connects a local key at start
+  - [x] The lesson path reads only the in-memory session, and a development
+        build connects `VITE_OPENROUTER_API_KEY` before the first render.
+        Technical: `getTanukiKanjiLesson` reads the store's `readSession()`
+        once and hands the session, the domain value, to the existing private
+        `createOpenRouterClient(session)`, which reads `session.apiKey` inside
+        the adapter; client creation stays in that file and no raw key crosses
+        the domain boundary. With no session it fails with the missing-key
+        cause `missing OpenRouter API key` and sends no provider request. New
+        `src/services/engine/infrastructure/openrouter/developmentSession.ts`
+        exports `connectDevelopmentSessionFromEnvironment()`: it returns unless
+        `import.meta.env.DEV`, trims `VITE_OPENROUTER_API_KEY`, ignores a blank
+        value, and otherwise saves `OpenRouterSession.create(value)` without
+        logging. The session controller exposes it as
+        `connectDevelopmentSession`, the public session object carries the
+        action, and `main.tsx`
+        calls it once after `captureAuthorizationReturn()` and before `render`,
+        so the app starts connected when the development key is set and
+        disconnected otherwise. `Disconnect` clears the session as usual; a
+        reload connects the development key again. Production never reads the
+        key. The store stays internal and the public object never exposes a
+        key or session read. Update `README.md`, `.env.example`, and
+        `docs/ARCHITECTURE.md`: the connected account is the lesson key, the
+        environment key is a development startup shortcut, production never
+        uses it, `Disconnect` forgets the key locally while it stays in the
+        learner's OpenRouter account until revoked, the connected view links to
+        `https://openrouter.ai/keys`, and a failed exchange after OpenRouter
         created a key can leave an unused key that should be revoked there.
         Prompt, model, draw policy, timeout, and error sanitizing stay unchanged.
-  - [ ] Prove the source choice and the adapter handoff. Technical: colocated
-        unit `resolveSession.test.ts` pinning session-first precedence over a
-        set environment key, the development fallback as a session when no
-        session exists, `undefined` when neither exists, a blank or
-        whitespace-only environment value as absent, and production ignoring the
-        environment key even when set via `vi.stubEnv("DEV", false)`. Clear the
-        store between tests. Extend `getTanukiKanjiLesson.test.ts`: clear the
-        store between tests, keep the existing environment-driven tests as the
-        development fallback, add a seeded-session case with no environment key
-        that proves the session key reaches the provider Authorization header,
-        and update the missing-key cause assertion. No test asserts a key
-        through a snapshot or a serialized object.
-  - [ ] Gate: build plus lint plus format plus both suite files, then full
+  - [x] Prove the startup connection and the adapter handoff. Technical:
+        colocated unit `developmentSession.test.ts` pinning a set environment
+        key as a session, no session when the key is absent, a blank or
+        whitespace-only value as absent, and production ignoring the key even
+        when set via `vi.stubEnv("DEV", false)`. The controller unit proves the
+        endpoint connects through the environment. The API integration suite
+        pins that the surface exposes the action and it reaches the real store.
+        Extend `getTanukiKanjiLesson.test.ts`: clear the store between tests,
+        seed the session, prove the session key reaches the provider
+        Authorization header, and update the missing-key cause assertion. No
+        test asserts a key through a snapshot or a serialized object.
+  - [x] Gate: build plus lint plus format plus both suite files, then full
         test.
 
 # Acceptance
@@ -668,13 +669,14 @@ learner's OpenRouter account.
   session, the modal stays open and returns to the disconnected content, and
   the control returns to `settings_alert` and
   `Settings, OpenRouter not connected`.
-- While a session is connected, a lesson request uses that session key and does
-  not fall back to the environment key.
-- In development mode with no session, a lesson request uses
-  `VITE_OPENROUTER_API_KEY` when it is set. A production build never uses that
-  environment key.
-- With neither a session nor an applicable environment key, the lesson fails
-  with the missing-key error and no provider request is sent.
+- While a session is connected, a lesson request uses that session key.
+- In development mode, app start connects `VITE_OPENROUTER_API_KEY` as the
+  session when it is set, so the app starts connected. A production build never
+  reads that environment key.
+- Disconnecting clears the session until the next reload; a development key is
+  connected again on reload.
+- With no session, the lesson fails with the missing-key error and no provider
+  request is sent.
 - A full reload returns the app to the disconnected state because the session
   is memory-only.
 - Final full loop: `npm run build` + `npm run lint` + `npm run format` +
