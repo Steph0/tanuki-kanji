@@ -147,6 +147,84 @@ owns layering, naming, and how each side is tested.
   function, so no failure disappears without at least a dev console line.
   A caught failure stays out of production output.
 
+### OAuth round trip
+
+The connection uses OAuth 2.0 with PKCE, so the tab never handles the user's
+OpenRouter password. The app starts from a one-time `S256` challenge derived
+from a local verifier, keeps the verifier, `state`, and creation time in
+`sessionStorage`, and sends the authorization URL to a same-tab
+`location.replace`. OpenRouter redirects back with a `code`; the app checks
+`state`, clears the pending record, and exchanges the code plus verifier for a
+per-user key, which stays in memory only.
+
+```mermaid
+sequenceDiagram
+  actor L as Learner
+  participant UI as Settings UI
+  participant NAV as UI navigate capability
+  participant API as API and Controller
+  participant APP as Application
+  participant BR as Browser infrastructure
+  participant OR as OpenRouter
+  participant ST as In-memory session
+
+  L->>UI: Click Connect to OpenRouter
+  UI->>UI: Disable action, show busy state
+  UI->>API: beginAuthorization()
+  API->>BR: Check isSecureContext, crypto.subtle, HTTPS or loopback
+  alt Unsafe origin, crypto failure, storage failure, or link building failure
+    API-->>UI: refused
+    UI->>UI: Re-enable action, show generic error
+  else Prepared
+    API->>APP: Run begin use case
+    APP->>BR: Generate verifier and state, derive S256 challenge
+    APP->>BR: Save pending verifier, state, createdAt
+    APP->>BR: Build callback_url from BASE_URL and origin
+    APP->>BR: Build authorization URL with callback_url, state, challenge, and label
+    APP-->>API: ready with authorization URL
+    API-->>UI: ready with authorization URL
+    Note over UI: URL used once from a local value<br>never rendered, stored, or logged.
+    UI->>NAV: navigate(authorizationUrl)
+    alt Navigation throws
+      NAV-->>UI: throw
+      UI->>UI: Re-enable action, show generic error
+      Note over UI,BR: Start failed<br>pending record expires or is overwritten.
+    else Page leaves
+      NAV->>OR: Same-tab location.replace
+      L->>OR: Approve the app
+      OR-->>BR: Redirect to callback_url with code and state
+      Note over BR,API: main.tsx calls captureAuthorizationReturn() before render<br>engine captures code, state, and error in memory<br>history.replaceState strips the query and preserves path, hash, and unrelated parameters.
+      UI->>API: captureAuthorizationReturn() on mount returns true
+      UI->>UI: Open modal in connecting state
+      UI->>API: completeAuthorization()
+      API->>APP: Take captured return synchronously
+      APP->>BR: Read pending record
+      alt Missing or expired record, state mismatch, provider error, unsafe origin, or cleanup failure
+        APP-->>API: failed
+        API-->>UI: failed
+        UI->>UI: Show generic error, no session saved
+      else Valid return
+        APP->>BR: Clear pending record before exchange
+        APP->>OR: POST /api/v1/auth/keys with code, verifier, S256
+        alt Exchange or save failure
+          OR-->>APP: Error status or invalid answer
+          APP-->>API: failed
+          API-->>UI: failed
+          UI->>UI: Show generic error, no session saved
+        else Valid key
+          OR-->>APP: JSON with key
+          APP->>ST: Save OpenRouterSession in memory only
+          APP-->>API: connected
+          API-->>UI: connected
+          UI->>UI: Close modal, flip trigger to connected
+        end
+      end
+    end
+  end
+
+  Note over UI,ST: Disconnect clears the in-memory session<br>keeps the modal open, returns to disconnected content<br>the key remains in OpenRouter until revoked on the keys page.
+```
+
 ### Naming
 
 - Consumer singleton `*API`, controller entry named after what it does
