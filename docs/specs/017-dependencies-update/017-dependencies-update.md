@@ -181,10 +181,13 @@ Source scan for Preact 11 removals:
 
 ### 2.1 Vite high advisories
 
-- [ ] Run `npm install -D vite@^8.3.8`.
-- [ ] Gate.
-- [ ] Run `npm audit`. The six Vite advisories must be gone. Record whether
-      `source-map-js` remains.
+- [x] Run `npm install -D vite@^8.3.8`.
+- [x] Gate.
+- [x] Run `npm audit`. The six Vite advisories must be gone. Record whether
+      `source-map-js` remains. Result: audit dropped from `2 high + 5 moderate`
+      to `5 moderate`; both high advisories are gone. `source-map-js` moved to
+      `1.2.2` (via `postcss` under Vite), so its high advisory is resolved and
+      Task 2.3's install can be skipped.
 
 ### 2.2 Vitest moderate advisories
 
