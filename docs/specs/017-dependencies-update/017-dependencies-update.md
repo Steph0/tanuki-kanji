@@ -435,10 +435,19 @@ Source scan for Preact 11 removals:
 
 ### 4.7 Material Symbols 0.49
 
-- [ ] Run `npm install @material-symbols/svg-400@^0.49.0`.
-- [ ] Gate. If an icon import fails, try `^0.48.3`. If it still fails, hold at
-      `^0.47.6` and record the missing icon name.
-- [ ] Check the settings, close, connected, and alert icons.
+- [x] Run `npm install @material-symbols/svg-400@^0.49.0`. Result: installed
+      `0.49.0`; npm audit reports 0.
+- [x] Gate. If an icon import fails, try `^0.48.3`. If it still fails, hold at
+      `^0.47.6` and record the missing icon name. Result: passed on `0.49.0`,
+      so no fallback was needed. Under Node 26.13.1, `format`, `lint`, `build`,
+      and `test` pass (51 test files, 420 tests).
+- [x] Check the settings, close, connected, and alert icons. Result: all 11
+      imported icon files exist and are non-empty. A Playwright check at
+      1280x800 and 390x844 found no broken images (11 images, 9 inline SVGs),
+      and the connected settings, close, and alert icons decoded successfully
+      (`naturalWidth` 48 from the intrinsic 48x48 SVGs; the app renders them at
+      the 24px icon size) (`/tmp/opencode/task4-7/report.txt`, 10 checks
+      passed).
 
 ### 4.8 `vitest-browser-preact` 2
 
