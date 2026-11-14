@@ -207,7 +207,8 @@ Source scan for Preact 11 removals:
 - [x] If the browser provider fails only because Playwright 1.63 is too old,
       move Playwright to `^1.65.1` here, gate, and mark step 4.4 as done. Do not
       force Vitest. Result: not needed. Browser tests passed on Playwright
-      `1.63.0`, so step 4.4 stays open.
+      `1.63.0`, so step 4.4 stayed open at this point; it was closed later in
+      4.4 with `1.65.1`.
 
 ### 2.3 source-map-js high advisory
 
@@ -383,9 +384,14 @@ Source scan for Preact 11 removals:
 
 ### 4.4 Playwright
 
-- [ ] Run `npm install -D playwright@^1.65.1`. Run `npx playwright install chromium`.
-- [ ] Gate. If it fails, try 1.64.1 to isolate. If it still fails, restore
-      1.63.0 and record the blocker.
+- [x] Run `npm install -D playwright@^1.65.1`. Run `npx playwright install chromium`.
+      Result: installed `playwright@1.65.1`; chromium revision 1255 (Chrome
+      for Testing 159.0.8154.6 plus headless shell) installed successfully.
+- [x] Gate. If it fails, try 1.64.1 to isolate. If it still fails, restore
+      1.63.0 and record the blocker. Result: passed on 1.65.1, so no fallback
+      was needed. Under Node 26.13.1, `format`, `lint`, `build`, and `test`
+      are green (51 test files, 420 tests); `npx playwright --version` is
+      1.65.1.
 
 ### 4.5 Biome
 
