@@ -4,8 +4,8 @@ import { ICON_MD_PX } from "../../../constants/globals.ts";
 import styles from "./Settings.module.css";
 
 type SettingsDialogProps = {
-  dialogRef: RefObject<HTMLDialogElement>;
-  closeButtonRef: RefObject<HTMLButtonElement>;
+  dialogRef: RefObject<HTMLDialogElement | null>;
+  closeButtonRef: RefObject<HTMLButtonElement | null>;
   titleId: string;
   bodyId: string;
   title: string;

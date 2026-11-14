@@ -7,6 +7,8 @@ import { useSearchBar } from "./useSearchBar.ts";
 
 export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) => void }) {
   const {
+    handleCompositionEnd,
+    handleCompositionStart,
     handleKanjiInput,
     handleSearchSubmit,
     isSearchSubmitDisabled,
@@ -45,6 +47,8 @@ export function SearchBar({ onSubmit }: { onSubmit: (kanjiInputValue: string) =>
               placeholder="e.g. 森 or 食べる"
               value={kanjiInputValue}
               onInput={handleKanjiInput}
+              onCompositionStart={handleCompositionStart}
+              onCompositionEnd={handleCompositionEnd}
               aria-invalid={kanjiInputTone === "error" ? "true" : undefined}
               aria-describedby={kanjiInputMessage ? "kanji-input-message" : undefined}
             />

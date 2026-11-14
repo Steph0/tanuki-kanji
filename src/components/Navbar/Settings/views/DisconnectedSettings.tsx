@@ -13,7 +13,7 @@ type DisconnectedStatus = Extract<SettingsStatus, "disconnected" | "starting" | 
 type DisconnectedSettingsProps = {
   bodyId: string;
   status: DisconnectedStatus;
-  connectActionRef: RefObject<HTMLButtonElement>;
+  connectActionRef: RefObject<HTMLButtonElement | null>;
   onConnect: () => void;
 };
 

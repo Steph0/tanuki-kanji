@@ -12,7 +12,7 @@ export function useSearchBar(onSubmit: (kanjiInputValue: string) => void) {
   const [kanjiInputValue, setKanjiInputValue] = useState("");
 
   const kanjiInputRef = useRef<HTMLInputElement>(null);
-  const { isComposing, submitBlockRef } = useIMECompositionGuard(kanjiInputRef);
+  const { handleCompositionEnd, handleCompositionStart, isComposing, submitBlockRef } = useIMECompositionGuard();
   // Validation not taken into account until composition is done
   const { tone: kanjiInputTone, message: kanjiInputMessage } = useKanjiInputValidation(kanjiInputValue, isComposing);
   const isSearchSubmitDisabled = isKanjiSubmitBlocked(kanjiInputTone);
@@ -37,6 +37,8 @@ export function useSearchBar(onSubmit: (kanjiInputValue: string) => void) {
   }
 
   return {
+    handleCompositionEnd,
+    handleCompositionStart,
     handleKanjiInput,
     handleSearchSubmit,
     isSearchSubmitDisabled,

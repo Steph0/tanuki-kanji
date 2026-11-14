@@ -1,37 +1,22 @@
-import type { RefObject } from "preact";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 
-export function useIMECompositionGuard(kanjiInputRef: RefObject<HTMLInputElement>) {
-  // Allows to synchronize immediate composition event state with keyboard submission
+export function useIMECompositionGuard() {
+  // Synchronous guard for submits that can fire in the same tick as a
+  // composition event; the isComposing state alone lags by a render.
   const submitBlockRef = useRef(false);
 
   // The UI shows composition
   const [isComposing, setIsComposing] = useState(false);
 
-  // Native listeners: Preact 10 maps onCompositionStart to the never-firing
-  // "CompositionStart" (preactjs/preact#3003, fixed in v11). Revisit on upgrade.
-  useEffect(() => {
-    const input = kanjiInputRef.current;
-    if (!input) {
-      return;
-    }
-    function startComposing() {
-      submitBlockRef.current = true;
-      setIsComposing(true);
-    }
-    function endComposing() {
-      submitBlockRef.current = false;
-      setIsComposing(false);
-    }
+  function handleCompositionStart() {
+    submitBlockRef.current = true;
+    setIsComposing(true);
+  }
 
-    input.addEventListener("compositionstart", startComposing);
-    input.addEventListener("compositionend", endComposing);
+  function handleCompositionEnd() {
+    submitBlockRef.current = false;
+    setIsComposing(false);
+  }
 
-    return () => {
-      input.removeEventListener("compositionstart", startComposing);
-      input.removeEventListener("compositionend", endComposing);
-    };
-  }, [kanjiInputRef]);
-
-  return { isComposing, submitBlockRef };
+  return { isComposing, submitBlockRef, handleCompositionStart, handleCompositionEnd };
 }

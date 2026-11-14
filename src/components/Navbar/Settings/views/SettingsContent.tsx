@@ -8,7 +8,7 @@ import { FailedSettings } from "./FailedSettings.tsx";
 type SettingsContentProps = {
   state: SettingsState;
   bodyId: string;
-  connectActionRef: RefObject<HTMLButtonElement>;
+  connectActionRef: RefObject<HTMLButtonElement | null>;
   onConnect: () => void;
   onDisconnect: () => void;
 };

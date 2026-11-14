@@ -73,7 +73,7 @@ This document outlines the architectural rules, security constraints, and coding
 ## Tech Stack
 
 - **Languages**: TypeScript 6.x, JSX, HTML5 / CSS3
-- **Framework**: Preact 10.x
+- **Framework**: Preact 11.x
 - **Build Tool**: Vite 8.x
 - **Linting & Formatting**: `@biomejs/biome` 2.5.x
 - **Types**: `@types/node` 24.x

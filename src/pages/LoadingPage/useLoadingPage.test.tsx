@@ -37,6 +37,21 @@ function renderLoadingPageHook({
   );
 }
 
+// Preact 11 runs passive effect cleanups after the next paint, so unmount
+// cleanup is not synchronous. Wait one frame plus the queued macrotask, with
+// a timeout fallback in case the frame does not fire (hidden/throttled tab).
+const DEFERRED_CLEANUP_FALLBACK_MS = 50;
+
+function waitForDeferredCleanup(): Promise<void> {
+  return new Promise((resolve) => {
+    const fallback = setTimeout(resolve, DEFERRED_CLEANUP_FALLBACK_MS);
+    requestAnimationFrame(() => {
+      clearTimeout(fallback);
+      setTimeout(resolve, 0);
+    });
+  });
+}
+
 describe("useLoadingPage", () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -95,6 +110,7 @@ describe("useLoadingPage", () => {
     });
 
     unmount();
+    await waitForDeferredCleanup();
     gate.resolve?.("kanji lesson");
     await new Promise((resolve) => setTimeout(resolve, 10));
     expect(onDone).not.toHaveBeenCalled();

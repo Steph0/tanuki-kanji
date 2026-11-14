@@ -234,58 +234,99 @@ Source scan for Preact 11 removals:
 
 ### 3.1 Preflight, no install
 
-- [ ] Re-check the Preact 11 compatibility table. If any peer range excludes
-      Preact 11, stop and keep `preact` 10.29.8. Record the blocker.
-- [ ] Confirm TypeScript is at least 5.1.
-- [ ] Run the source scan from Baseline. If a removed API appears, fix it with
-      Preact 10 still installed, gate, then continue.
-- [ ] Confirm `preact-render-to-string` resolves to 6.8.0 or newer. Preact 11
-      needs at least 6.7.0. Keep it transitive.
+- [x] Re-check the Preact 11 compatibility table. If any peer range excludes
+      Preact 11, stop and keep `preact` 10.29.8. Record the blocker. Result:
+      every installed peer range accepts Preact 11 (`preact-iso` >=10 ||
+      >=11.0.0-0, `vitest-browser-preact` ^10 || ^11.0.0-0,
+      `@testing-library/preact` >=10, `@prefresh/vite` ^10.4 || ^11.0.0-0,
+      `preact-render-to-string` >=10 || >=11.0.0-0). No blocker.
+- [x] Confirm TypeScript is at least 5.1. Result: `typescript@6.0.3`.
+- [x] Run the source scan from Baseline. If a removed API appears, fix it with
+      Preact 10 still installed, gate, then continue. Result: no `SuspenseList`,
+      `Component.base`, `defaultProps`, `preact/compat`, `JSX.*` import,
+      numeric inline style, or no-argument `useRef()`; `src/main.tsx:14` uses
+      the two-argument `render`. Nothing to fix before the install.
+- [x] Confirm `preact-render-to-string` resolves to 6.8.0 or newer. Preact 11
+      needs at least 6.7.0. Keep it transitive. Result: `6.8.0`, auto-installed
+      as a top-level peer (`peer: true`) for `preact-iso@2.12.2` and Preact's
+      optional peer; it is not a direct dependency.
 
 ### 3.2 Install Preact 11
 
-- [ ] Run `npm install preact@^11.2.0`.
-- [ ] If npm reports a peer conflict, do not force. Restore `package.json` and
-      the lock, record the blocker, and stop.
-- [ ] Gate.
+- [x] Run `npm install preact@^11.2.0`. Result: installed `preact@11.2.0`,
+      deduped across `preact-iso`, `@testing-library/preact`,
+      `vitest-browser-preact`, `@prefresh/*`, and `preact-render-to-string`.
+      `npm audit` reported 0.
+- [x] If npm reports a peer conflict, do not force. Restore `package.json` and
+      the lock, record the blocker, and stop. Result: not applicable, npm
+      reported no peer conflict; nothing was forced.
+- [x] Gate. Result: combined with 3.3 because the install surfaces only the
+      expected `RefObject` type fallout. After the 3.3 fixes, `format`, `lint`,
+      `build`, and `test` are green (51 test files, 420 tests).
 
 ### 3.3 Fix Preact 11 fallout
 
-- [ ] TypeScript: `RefObject<T>` now describes `current: T`. Update
+- [x] TypeScript: `RefObject<T>` now describes `current: T`. Update
       `src/components/Navbar/Settings/SettingsTrigger.tsx:15`,
       `src/components/Navbar/Settings/SettingsDialog.tsx:7-8`, and the settings
       views only if `tsc` reports. Use `RefObject<T | null>` where the ref
-      starts null. Keep runtime refs unchanged.
-- [ ] Ref forwarding: named ref props are used, so no behavior change is
+      starts null. Keep runtime refs unchanged. Result: `tsc` reported the
+      three named files plus `SettingsContent.tsx`,
+      `DisconnectedSettings.tsx`, and `useIMECompositionGuard.ts`; all six now
+      declare `RefObject<T | null>`. Runtime refs are untouched.
+- [x] Ref forwarding: named ref props are used, so no behavior change is
       expected. If a test fails because `ref` now lands on a DOM node, fix the
       component or test with accessible queries. Never use `getByTestId`.
-- [ ] `useEffect` cleanup is deferred after paint. Watch
+      Result: no ref-related failure; no test query changed.
+- [x] `useEffect` cleanup is deferred after paint. Watch
       `src/pages/LoadingPage/useRotatingCaption.test.ts:129` and
       `src/pages/LoadingPage/useLoadingPage.test.tsx:86`. If they assert
       synchronously after unmount, await or flush effects. Do not change
-      product timing.
-- [ ] ESM only: no CommonJS import. If a Preact subpath import fails, use the
-      ESM path. Do not add a polyfill.
-- [ ] No numeric inline styles, `defaultProps`, `JSX` namespace, or
-      `SuspenseList`. No change is expected.
-- [ ] Gate.
+      product timing. Result: `useRotatingCaption` already passes because its
+      fake timers flush the deferred cleanup. `useLoadingPage` failed its "late
+      resolve after unmount" case; the test now awaits
+      `waitForDeferredCleanup` (one frame plus the queued macrotask, with a
+      timeout fallback) after `unmount()`. Product timing is unchanged; the
+      accepted consequence is that the unmount cancellation window is now one
+      frame plus a macrotask wider than under Preact 10.
+- [x] ESM only: no CommonJS import. If a Preact subpath import fails, use the
+      ESM path. Do not add a polyfill. Result: no CommonJS import and no failed
+      subpath; no polyfill added.
+- [x] No numeric inline styles, `defaultProps`, `JSX` namespace, or
+      `SuspenseList`. No change is expected. Result: none present.
+- [x] Gate. Result: `format`, `lint`, `build`, and `test` all green; 51 test
+      files, 420 tests.
 
 ### 3.4 Manual check
 
-- [ ] Run `npm run dev`. Check the landing page, search bar IME composition,
+- [x] Run `npm run dev`. Check the landing page, search bar IME composition,
       loading rings, result page, settings modal open, close, Escape, backdrop,
       and focus, and the OpenRouter connect and disconnect UI at 390x844,
-      844x390, and 1280x800. No live call.
+      844x390, and 1280x800. No live call. Result: 34 automated Playwright
+      checks (11 per viewport plus a default-motion desktop check), all
+      passing, with screenshots in
+      `/tmp/opencode/manual-3-4/`. The dev server ran with a fake dev key so the
+      connected UI was available. Lesson requests were held in the browser and
+      fulfilled with a stub; authorization navigations were answered locally;
+      two requests per viewport were intercepted and none was sent to
+      OpenRouter. The connect action was exercised through to its PKCE
+      authorization URL, and the disconnect action through to the connect UI.
+      Focus placement after open and after disconnect, the close button,
+      Escape, and backdrop dismissal were exercised. A separate default-motion
+      check observed 7 running CSS animations and differing frames on the
+      loading page; the other screenshots use reduced motion.
 
 ### 3.5 Fallback
 
-- [ ] If 11.2.0 fails, try 11.1.1, then 11.0.2, with a gate each. If all fail,
-      restore 10.29.8 and record the blocker. Do not force.
+- [x] If 11.2.0 fails, try 11.1.1, then 11.0.2, with a gate each. If all fail,
+      restore 10.29.8 and record the blocker. Do not force. Result: not
+      applicable, 11.2.0 passed its gate.
 
 ### 3.6 Docs
 
-- [ ] Update `AGENTS.md` Tech Stack from Preact 10.x to Preact 11.x. Do not
-      edit `DESIGN.md`.
+- [x] Update `AGENTS.md` Tech Stack from Preact 10.x to Preact 11.x. Do not
+      edit `DESIGN.md`. Result: `AGENTS.md` now says Preact 11.x; `DESIGN.md`
+      is untouched.
 
 ## Task 4 - Ordered remaining upgrades
 

@@ -12,7 +12,7 @@ const DISCONNECTED_TOOLTIP = "OpenRouter sign-in";
 
 type SettingsTriggerProps = {
   isConnected: boolean;
-  triggerRef: RefObject<HTMLButtonElement>;
+  triggerRef: RefObject<HTMLButtonElement | null>;
   onOpen: () => void;
 };
 
