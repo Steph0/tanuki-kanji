@@ -365,12 +365,21 @@ Source scan for Preact 11 removals:
 
 ### 4.3 Node 26 LTS
 
-- [ ] Install Node 26.13.1 LTS locally. `node -v` must match.
-- [ ] Add `.nvmrc` with `26.13.1`. Add `"engines": { "node": ">=26.13.1" }` to
-      `package.json`.
-- [ ] Run `npm ci` under Node 26. No `EBADENGINE` warning is allowed.
-- [ ] Gate.
-- [ ] Update `AGENTS.md` Tech Stack to Node 26.x.
+- [x] Install Node 26.13.1 LTS locally. `node -v` must match. Result:
+      installed with nvm; `nvm exec 26.13.1 node -v` reports `v26.13.1`
+      (npm `11.20.0`). The existing `default -> lts/*` alias now resolves to
+      26.13.1 (it resolved to 24.21.0 before); no alias was edited.
+- [x] Add `.nvmrc` with `26.13.1`. Add `"engines": { "node": ">=26.13.1" }` to
+      `package.json`. Result: `.nvmrc` contains `26.13.1`; `package.json` has
+      `engines.node >= 26.13.1`.
+- [x] Run `npm ci` under Node 26. No `EBADENGINE` warning is allowed. Result:
+      `nvm exec 26.13.1 npm ci` exited 0, installed 205 packages, audit 0, and
+      printed no `EBADENGINE` or unsupported-engine warning. Optional
+      dependencies were installed, so the TypeScript platform binary is present.
+- [x] Gate. Result: under Node `26.13.1`, `format`, `lint`, `build`, and `test`
+      passed (51 test files, 420 tests), with no `EBADENGINE` output.
+- [x] Update `AGENTS.md` Tech Stack to Node 26.x. Result: added
+      `- **Runtime**: Node.js 26.x` to the Tech Stack.
 
 ### 4.4 Playwright
 

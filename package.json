@@ -21,6 +21,9 @@
   "author": "Steph0",
   "type": "module",
   "main": "index.html",
+  "engines": {
+    "node": ">=26.13.1"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

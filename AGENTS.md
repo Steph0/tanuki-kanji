@@ -72,6 +72,7 @@ This document outlines the architectural rules, security constraints, and coding
 
 ## Tech Stack
 
+- **Runtime**: Node.js 26.x
 - **Languages**: TypeScript 7.x, JSX, HTML5 / CSS3
 - **Framework**: Preact 11.x
 - **Build Tool**: Vite 8.x
