@@ -57,6 +57,6 @@
     "typescript": "~7.0.2",
     "vite": "^8.3.8",
     "vitest": "5.1.0",
-    "vitest-browser-preact": "^1.1.1"
+    "vitest-browser-preact": "^2.0.0"
   }
 }

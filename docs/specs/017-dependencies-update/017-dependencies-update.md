@@ -451,33 +451,55 @@ Source scan for Preact 11 removals:
 
 ### 4.8 `vitest-browser-preact` 2
 
-- [ ] Run `npm install -D vitest-browser-preact@^2.0.0`.
-- [ ] Gate. If it fails, restore `^1.1.1` and record the blocker.
+- [x] Run `npm install -D vitest-browser-preact@^2.0.0`. Result: installed
+      `vitest-browser-preact@2.0.0`; peer ranges accept Preact 11 and Vitest 5;
+      npm audit reports 0.
+- [x] Gate. If it fails, restore `^1.1.1` and record the blocker. Result:
+      passed on 2.0.0, so no restore was needed. Under Node 26.13.1, `format`,
+      `lint`, `build`, and `test` pass (51 test files, 420 tests).
 
 ### 4.9 Remaining sweep
 
-- [ ] Run `npx npm-check-updates`, `npm outdated`, and `npm audit`. Apply the
-      remaining patch and minor updates in one batch and gate.
-- [ ] For each remaining major, run the peer check first. Proceed only if it is
-      supported. Otherwise record a hold.
-- [ ] Do not use `npx npm-check-updates -u`.
+- [x] Run `npx npm-check-updates`, `npm outdated`, and `npm audit`. Apply the
+      remaining patch and minor updates in one batch and gate. Result:
+      `npm-check-updates` reports "All dependencies match the latest package
+      versions"; `npm outdated` is empty; `npm audit` reports 0. No batch was
+      needed, so there was no additional gate at this step; the Task 5 final
+      gate covers it.
+- [x] For each remaining major, run the peer check first. Proceed only if it is
+      supported. Otherwise record a hold. Result: no remaining major updates.
+- [x] Do not use `npx npm-check-updates -u`. Result: not used.
 
 ## Task 5 - Closeout
 
-- [ ] `npm audit` reports 0. `npm audit --omit=dev` reports 0.
-- [ ] Final gate.
-- [ ] `npm run build` produces `dist/`. Run `npm run preview` for a short smoke
-      check if useful.
-- [ ] Update `AGENTS.md` Tech Stack for every changed version: Preact,
+- [x] `npm audit` reports 0. `npm audit --omit=dev` reports 0. Result: both
+      report `0` total (`info 0, low 0, moderate 0, high 0, critical 0`).
+- [x] Final gate. Result: under Node 26.13.1, `format` (164 files, no fixes),
+      `lint` (168 files), `build`, and `test` (51 files, 420 tests) pass. The
+      axe suite also passes (21 tests).
+- [x] `npm run build` produces `dist/`. Run `npm run preview` for a short smoke
+      check if useful. Result: `dist/index.html` exists. A production preview
+      smoke passed at 390x844, 844x390, and 1280x800 with no broken images or
+      page errors. The development manual check also passed 34/34 checks at the
+      three viewports (landing, IME, loading/result with a stubbed request,
+      settings, disconnect/connect UI), with no live provider calls.
+- [x] Update `AGENTS.md` Tech Stack for every changed version: Preact,
       TypeScript, Vite, Biome, `@types/node`, and Node. Do not edit
-      `DESIGN.md` in Task 5.
-- [ ] Review `git diff --stat`. Only `package.json`, `package-lock.json`,
+      `DESIGN.md` in Task 5. Result: AGENTS.md lists Node.js 26.x, TypeScript
+      7.x, Preact 11.x, Vite 8.x, Biome 2.6.x, and `@types/node` 26.x, matching
+      the installed versions. `DESIGN.md` was not touched in Task 5.
+- [x] Review `git diff --stat`. Only `package.json`, `package-lock.json`,
       `biome.json`, `.nvmrc`, `AGENTS.md`, and compatibility fixes should
       appear, plus the 4.5 Markdown reformat (18 docs files, including
-      `DESIGN.md`) that the user approved. No other formatting churn.
-- [ ] Report every held package, its blocker, and the highest supported
-      version.
-- [ ] Do not stage and do not commit.
+      `DESIGN.md`) that the user approved. No other formatting churn. Result:
+      the branch diff from `803b79e` contains only those files plus the six
+      Preact compatibility fixes and the approved Markdown reformat. The
+      working tree contains `package.json`, `package-lock.json`, and this spec.
+- [x] Report every held package, its blocker, and the highest supported
+      version. Result: no held packages. `npm-check-updates` reports all
+      dependencies at their latest versions and `npm outdated` is empty.
+- [x] Do not stage and do not commit. Result: nothing is staged and nothing
+      was committed by this workflow.
 
 # Acceptance
 
