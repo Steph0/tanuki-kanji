@@ -332,17 +332,36 @@ Source scan for Preact 11 removals:
 
 ### 4.1 Vite checkpoint
 
-- [ ] Check the latest Vite. If a newer 8.x exists, install it and gate. If
+- [x] Check the latest Vite. If a newer 8.x exists, install it and gate. If
       Vite 9 exists, proceed only if Vitest, `@preact/preset-vite`, and
       `@vitest/browser-playwright` peer ranges support it. Otherwise hold. At
-      spec time, 8.3.8 is latest, so this is a no-op.
+      spec time, 8.3.8 is latest, so this is a no-op. Result: still a no-op.
+      `npm view vite dist-tags` reports `latest: 8.3.8`, matching the installed
+      `vite@8.3.8`; there is no published 9.x. The current peer ranges would
+      hold anyway: `vitest@5.1.0` accepts `^6.4.0 || ^7.0.0 || ^8.0.0` and
+      `@preact/preset-vite@2.10.6` accepts `2.x` through `8.x`
+      (`@vitest/browser-playwright@5.1.0` peers on `vitest` and `playwright`).
+      No install. Gate: `format`, `lint`, `build`, and `test` green; 51 test
+      files, 420 tests.
 
 ### 4.2 TypeScript 7
 
-- [ ] Run `npm install -D typescript@~7.0.2`.
-- [ ] Gate. Fix config or code without relaxing strictness. If a required peer
-      blocks it, restore `~6.0.3` and record the blocker.
-- [ ] Update `AGENTS.md` Tech Stack from TypeScript 6.x to 7.x.
+- [x] Run `npm install -D typescript@~7.0.2`. Result: installed
+      `typescript@7.0.2`; `npm audit` reports 0. Node 24.21.0 satisfies the
+      package engine (`>=16.20.0`).
+- [x] Gate. Fix config or code without relaxing strictness. If a required peer
+      blocks it, restore `~6.0.3` and record the blocker. Result: no config or
+      code changes were needed. `tsc -b --force` rebuilt both projects cleanly,
+      then `format`, `lint`, `build`, and `test` passed (51 test files, 420
+      tests). The peer branch was not needed: the only TypeScript peer is
+      `msw@3.0.5` -> `>=5.9.x`, which 7.0.2 satisfies. TypeScript 7 ships only
+      the native `tsc` binary: there is no `tsserver` and no JavaScript
+      compiler API (`typescript` exports only its version). Nothing in this
+      repo or its editor config depends on either. The platform binary is an
+      `optionalDependency`, so `npm ci --omit=optional` would break `tsc`; keep
+      optional dependencies installed in Task 4.3.
+- [x] Update `AGENTS.md` Tech Stack from TypeScript 6.x to 7.x. Result:
+      `AGENTS.md` now says TypeScript 7.x.
 
 ### 4.3 Node 26 LTS
 
