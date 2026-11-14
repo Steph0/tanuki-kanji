@@ -33,10 +33,10 @@
   },
   "dependencies": {
     "@fontsource/epilogue": "^5.3.0",
-    "@fontsource/noto-sans-jp": "^5.3.0",
+    "@fontsource/noto-sans-jp": "^5.3.1",
     "@fontsource/plus-jakarta-sans": "^5.3.0",
-    "@material-symbols/svg-400": "^0.47.5",
-    "@openrouter/sdk": "^1.4.25",
+    "@material-symbols/svg-400": "^0.47.6",
+    "@openrouter/sdk": "^1.5.103",
     "preact": "^10.29.8",
     "preact-iso": "^2.12.2"
   },
@@ -44,16 +44,16 @@
     "@biomejs/biome": "^2.5.14",
     "@preact/preset-vite": "^2.10.6",
     "@testing-library/jest-dom": "^7.0.1",
-    "@testing-library/preact": "^3.2.4",
-    "@types/node": "^24.13.3",
+    "@testing-library/preact": "^3.2.6",
+    "@types/node": "^24.19.2",
     "@vitest/browser": "^5.0.2",
     "@vitest/browser-playwright": "^5.0.2",
-    "axe-core": "^4.13.0",
-    "msw": "^3.0.3",
+    "axe-core": "^4.14.0",
+    "msw": "^3.0.5",
     "playwright": "^1.63.0",
     "typescript": "~6.0.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.2",
-    "vitest-browser-preact": "^1.1.0"
+    "vitest-browser-preact": "^1.1.1"
   }
 }

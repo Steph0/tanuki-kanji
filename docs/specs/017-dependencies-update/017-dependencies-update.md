@@ -139,39 +139,42 @@ Source scan for Preact 11 removals:
 
 ## Task 0 - Prove the starting point
 
-- [ ] Confirm the tree and runtime are clean. `git status --short` is empty,
+- [x] Confirm the tree and runtime are clean. `git status --short` is empty,
       `node -v` is v24.21.0, and `npm -v` is 11.19.0. Stop if not.
-- [ ] Run `npm ci`. Run `npm run format`, then `git diff --exit-code`. Then run
+- [x] Run `npm ci`. Run `npm run format`, then `git diff --exit-code`. Then run
       `npm run lint`, `npm run build`, and `npm run test`. If the baseline is
       red, stop. No dependency change starts on a red tree.
-- [ ] Re-run `npx npm-check-updates`, `npm outdated`, `npm audit`, and
+- [x] Re-run `npx npm-check-updates`, `npm outdated`, `npm audit`, and
       `npm audit --omit=dev`. Confirm this Baseline section. If a target moved,
       update this spec before installing. Do not silently take a different
       version.
-- [ ] Keep a step ledger with date, step, from, to, and gate result. The ledger
+- [x] Keep a step ledger with date, step, from, to, and gate result. The ledger
       can live in the work notes; no new repo file is required.
 
 ## Task 1 - Low-risk patch and minor bumps
 
 ### 1.1 Content and icon patches
 
-- [ ] Run `npm install @fontsource/noto-sans-jp@^5.3.1 @material-symbols/svg-400@^0.47.6`.
-- [ ] Gate.
-- [ ] Check landing typography and the settings and close icons in the browser.
+- [x] Run `npm install @fontsource/noto-sans-jp@^5.3.1 @material-symbols/svg-400@^0.47.6`.
+- [x] Gate.
+- [x] Check landing typography and the settings and close icons in the browser.
 
 ### 1.2 Test-tooling patches
 
-- [ ] Run `npm install -D @testing-library/preact@^3.2.6 msw@^3.0.5 axe-core@^4.14.0 vitest-browser-preact@^1.1.1 @types/node@^24.19.2`.
-- [ ] Gate.
-- [ ] Confirm axe at 390x844, 844x390, and 1280x800 is still clean. If axe 4.14
+- [x] Run `npm install -D @testing-library/preact@^3.2.6 msw@^3.0.5 axe-core@^4.14.0 vitest-browser-preact@^1.1.1 @types/node@^24.19.2`.
+- [x] Gate. Type-only fix: `renderHook` in `@testing-library/preact` 3.2.6
+      requires the wrapper to accept optional children, so
+      `TanukiKanjiProviderProps.children` became `children?: ComponentChildren`
+      in `src/hooks/useTanukiKanjiServices.tsx`.
+- [x] Confirm axe at 390x844, 844x390, and 1280x800 is still clean. If axe 4.14
       adds a rule that flags an existing issue, fix the accessibility issue.
       Do not disable the rule.
 
 ### 1.3 OpenRouter SDK minor
 
-- [ ] Run `npm install @openrouter/sdk@^1.5.103`.
-- [ ] Gate. No live call.
-- [ ] Confirm the engine adapter tests still pin the request shape and the
+- [x] Run `npm install @openrouter/sdk@^1.5.103`.
+- [x] Gate. No live call.
+- [x] Confirm the engine adapter tests still pin the request shape and the
       session-key behavior.
 
 ## Task 2 - Security fixes, one advisory family at a time

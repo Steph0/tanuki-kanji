@@ -20,7 +20,7 @@ const realServices: TanukiKanjiServices = {
 
 type TanukiKanjiProviderProps = {
   services?: Partial<TanukiKanjiServices>;
-  children: ComponentChildren;
+  children?: ComponentChildren;
 };
 
 export function TanukiKanjiProvider({ services, children }: TanukiKanjiProviderProps) {
