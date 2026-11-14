@@ -26,6 +26,7 @@ Here is an example of prompt (might not use it "as-is", this is an example).
 
 ```md
 # Prompt you can use
+
 Re-read all archived specs in docs/specs/archive/ and re-ingest their learnings into your project's memory database.
 
 1. Scan all `.md` files in `docs/specs/archive/`.

@@ -24,41 +24,41 @@ install a different target than the one written here.
 
 ## Available updates
 
-| Package | Declared | Installed | Available | Kind | Step |
-|---|---|---|---|---|---|
-| `@fontsource/noto-sans-jp` | `^5.3.0` | 5.3.0 | 5.3.1 | patch | 1.1 |
-| `@material-symbols/svg-400` | `^0.47.5` | 0.47.5 | 0.47.6, 0.49.0 | patch, major zero | 1.1, 4.7 |
-| `@openrouter/sdk` | `^1.4.25` | 1.4.25 | 1.5.103 | minor | 1.3 |
-| `@testing-library/preact` | `^3.2.4` | 3.2.4 | 3.2.6 | patch | 1.2 |
-| `msw` | `^3.0.3` | 3.0.3 | 3.0.5 | patch | 1.2 |
-| `axe-core` | `^4.13.0` | 4.13.0 | 4.14.0 | minor | 1.2 |
-| `vitest-browser-preact` | `^1.1.0` | 1.1.0 | 1.1.1, 2.0.0 | patch, major | 1.2, 4.8 |
-| `@types/node` | `^24.13.3` | 24.13.6 | 24.19.2, 26.6.6 | minor, major | 1.2, 4.6 |
-| `vite` | `^8.3.0` | 8.3.0 | 8.3.8 | patch, security | 2.1 |
-| `vitest` | `^5.0.2` | 5.0.2 | 5.1.0 | minor, security | 2.2 |
-| `@vitest/browser` | `^5.0.2` | 5.0.2 | 5.1.0 | minor, security | 2.2 |
-| `@vitest/browser-playwright` | `^5.0.2` | 5.0.2 | 5.1.0 | minor, security | 2.2 |
-| `source-map-js` | transitive | 1.2.1 | 1.2.2 | patch, security | 2.3 |
-| `preact` | `^10.29.8` | 10.29.8 | 11.2.0 | major | 3.2 |
-| `playwright` | `^1.63.0` | 1.63.0 | 1.65.1 | minor | 4.4 |
-| `@biomejs/biome` | `^2.5.14` | 2.5.14 | 2.6.7 | minor | 4.5 |
-| `typescript` | `~6.0.2` | 6.0.3 | 7.0.2 | major | 4.2 |
-| Node | n/a | 24.21.0 | 26.13.1 LTS | runtime major | 4.3 |
+| Package                      | Declared   | Installed | Available       | Kind              | Step     |
+| ---------------------------- | ---------- | --------- | --------------- | ----------------- | -------- |
+| `@fontsource/noto-sans-jp`   | `^5.3.0`   | 5.3.0     | 5.3.1           | patch             | 1.1      |
+| `@material-symbols/svg-400`  | `^0.47.5`  | 0.47.5    | 0.47.6, 0.49.0  | patch, major zero | 1.1, 4.7 |
+| `@openrouter/sdk`            | `^1.4.25`  | 1.4.25    | 1.5.103         | minor             | 1.3      |
+| `@testing-library/preact`    | `^3.2.4`   | 3.2.4     | 3.2.6           | patch             | 1.2      |
+| `msw`                        | `^3.0.3`   | 3.0.3     | 3.0.5           | patch             | 1.2      |
+| `axe-core`                   | `^4.13.0`  | 4.13.0    | 4.14.0          | minor             | 1.2      |
+| `vitest-browser-preact`      | `^1.1.0`   | 1.1.0     | 1.1.1, 2.0.0    | patch, major      | 1.2, 4.8 |
+| `@types/node`                | `^24.13.3` | 24.13.6   | 24.19.2, 26.6.6 | minor, major      | 1.2, 4.6 |
+| `vite`                       | `^8.3.0`   | 8.3.0     | 8.3.8           | patch, security   | 2.1      |
+| `vitest`                     | `^5.0.2`   | 5.0.2     | 5.1.0           | minor, security   | 2.2      |
+| `@vitest/browser`            | `^5.0.2`   | 5.0.2     | 5.1.0           | minor, security   | 2.2      |
+| `@vitest/browser-playwright` | `^5.0.2`   | 5.0.2     | 5.1.0           | minor, security   | 2.2      |
+| `source-map-js`              | transitive | 1.2.1     | 1.2.2           | patch, security   | 2.3      |
+| `preact`                     | `^10.29.8` | 10.29.8   | 11.2.0          | major             | 3.2      |
+| `playwright`                 | `^1.63.0`  | 1.63.0    | 1.65.1          | minor             | 4.4      |
+| `@biomejs/biome`             | `^2.5.14`  | 2.5.14    | 2.6.7           | minor             | 4.5      |
+| `typescript`                 | `~6.0.2`   | 6.0.3     | 7.0.2           | major             | 4.2      |
+| Node                         | n/a        | 24.21.0   | 26.13.1 LTS     | runtime major     | 4.3      |
 
 No change is planned for `@preact/preset-vite` 2.10.6 or `preact-iso` 2.12.2.
 Both are already the latest and both support Preact 11.
 
 ## Audit findings
 
-| Advisory | Severity | Affected | Fixed by | Step |
-|---|---|---|---|---|
-| `GHSA-587h-7wmj-h5pm` | high | `vite` 8.3.0 to 8.3.2 | 8.3.8 | 2.1 |
-| Five more `vite` advisories | moderate to low | `vite` 8.3.0 to 8.3.2 | 8.3.8 | 2.1 |
-| `GHSA-68fv-2mgg-jv7q` | high | `source-map-js` 1.0.0 to 1.2.1 | 1.2.2 | 2.3 |
-| `GHSA-p458-7748-mcp3` | moderate | `@vitest/browser`, `@vitest/ui` 5.0.0-beta.6 to 5.0.4 | 5.1.0 | 2.2 |
-| `GHSA-qxg6-89mg-rqv8` | moderate | `@vitest/mocker` 5.0.0-beta.1 to 5.0.2 | 5.1.0 | 2.2 |
-| `GHSA-xp26-3454-mjgp` | moderate | `@vitest/mocker` 5.0.0-rc.2 to 5.0.2 | 5.1.0 | 2.2 |
-| Inherited by `@vitest/browser-playwright` | moderate | 5.0.0-beta.1 to 5.0.4 | 5.1.0 | 2.2 |
+| Advisory                                  | Severity        | Affected                                              | Fixed by | Step |
+| ----------------------------------------- | --------------- | ----------------------------------------------------- | -------- | ---- |
+| `GHSA-587h-7wmj-h5pm`                     | high            | `vite` 8.3.0 to 8.3.2                                 | 8.3.8    | 2.1  |
+| Five more `vite` advisories               | moderate to low | `vite` 8.3.0 to 8.3.2                                 | 8.3.8    | 2.1  |
+| `GHSA-68fv-2mgg-jv7q`                     | high            | `source-map-js` 1.0.0 to 1.2.1                        | 1.2.2    | 2.3  |
+| `GHSA-p458-7748-mcp3`                     | moderate        | `@vitest/browser`, `@vitest/ui` 5.0.0-beta.6 to 5.0.4 | 5.1.0    | 2.2  |
+| `GHSA-qxg6-89mg-rqv8`                     | moderate        | `@vitest/mocker` 5.0.0-beta.1 to 5.0.2                | 5.1.0    | 2.2  |
+| `GHSA-xp26-3454-mjgp`                     | moderate        | `@vitest/mocker` 5.0.0-rc.2 to 5.0.2                  | 5.1.0    | 2.2  |
+| Inherited by `@vitest/browser-playwright` | moderate        | 5.0.0-beta.1 to 5.0.4                                 | 5.1.0    | 2.2  |
 
 Summary: 7 total, 2 high, 5 moderate, 0 critical. `npm audit --omit=dev` reports
 0, so the production tree is clean. All findings are in development and test
@@ -73,16 +73,16 @@ dry run does not move the Vitest family, so step 2.2 installs it explicitly.
 
 ## Preact 11 compatibility evidence
 
-| Package | Installed | Peer range | Supports Preact 11 |
-|---|---|---|---|
-| `preact-iso` | 2.12.2 | `>=10` or `>=11.0.0-0` | yes |
-| `vitest-browser-preact` | 1.1.1 | `^10.0.0` or `^11.0.0-0` | yes |
-| `vitest-browser-preact` | 2.0.0 | `^10.0.0` or `^11.0.0-0` | yes |
-| `@testing-library/preact` | 3.2.6 | `>=10` | yes |
-| `@preact/preset-vite` | 2.10.6 | depends on `@prefresh/vite` `^2.4.11` (installed 2.4.12), peer `^10.4.0` or `^11.0.0-0` | yes |
-| `preact-render-to-string` | 6.8.0 | Preact 11 peer `>=6.7.0` | yes |
-| TypeScript | 6.0.3 | Preact 11 minimum 5.1 | yes |
-| Vite | 8.3.8 | Preact 11 is ESM only; Vite build is ESM | yes |
+| Package                   | Installed | Peer range                                                                              | Supports Preact 11 |
+| ------------------------- | --------- | --------------------------------------------------------------------------------------- | ------------------ |
+| `preact-iso`              | 2.12.2    | `>=10` or `>=11.0.0-0`                                                                  | yes                |
+| `vitest-browser-preact`   | 1.1.1     | `^10.0.0` or `^11.0.0-0`                                                                | yes                |
+| `vitest-browser-preact`   | 2.0.0     | `^10.0.0` or `^11.0.0-0`                                                                | yes                |
+| `@testing-library/preact` | 3.2.6     | `>=10`                                                                                  | yes                |
+| `@preact/preset-vite`     | 2.10.6    | depends on `@prefresh/vite` `^2.4.11` (installed 2.4.12), peer `^10.4.0` or `^11.0.0-0` | yes                |
+| `preact-render-to-string` | 6.8.0     | Preact 11 peer `>=6.7.0`                                                                | yes                |
+| TypeScript                | 6.0.3     | Preact 11 minimum 5.1                                                                   | yes                |
+| Vite                      | 8.3.8     | Preact 11 is ESM only; Vite build is ESM                                                | yes                |
 
 Source scan for Preact 11 removals:
 
@@ -102,7 +102,8 @@ Source scan for Preact 11 removals:
 # Constraints
 
 - Follow `AGENTS.md`, `docs/ARCHITECTURE.md`, and `DESIGN.md`. `DESIGN.md` is
-  never edited.
+  never edited, except for the Markdown reformat in 4.5 that the user
+  explicitly approved.
 - No new dependency, no CDN, and no external service. `npm-check-updates` runs
   through `npx` and is not added to the project.
 - No `npx npm-check-updates -u`, no `npm install --force`, no
@@ -237,8 +238,7 @@ Source scan for Preact 11 removals:
 
 - [x] Re-check the Preact 11 compatibility table. If any peer range excludes
       Preact 11, stop and keep `preact` 10.29.8. Record the blocker. Result:
-      every installed peer range accepts Preact 11 (`preact-iso` >=10 ||
-      >=11.0.0-0, `vitest-browser-preact` ^10 || ^11.0.0-0,
+      every installed peer range accepts Preact 11 (`preact-iso` >=10 || >=11.0.0-0, `vitest-browser-preact` ^10 || ^11.0.0-0,
       `@testing-library/preact` >=10, `@prefresh/vite` ^10.4 || ^11.0.0-0,
       `preact-render-to-string` >=10 || >=11.0.0-0). No blocker.
 - [x] Confirm TypeScript is at least 5.1. Result: `typescript@6.0.3`.
@@ -395,14 +395,27 @@ Source scan for Preact 11 removals:
 
 ### 4.5 Biome
 
-- [ ] Run `npm install -D @biomejs/biome@^2.6.7`.
-- [ ] Update `biome.json` `$schema` to
-      `https://biomejs.dev/schemas/2.6.7/schema.json`.
-- [ ] Run `npm run format` and `npm run lint`. Fix code, or run
+- [x] Run `npm install -D @biomejs/biome@^2.6.7`. Result: installed
+      `@biomejs/biome@2.6.7`; npm audit reports 0.
+- [x] Update `biome.json` `$schema` to
+      `https://biomejs.dev/schemas/2.6.7/schema.json`. Result: updated.
+- [x] Run `npm run format` and `npm run lint`. Fix code, or run
       `npx biome migrate --write` only for config renames, and review the diff.
-      Do not disable recommended rules without asking.
-- [ ] Gate.
-- [ ] Update `AGENTS.md` Tech Stack from Biome 2.5.x to 2.6.x.
+      Do not disable recommended rules without asking. Result: Biome 2.6 now
+      formats Markdown, which reformatted 18 docs files (explicitly approved by
+      the user, including `DESIGN.md`). The first run flattened `DESIGN.md`'s
+      YAML frontmatter because `markdown.parser.frontmatter` defaults to false,
+      so `biome.json` now sets `"markdown": { "parser": { "frontmatter": true } }`.
+      After that, `DESIGN.md`'s frontmatter parses to the same structure as
+      before, formatting is idempotent (164 files, no fixes), and lint checks
+      168 files with no diagnostics. An unbalanced inline-code backtick in
+      archived spec 009 was closed so the formatter preserves its prose
+      spacing. No linter rules were disabled and `biome migrate` was not
+      needed.
+- [x] Gate. Result: under Node 26.13.1, `format`, `lint`, `build`, and `test`
+      pass (51 test files, 420 tests).
+- [x] Update `AGENTS.md` Tech Stack from Biome 2.5.x to 2.6.x. Result:
+      `AGENTS.md` now says `@biomejs/biome` 2.6.x.
 
 ### 4.6 `@types/node` 26
 
@@ -438,10 +451,11 @@ Source scan for Preact 11 removals:
       check if useful.
 - [ ] Update `AGENTS.md` Tech Stack for every changed version: Preact,
       TypeScript, Vite, Biome, `@types/node`, and Node. Do not edit
-      `DESIGN.md`.
+      `DESIGN.md` in Task 5.
 - [ ] Review `git diff --stat`. Only `package.json`, `package-lock.json`,
       `biome.json`, `.nvmrc`, `AGENTS.md`, and compatibility fixes should
-      appear. No unrelated formatting churn.
+      appear, plus the 4.5 Markdown reformat (18 docs files, including
+      `DESIGN.md`) that the user approved. No other formatting churn.
 - [ ] Report every held package, its blocker, and the highest supported
       version.
 - [ ] Do not stage and do not commit.

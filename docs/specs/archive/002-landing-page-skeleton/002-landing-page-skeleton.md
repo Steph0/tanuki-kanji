@@ -20,28 +20,28 @@ Bootstrap the landing page skeleton with static navbar, banner, search bar, and 
 
 Use Stitch MCP to create the "Tanuki Sensei - Home & Kanji Search (Mobile)" page. Stitch MCP output is the source of truth for layout and copy in 002. This landing page will replace the actual `App` component that `main.tsx` is calling.
 
-- [X] Start with the skeleton, nothing in the body first, just the background, grid, margins
-  - [X] DESIGN.md tokens only: mobile 4-col / 1rem margin, tablet 8-col / 2rem margin, desktop 12-col max 1120px centered / 3rem margin, washi canvas background
-  - [X] Load fonts globally in `src/index.css` via `@fontsource` imports and define `font-family` stacks per DESIGN.md (Epilogue headings, Plus Jakarta Sans + Noto Sans JP body/labels, Noto Sans JP kanji display)
-  - [X] Ensure separating the CSS depending on the viewport, in order it must be mobile-first, then tablet, then desktop
-- [X] Create navigation bar component (purely static version)
-  - [X] Navigation is always visible at the top of the viewport and not affected by scrolling (sticky `top: 0`).
-  - [X] Left: app logo image + title, static, no link. Use [app_logo.png](./app_logo.png) copied to `src/assets/navbar/` for the logo
-  - [X] Right: arrows symbol static, no `<a>`, no JS; future home link, explicitly non-interactive in 002
-- [X] Create a banner component with the banner and the text block under the banner
-  - [X] Use [landing_page_banner.png](./landing_page_banner.png) copied to `src/assets/banner/` for the banner, with descriptive `alt`
-  - [X] Headline, subtext, search placeholder, button `aria-label` same as provided by Stitch MCP; use semantic `header` / `nav` / `main` and a real `<label>` for the search input
-- [X] Create a search bar component
-  - [X] Do not add any interactivity or validation on the input or send button
-- [X] Create the explanation component with all the explanations that are under the search bar component in the Stitch design
-- [X] Align tablet/desktop to Stitch Desktop via MCP diff, mobile-first
-  - [X] Diff "Tanuki Sensei - Home & Kanji Search (Mobile)" vs "Tanuki Sensei - Home & Kanji Search (Desktop)" screens via Stitch MCP, table per component (nav/banner/search/explanation: stack vs side-by-side, widths, copy)
-  - [X] Stitch is source for arrangement, DESIGN.md tokens only for grid/margins (mobile 4-col/1rem, tablet 8-col/2rem, desktop 12-col/max 1120px centered/3rem); if Stitch violates tokens, DESIGN.md wins
-  - [X] Tablet has no Stitch source: keep mobile stacking + DESIGN.md indications for tablet, explicit exceptions only
-  - [X] CSS: base styles with no query = mobile, then `@container app (min-width: 48rem)` tablet, then `@container app (min-width: 64rem)` desktop against the single named `app` container in `App.tsx`; no `max-width`, no desktop-first overrides
-  - [X] Desktop guarded against rotation: desktop rules additionally require `@media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1)` so rotated phones (wide but short) keep tablet rules
-  - [X] Navbar height token `--navbar-h`
-  - [X] Short viewports (`@media (max-height: 37.5rem)`, any screen): banner image capped at `calc(50svh - var(--navbar-h))` with `cover` crop; SearchBar vertically centered
+- [x] Start with the skeleton, nothing in the body first, just the background, grid, margins
+  - [x] DESIGN.md tokens only: mobile 4-col / 1rem margin, tablet 8-col / 2rem margin, desktop 12-col max 1120px centered / 3rem margin, washi canvas background
+  - [x] Load fonts globally in `src/index.css` via `@fontsource` imports and define `font-family` stacks per DESIGN.md (Epilogue headings, Plus Jakarta Sans + Noto Sans JP body/labels, Noto Sans JP kanji display)
+  - [x] Ensure separating the CSS depending on the viewport, in order it must be mobile-first, then tablet, then desktop
+- [x] Create navigation bar component (purely static version)
+  - [x] Navigation is always visible at the top of the viewport and not affected by scrolling (sticky `top: 0`).
+  - [x] Left: app logo image + title, static, no link. Use [app_logo.png](./app_logo.png) copied to `src/assets/navbar/` for the logo
+  - [x] Right: arrows symbol static, no `<a>`, no JS; future home link, explicitly non-interactive in 002
+- [x] Create a banner component with the banner and the text block under the banner
+  - [x] Use [landing_page_banner.png](./landing_page_banner.png) copied to `src/assets/banner/` for the banner, with descriptive `alt`
+  - [x] Headline, subtext, search placeholder, button `aria-label` same as provided by Stitch MCP; use semantic `header` / `nav` / `main` and a real `<label>` for the search input
+- [x] Create a search bar component
+  - [x] Do not add any interactivity or validation on the input or send button
+- [x] Create the explanation component with all the explanations that are under the search bar component in the Stitch design
+- [x] Align tablet/desktop to Stitch Desktop via MCP diff, mobile-first
+  - [x] Diff "Tanuki Sensei - Home & Kanji Search (Mobile)" vs "Tanuki Sensei - Home & Kanji Search (Desktop)" screens via Stitch MCP, table per component (nav/banner/search/explanation: stack vs side-by-side, widths, copy)
+  - [x] Stitch is source for arrangement, DESIGN.md tokens only for grid/margins (mobile 4-col/1rem, tablet 8-col/2rem, desktop 12-col/max 1120px centered/3rem); if Stitch violates tokens, DESIGN.md wins
+  - [x] Tablet has no Stitch source: keep mobile stacking + DESIGN.md indications for tablet, explicit exceptions only
+  - [x] CSS: base styles with no query = mobile, then `@container app (min-width: 48rem)` tablet, then `@container app (min-width: 64rem)` desktop against the single named `app` container in `App.tsx`; no `max-width`, no desktop-first overrides
+  - [x] Desktop guarded against rotation: desktop rules additionally require `@media (min-height: 37.5rem) and (max-aspect-ratio: 2 / 1)` so rotated phones (wide but short) keep tablet rules
+  - [x] Navbar height token `--navbar-h`
+  - [x] Short viewports (`@media (max-height: 37.5rem)`, any screen): banner image capped at `calc(50svh - var(--navbar-h))` with `cover` crop; SearchBar vertically centered
 
 # Acceptance
 

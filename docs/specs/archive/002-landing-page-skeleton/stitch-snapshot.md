@@ -58,14 +58,14 @@ build input.
 
 ## Layout: mobile → desktop deltas (from raw exports)
 
-| Component   | Mobile (`stitch-home-mobile.html`)            | Desktop (`stitch-home-desktop.html`)              |
-| ----------- | --------------------------------------------- | ------------------------------------------------- |
-| Shell       | `mobile_tab`, single column, `px-margin`      | `web_standard`, `md:max-w-[1120px]` centered      |
-| Banner      | fluid `aspect-[16/9]` cover crop              | centered strip, `max-h-[220px]`, `contain`, hover zoom |
-| Caption     | overlay `span` on gradient                    | overlay `p` on gradient                           |
-| Search card | `maxlength="8"`, counter `/ 8 chars`         | `maxlength="21"`, counter `/ 21 chars`            |
-| Explanation | stacked rows                                  | `grid md:grid-cols-2` side-by-side                |
-| Header      | fixed `h-16`, logo 36px circle + title        | same, `md:max-w-[1120px]`                         |
+| Component   | Mobile (`stitch-home-mobile.html`)       | Desktop (`stitch-home-desktop.html`)                   |
+| ----------- | ---------------------------------------- | ------------------------------------------------------ |
+| Shell       | `mobile_tab`, single column, `px-margin` | `web_standard`, `md:max-w-[1120px]` centered           |
+| Banner      | fluid `aspect-[16/9]` cover crop         | centered strip, `max-h-[220px]`, `contain`, hover zoom |
+| Caption     | overlay `span` on gradient               | overlay `p` on gradient                                |
+| Search card | `maxlength="8"`, counter `/ 8 chars`     | `maxlength="21"`, counter `/ 21 chars`                 |
+| Explanation | stacked rows                             | `grid md:grid-cols-2` side-by-side                     |
+| Header      | fixed `h-16`, logo 36px circle + title   | same, `md:max-w-[1120px]`                              |
 
 Tablet has no Stitch source (per archived spec): mobile stacking +
 `DESIGN.md` tablet rules apply.

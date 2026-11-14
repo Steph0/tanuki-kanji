@@ -94,12 +94,12 @@ sequenceDiagram
 
 ## Product copy
 
-| State | User-visible copy | Actions |
-| --- | --- | --- |
-| Disconnected | Title: `Connect to OpenRouter`. Body: `This app uses OpenRouter free models to generate the lessons.` Footnote: `Your key is never saved and only works in this tab. Closing the app auto-disconnect by default.` | `Connect to OpenRouter` |
-| Connecting | Title: `Connecting to OpenRouter`. Body: `Finishing sign-in. This takes a moment.` | None |
-| Connected | Title: `OpenRouter connected`. Body: `Your OpenRouter account is connected. Your key is never saved and only works in this tab. Closing the app auto-disconnect by default.` Note: `Disconnecting forgets the key in this tab. The key stays in your OpenRouter account until you revoke it.` | `Disconnect`, `Revoke in OpenRouter` |
-| Failure | Error under the action: `Could not connect to OpenRouter. Please try again.` | Retry with the main action |
+| State        | User-visible copy                                                                                                                                                                                                                                                                             | Actions                              |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| Disconnected | Title: `Connect to OpenRouter`. Body: `This app uses OpenRouter free models to generate the lessons.` Footnote: `Your key is never saved and only works in this tab. Closing the app auto-disconnect by default.`                                                                             | `Connect to OpenRouter`              |
+| Connecting   | Title: `Connecting to OpenRouter`. Body: `Finishing sign-in. This takes a moment.`                                                                                                                                                                                                            | None                                 |
+| Connected    | Title: `OpenRouter connected`. Body: `Your OpenRouter account is connected. Your key is never saved and only works in this tab. Closing the app auto-disconnect by default.` Note: `Disconnecting forgets the key in this tab. The key stays in your OpenRouter account until you revoke it.` | `Disconnect`, `Revoke in OpenRouter` |
+| Failure      | Error under the action: `Could not connect to OpenRouter. Please try again.`                                                                                                                                                                                                                  | Retry with the main action           |
 
 - Trigger names: `Settings, OpenRouter not connected` and
   `Settings, OpenRouter connected`.

@@ -58,14 +58,14 @@ below is provenance only, never a build input.
 
 ## Motion spec (from raw export)
 
-| Element      | Animation               | Timing                        |
-| ------------ | ----------------------- | ----------------------------- |
-| Caption swap | linear cycle + 300ms fade | every 3500ms                 |
-| Artwork      | breathe (scale/lift)    | 4.5s ease-in-out infinite     |
-| Enso 1       | rotate                  | 26s linear infinite           |
-| Enso 2       | counter-rotate          | 38s linear infinite           |
-| Glow         | pulse                   | 4s                            |
-| Ring         | ping                    | 4.8s infinite                 |
+| Element      | Animation                 | Timing                    |
+| ------------ | ------------------------- | ------------------------- |
+| Caption swap | linear cycle + 300ms fade | every 3500ms              |
+| Artwork      | breathe (scale/lift)      | 4.5s ease-in-out infinite |
+| Enso 1       | rotate                    | 26s linear infinite       |
+| Enso 2       | counter-rotate            | 38s linear infinite       |
+| Glow         | pulse                     | 4s                        |
+| Ring         | ping                      | 4.8s infinite             |
 
 Spec 012 Tasks intentionally override the caption cadence (900–2000ms organic
 rotation + `prefers-reduced-motion` static fallback); this table records what

@@ -45,8 +45,7 @@ Flow rules:
         not here: `noUnusedLocals` is on, so every task must keep the loop green.
 
 - [x] Task 2 — `preact-iso` router wiring
-  - [x]  `npm install preact-iso --save` (authorized exception to install this package); `App` wraps tree in `LocationProvider`
-        + `Router` with routes `/`, `/loading`, `/result` and `default` 404 to `/`.
+  - [x] `npm install preact-iso --save` (authorized exception to install this package); `App` wraps tree in `LocationProvider` + `Router` with routes `/`, `/loading`, `/result` and `default` 404 to `/`.
         `/loading` and `/result` render temporary placeholders until next spec tasks
         replace them with the real pages.
   - [x] Navigation via `useLocation().route(url, replace?)`: submit uses push to
@@ -95,7 +94,7 @@ Flow rules:
         Page is router-free: `App` gains the optional `engine` prop here
         (default `runTanukiKanjiLesson`), and `App`'s `onDone` calls `setTanukiKanjiLessonOutput`
         then `route("/result", true)`.
-  - [x] Tests with the code (mock `TanukiKanjiEngine): `/loading` shows
+  - [x] Tests with the code (mock `TanukiKanjiEngine`): `/loading` shows
         (pending-engine App test keeps it deterministic);
         `onDone` receives engine text on resolve, `"error"` on rejection
         (router-free, no provider needed); App-level tests: resolve stores
@@ -103,16 +102,16 @@ Flow rules:
         on `/result`.
   - [x] Gate — run the testing loop.
 
-  - [X] Post-Task 4 refactor — four chosen patterns:
-    - [X] Hook-controller: logic lives in hooks, component stays composition-only;
+  - [x] Post-Task 4 refactor — four chosen patterns:
+    - [x] Hook-controller: logic lives in hooks, component stays composition-only;
           hook edge cases in `useLoadingPage.test.tsx` (`renderHook`), view
           markup in `LoadingPage.test.tsx`.
-    - [X] Engine injection via context: `useTanukiKanjiEngine()` from
+    - [x] Engine injection via context: `useTanukiKanjiEngine()` from
           `src/hooks/useTanukiKanjiEngine.tsx`, provided once in `App`; flow
           data stays explicit props.
-    - [X] Fail-fast context: hook throws outside
+    - [x] Fail-fast context: hook throws outside
           `<TanukiKanjiProvider>`, no silent defaults. Tests can provide their own mocked engines.
-    - [X] Separated router: `src/AppRouter.tsx` owns flow state, guards and
+    - [x] Separated router: `src/AppRouter.tsx` owns flow state, guards and
           routes; `App.tsx` keeps shell + providers only.
 
 - [x] Task 5 — Result page

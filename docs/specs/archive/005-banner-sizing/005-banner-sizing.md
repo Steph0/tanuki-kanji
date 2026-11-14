@@ -25,26 +25,26 @@ Rebuild banner + page-shell responsiveness on strong, old-browser-safe CSS.
 
 # Tasks
 
-- [X] Task 1 - Single `48rem` `@media` step, all files
+- [x] Task 1 - Single `48rem` `@media` step, all files
   - Goal: one query system, one step up, old browsers included.
   - Implementation:
-    - [X] Convert every `@container app` blocks to plain `@media (min-width: 48rem)`.
-    - [X] At `≥48rem` apply today's desktop shell geometry directly (3rem margins, `1120px` centered). No intermediate tablet values; delete the `64rem` tier everywhere.
-    - [X] At `≥48rem` the banner takes today's desktop strip verbatim: `.visual` `fit-content` + centered, `.image` `contain`, `max-height: 220px`; mobile base keeps fluid `16/9 cover` unchanged.
-    - [X] Remove `container-name: app` / `container-type` once no `@container` remains.
-    - [X] Drop the `min-height: 37.5rem` + `max-aspect-ratio: 2/1` guards from the desktop step.
+    - [x] Convert every `@container app` blocks to plain `@media (min-width: 48rem)`.
+    - [x] At `≥48rem` apply today's desktop shell geometry directly (3rem margins, `1120px` centered). No intermediate tablet values; delete the `64rem` tier everywhere.
+    - [x] At `≥48rem` the banner takes today's desktop strip verbatim: `.visual` `fit-content` + centered, `.image` `contain`, `max-height: 220px`; mobile base keeps fluid `16/9 cover` unchanged.
+    - [x] Remove `container-name: app` / `container-type` once no `@container` remains.
+    - [x] Drop the `min-height: 37.5rem` + `max-aspect-ratio: 2/1` guards from the desktop step.
 
-- [X] Task 2 - Short-viewport override (rotated screens)
+- [x] Task 2 - Short-viewport override (rotated screens)
   - Goal: wide-but-short windows stay sane without aspect-ratio gates.
   - Implementation:
-    - [X] After the desktop block, add `@media (max-height: 37.5rem)` override: cap image with `vh`-then-`svh` fallback pair (e.g. `calc(50vh - var(--navbar-h))` then `calc(50svh - var(--navbar-h))`), keep `cover` crop; loosen `callToAction` centering as today.
-    - [X] Order matters: short-viewport block comes last so it beats the desktop cap. Put all `@media` instructions at end of files.
+    - [x] After the desktop block, add `@media (max-height: 37.5rem)` override: cap image with `vh`-then-`svh` fallback pair (e.g. `calc(50vh - var(--navbar-h))` then `calc(50svh - var(--navbar-h))`), keep `cover` crop; loosen `callToAction` centering as today.
+    - [x] Order matters: short-viewport block comes last so it beats the desktop cap. Put all `@media` instructions at end of files.
 
-- [X] Task 3 - Document + validate
+- [x] Task 3 - Document + validate
   - Goal: the two-breakpoint rule is written down and the gate is green.
   - Implementation:
-    - [X] DESIGN.md Layout section states the two breakpoints (mobile base / `≥48rem` desktop, tablet = desktop) and the width-gated-cap + short-viewport-override principles.
-    - [X] Done: `build`, `lint`, `format` pass. Manual viewport check by the developer.
+    - [x] DESIGN.md Layout section states the two breakpoints (mobile base / `≥48rem` desktop, tablet = desktop) and the width-gated-cap + short-viewport-override principles.
+    - [x] Done: `build`, `lint`, `format` pass. Manual viewport check by the developer.
 
 # Acceptance
 

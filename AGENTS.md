@@ -19,7 +19,7 @@ This document outlines the architectural rules, security constraints, and coding
 - When a live provider check is genuinely needed, keep it to the smallest
   number of requests that answers the question, and never batch-probe. Ask first, say
   how many requests the check will make, and wait for the answer.
-- `.ignore` only hides secrets from *search* tools; it is not a boundary.
+- `.ignore` only hides secrets from _search_ tools; it is not a boundary.
 
 ### PHASE 1 — SPECIFICATION / PLAN
 
@@ -76,7 +76,7 @@ This document outlines the architectural rules, security constraints, and coding
 - **Languages**: TypeScript 7.x, JSX, HTML5 / CSS3
 - **Framework**: Preact 11.x
 - **Build Tool**: Vite 8.x
-- **Linting & Formatting**: `@biomejs/biome` 2.5.x
+- **Linting & Formatting**: `@biomejs/biome` 2.6.x
 - **Types**: `@types/node` 24.x
 
 ### DESIGN

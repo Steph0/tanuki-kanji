@@ -20,28 +20,28 @@ The landing page ships ~2.5MB of PNG on every load (`landing_page_banner.png` 13
 
 # Tasks
 
-- [X] Task 1 — Generate and check in derivatives
-  - [X] Banner: `src/assets/banner/landing_page_banner-400.webp`, `-800.webp`, plus resized PNG fallbacks at the same widths. Masters stay untouched.
-  - [X] Logo: `src/assets/navbar/app_logo-72.webp`, `-144.webp`, plus resized PNG fallbacks. Masters stay untouched.
-  - [X] Gate — `git status` shows only new asset files; encode high-quality (visually lossless at display size); full-res WebP each ≤60KB, mobile defaults ≤10KB.
+- [x] Task 1 — Generate and check in derivatives
+  - [x] Banner: `src/assets/banner/landing_page_banner-400.webp`, `-800.webp`, plus resized PNG fallbacks at the same widths. Masters stay untouched.
+  - [x] Logo: `src/assets/navbar/app_logo-72.webp`, `-144.webp`, plus resized PNG fallbacks. Masters stay untouched.
+  - [x] Gate — `git status` shows only new asset files; encode high-quality (visually lossless at display size); full-res WebP each ≤60KB, mobile defaults ≤10KB.
 
-- [X] Task 2 — Responsive banner (`src/components/Banner/Banner.tsx`)
-  - [X] Replace bare `<img>` with `<picture>`: WebP `source` (`type="image/webp"`, `srcset` 400w/800w + `sizes` matching mobile cover vs desktop strip) + PNG fallback `<img>` (`src` = 400w PNG, same `srcset`/`sizes`, same `alt`, intrinsic attrs of the 400w file, `fetchpriority="high"`, `decoding="async"`). No blur-up placeholder; the sunk `.visual` background stays the loading state.
-  - [X] Extend `Banner.test.tsx` alongside: fallback `img` keeps `alt` + `width`/`height`; `source` carries WebP `type` + `srcset`; `img src` is the smallest variant.
-  - [X] Gate — file green in `npm run test -- Banner`.
+- [x] Task 2 — Responsive banner (`src/components/Banner/Banner.tsx`)
+  - [x] Replace bare `<img>` with `<picture>`: WebP `source` (`type="image/webp"`, `srcset` 400w/800w + `sizes` matching mobile cover vs desktop strip) + PNG fallback `<img>` (`src` = 400w PNG, same `srcset`/`sizes`, same `alt`, intrinsic attrs of the 400w file, `fetchpriority="high"`, `decoding="async"`). No blur-up placeholder; the sunk `.visual` background stays the loading state.
+  - [x] Extend `Banner.test.tsx` alongside: fallback `img` keeps `alt` + `width`/`height`; `source` carries WebP `type` + `srcset`; `img src` is the smallest variant.
+  - [x] Gate — file green in `npm run test -- Banner`.
 
-- [X] Task 3 — Responsive logo (`src/components/Navbar/Navbar.tsx`)
-  - [X] Same `<picture>` pattern: WebP `source` (72w/144w) + PNG fallback `<img>` (`src` = 72w PNG, `width`/`height` = `ICON_XL_PX`, same `alt`, `decoding="async"`).
-  - [X] Extend `Navbar.test.tsx` alongside: fallback `img` keeps `alt` + `width`/`height`; `source` carries WebP `type` + `srcset`; `img src` is the smallest variant.
-  - [X] Gate — file green in `npm run test -- Navbar`.
+- [x] Task 3 — Responsive logo (`src/components/Navbar/Navbar.tsx`)
+  - [x] Same `<picture>` pattern: WebP `source` (72w/144w) + PNG fallback `<img>` (`src` = 72w PNG, `width`/`height` = `ICON_XL_PX`, same `alt`, `decoding="async"`).
+  - [x] Extend `Navbar.test.tsx` alongside: fallback `img` keeps `alt` + `width`/`height`; `source` carries WebP `type` + `srcset`; `img src` is the smallest variant.
+  - [x] Gate — file green in `npm run test -- Navbar`.
 
-- [X] Task 4 — Tab icon (`public/` + `index.html`)
-  - [X] Generate from the logo master, beige square kept: `public/favicon.ico` (16/32 multi-size), `public/favicon-32x32.png`, `public/apple-touch-icon.png` (180).
-  - [X] `index.html`: add icon links + `theme-color` (canvas `#FAF8F5`). No manifest.
-  - [X] Gate — icon visible in a desktop tab; `npm run build` copies the files to `dist/` untouched.
+- [x] Task 4 — Tab icon (`public/` + `index.html`)
+  - [x] Generate from the logo master, beige square kept: `public/favicon.ico` (16/32 multi-size), `public/favicon-32x32.png`, `public/apple-touch-icon.png` (180).
+  - [x] `index.html`: add icon links + `theme-color` (canvas `#FAF8F5`). No manifest.
+  - [x] Gate — icon visible in a desktop tab; `npm run build` copies the files to `dist/` untouched.
 
-- [X] Task 5 — Budget proof
-  - [X] Report mobile image bytes before/after from `dist/` output.
+- [x] Task 5 — Budget proof
+  - [x] Report mobile image bytes before/after from `dist/` output.
 
 # Acceptance
 

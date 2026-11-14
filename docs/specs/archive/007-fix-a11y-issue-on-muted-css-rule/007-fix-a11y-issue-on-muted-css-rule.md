@@ -17,15 +17,15 @@ Full `npm run test` green with zero test-file changes to prove the fix is the ri
 
 # Tasks
 
-- [X] Task 1 — Darken the `muted` token
-  - [X] Set `muted` in `DESIGN.md` frontmatter and `--color-muted` in `src/globals.css` to `#626964` (full-compliance choice: passes on white and on parchment; visibly darker than the old gray).
-  - [X] Verify the counter meets WCAG AA for small text on the white card, and the placeholder hint meets WCAG AA on the parchment field (resting and focused states).
-  - [X] Verify by eye on mobile and desktop: the gray still reads as hushed secondary text, not body copy.
-  - [X] Gate — no other color, layout, or markup changed; `DESIGN.md` diff limited to the `muted` value.
+- [x] Task 1 — Darken the `muted` token
+  - [x] Set `muted` in `DESIGN.md` frontmatter and `--color-muted` in `src/globals.css` to `#626964` (full-compliance choice: passes on white and on parchment; visibly darker than the old gray).
+  - [x] Verify the counter meets WCAG AA for small text on the white card, and the placeholder hint meets WCAG AA on the parchment field (resting and focused states).
+  - [x] Verify by eye on mobile and desktop: the gray still reads as hushed secondary text, not body copy.
+  - [x] Gate — no other color, layout, or markup changed; `DESIGN.md` diff limited to the `muted` value.
 
-- [X] Task 2 — Retire the known issue
-  - [X] Remove the contrast known-issue note from `AGENTS.md` Testing Strategy (or rewrite it as resolved history, one line max).
-  - [X] Gate — full `npm run test` green + `npm run build` + `npm run lint` + `npm run format` green.
+- [x] Task 2 — Retire the known issue
+  - [x] Remove the contrast known-issue note from `AGENTS.md` Testing Strategy (or rewrite it as resolved history, one line max).
+  - [x] Gate — full `npm run test` green + `npm run build` + `npm run lint` + `npm run format` green.
 
 # Acceptance
 

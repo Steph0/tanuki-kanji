@@ -47,16 +47,16 @@ shapes), file paths, test conventions — those go in `Tasks`.
         intent, then the technical translation (files, identifiers, values).
         Never the reverse, never the meaning buried in parenthesis after jargon.
 - [ ] Files/symbols to touch, with the exact values this task needs.
-        Encode rules in names (constants, types, functions) — not comments.
+      Encode rules in names (constants, types, functions) — not comments.
 - [ ] State the capability plus its values, never function signatures, param
-        lists, or return shapes. Interfaces are shaped in review; locking them
-        in the spec freezes early guesses into contract.
+      lists, or return shapes. Interfaces are shaped in review; locking them
+      in the spec freezes early guesses into contract.
 - [ ] If two requirements only work together through unstated machinery (e.g. a
-        plain-string deck plus marked-up spans), resolve the bridge in the task
-        or drop one. Silent tension becomes accidental complexity.
+      plain-string deck plus marked-up spans), resolve the bridge in the task
+      or drop one. Silent tension becomes accidental complexity.
 - [ ] Tests with the code (unit `*.test.ts` vs integration `*.test.tsx`).
-        Pin behavior (changes, static, non-empty), never data (counts, exact
-        strings) — data churn must not break the suite.
+      Pin behavior (changes, static, non-empty), never data (counts, exact
+      strings) — data churn must not break the suite.
   - [ ] Keep steps small and unitary: one behavior per step, its tests with
         it. Split rather than stack.
   - [ ] Gate — build + lint + format + single-file test, then full test.
