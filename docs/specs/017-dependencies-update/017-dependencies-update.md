@@ -419,9 +419,19 @@ Source scan for Preact 11 removals:
 
 ### 4.6 `@types/node` 26
 
-- [ ] Run `npm install -D @types/node@^26.6.6`.
-- [ ] Gate.
-- [ ] Update `AGENTS.md` Tech Stack from `@types/node` 24.x to 26.x.
+- [x] Run `npm install -D @types/node@^26.6.6`. Result: installed
+      `@types/node@26.6.6`; npm audit reports 0. This removes the temporary
+      Node 26 runtime / Node 24 type-definition mismatch.
+- [x] Gate. Result: `tsc -b --force` rebuilt both projects with no errors, so
+      no code changes were needed. Under Node 26.13.1, `format`, `lint`,
+      `build`, and `test` pass (51 test files, 420 tests). Peer ranges checked:
+      `vite` accepts `^20.19.0 || >=22.12.0`, `vitest` accepts
+      `^22.0.0 || >=24.0.0`, and `@inquirer/*` accepts `>=18`; 26.6.6
+      satisfies all, so nothing was forced. The types describe Node 26.6 while
+      the runtime pin is 26.13.1; the gap is the safe direction (newer runtime
+      APIs stay untyped), within the same major.
+- [x] Update `AGENTS.md` Tech Stack from `@types/node` 24.x to 26.x. Result:
+      `AGENTS.md` now says `@types/node` 26.x.
 
 ### 4.7 Material Symbols 0.49
 

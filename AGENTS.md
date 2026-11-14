@@ -77,7 +77,7 @@ This document outlines the architectural rules, security constraints, and coding
 - **Framework**: Preact 11.x
 - **Build Tool**: Vite 8.x
 - **Linting & Formatting**: `@biomejs/biome` 2.6.x
-- **Types**: `@types/node` 24.x
+- **Types**: `@types/node` 26.x
 
 ### DESIGN
 
