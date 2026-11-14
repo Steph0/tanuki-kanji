@@ -191,30 +191,44 @@ Source scan for Preact 11 removals:
 
 ### 2.2 Vitest moderate advisories
 
-- [ ] Run `npm install -D --save-exact vitest@5.1.0 @vitest/browser@5.1.0 @vitest/browser-playwright@5.1.0`.
-- [ ] Run `npm ls vitest @vitest/browser @vitest/browser-playwright @vitest/ui @vitest/mocker`. All resolve to 5.1.0.
-- [ ] Gate.
-- [ ] Run `npm audit`. The Vitest advisories must be gone.
-- [ ] If the browser provider fails only because Playwright 1.63 is too old,
+- [x] Run `npm install -D --save-exact vitest@5.1.0 @vitest/browser@5.1.0 @vitest/browser-playwright@5.1.0`.
+      Note: the single command hit `ERESOLVE` on the coupled peer group
+      (`@vitest/browser@5.1.0` peers `vitest@5.1.0`, while the old lock still
+      held 5.0.2). Resolved without `--force` or `--legacy-peer-deps` by
+      removing the three old packages with `npm uninstall -D` and then running
+      the install command. This deviates from the one-install-command rule:
+      both commands ran inside this same step, with no gate between them, as the
+      removal and install halves of one coupled set. All three landed at exact
+      `5.1.0`.
+- [x] Run `npm ls vitest @vitest/browser @vitest/browser-playwright @vitest/ui @vitest/mocker`. All resolve to 5.1.0.
+- [x] Gate.
+- [x] Run `npm audit`. The Vitest advisories must be gone. Result: `npm audit`
+      reports `0` total.
+- [x] If the browser provider fails only because Playwright 1.63 is too old,
       move Playwright to `^1.65.1` here, gate, and mark step 4.4 as done. Do not
-      force Vitest.
+      force Vitest. Result: not needed. Browser tests passed on Playwright
+      `1.63.0`, so step 4.4 stays open.
 
 ### 2.3 source-map-js high advisory
 
-- [ ] If 2.1 already resolved `source-map-js` to 1.2.2, skip this install and
+- [x] If 2.1 already resolved `source-map-js` to 1.2.2, skip this install and
       record it. Otherwise run `npm update source-map-js` and check
-      `npm ls source-map-js`.
-- [ ] If it stays at 1.2.1, run `npm audit fix` without `--force` and accept
+      `npm ls source-map-js`. Result: skipped. `source-map-js` is `1.2.2`
+      (`vite@8.3.8` -> `postcss@8.5.33` -> `source-map-js@1.2.2`).
+- [x] If it stays at 1.2.1, run `npm audit fix` without `--force` and accept
       only the minimal transitive changes it needs. Review
       `git diff package.json` and stop if a direct dependency moved. Do not add
-      an override.
-- [ ] Gate.
+      an override. Result: not applicable, it is `1.2.2`; no audit fix and no
+      override were needed.
+- [x] Gate.
 
 ### 2.4 Audit closeout
 
-- [ ] `npm audit` reports 0. `npm audit --omit=dev` reports 0.
-- [ ] If an advisory has no fix, stop and ask. Do not suppress it, omit the
-      package, or force a resolution.
+- [x] `npm audit` reports 0. `npm audit --omit=dev` reports 0. Result: both
+      report `0` total (`info 0, low 0, moderate 0, high 0, critical 0`).
+- [x] If an advisory has no fix, stop and ask. Do not suppress it, omit the
+      package, or force a resolution. Result: not applicable, no advisories
+      remain.
 
 ## Task 3 - Preact 11
 
